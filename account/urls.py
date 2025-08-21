@@ -1,0 +1,26 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('home/', views.home, name="home"),
+    path('', views.loginpage, name="login"),
+    path('logout/', views.logoutview, name="logout"),
+    path("loginview/",views.loginview,name="loginview"),
+    path("projectentry/",views.projectentry,name="projectentry"),
+    path('load-districts/', views.load_districts, name='load_districts'),
+    path('pidetailsave/', views.pidetailsave, name='pidetailsave'),
+    path('proejct_detailsave/', views.proejct_detailsave, name='proejct_detailsave'),
+    path('institute/', views.institute_detailsave, name='institute'),
+    path('filter_project/', views.filter_project, name='filter_project'),
+    path('financial/', views.financial_save, name='financial'),
+    path('financial_record/', views.fetch_financial_record, name='financial_record'),
+    path('financial_save/', views.financial_save_record, name='financial_save'),
+    path('release_save/', views.release_save_record, name='release_save'),
+    path('uc_save/', views.uc_save_record, name='uc_save'),
+    path('filter_projectdetail/', views.filter_projectdetail, name='filter_projectdetail'),
+    path('filter_pi_project/', views.filter_pi_project, name='filter_pi_project'),
+
+    path('ajax/get-states/', views.get_states, name='get_states'),
+    path('ajax/get-districts/', views.get_districts, name='get_districts'),
+]
+

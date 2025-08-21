@@ -1,0 +1,3545 @@
+{% extends 'account/main.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+
+<style>
+    table {
+      /* width: 100%; */
+      border-collapse: collapse;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      border: 1px solid #aaa;
+      padding: 5px !important;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    button {
+      
+    }
+    .expand-icon {
+      cursor: pointer;
+      color: blue;
+      user-select: none;
+    }
+    .details-row {
+      display: none;
+      background-color: #f9f9f9;
+    }
+    input{
+	width:8rem;
+	justify-content:center;
+	/* border:0px; */
+	}
+	.edit-toggle{
+	width:1rem;
+	}
+    .th_width {
+        /* width: 10%; */
+        width:8rem;
+    }
+    .nested_th{
+        width:8rem;
+    }
+    .th_plus{
+        width:48px;
+    }
+    .far fa-plus-square{
+        background-color: green;
+    }
+  </style>
+
+  <!-- nested table styling start -->
+  <!-- <style>
+    table {
+      border-collapse: collapse;
+      width: 95%;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px 10px;
+	  text-align:center;
+    }
+    .expand-icon {
+      cursor: pointer;
+      color: blue;
+      user-select: none;
+    }
+    .details-row {
+      display: none;
+      background-color: #f9f9f9;
+    }
+    .nested-table {
+      margin-top: 5px;
+       margin-left: 0px;
+	   margin-right: 20px;
+      width: 100%;
+    }
+	.nested_th{
+	display:hidden;
+	}
+	.new_row{
+	border-color:green !important;
+	}
+	input{
+	width:6rem;
+	justify-content:center;
+	border:0px;
+	}
+	.edit-toggle{
+	width:1rem;
+	}
+  </style> -->
+
+  <!-- nested table styling end -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Budget Details</div>
+            </div>
+            <div class="card-body">
+                <div class="container mt-5">
+                    <!-- Tabs nav -->
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab">PI Details</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab">Project Details</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button" role="tab">Sension Budget</button>
+                        </li>
+                    </ul>
+
+                    <!-- Tabs content -->
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active p-3" id="tab1" role="tabpanel">
+                        <h4>PI Details</h4>
+                        <hr>
+                        <form method="post" id="id_piform">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="form-group">
+                                            <label for="myDropdown">Choose Title:</label>
+                                            <select id="nameTitle" name="name_title" class="form-control">
+                                                <option value="Mr.">Mr.</option>
+                                                <option value="Mrs.">Mrs.</option>
+                                                <option value="Dr">Dr</option>
+                                                <option value="Prof">Prof</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="form-group">
+                                            <label for="name">Name</label>
+                                            {% render_field pi_form.name class="form-control pi_name" placeholder="Enter name" %}
+                                            <span id="id_pi_name-error" class="institute_type-message"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="form-group">
+                                            <label for="name">Date of Birth</label>
+                                            {% render_field pi_form.dob class="form-control" placeholder="Enter date of birth" %}
+                                            <span id="id_pi_dob-error" class="institute_type-message"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="form-group">
+                                            <label for="gender">Gender</label>
+                                            {{pi_form.gender |add_class:"form-control"}}
+                                            <span id="id_pi_gender-error" class="institute_type-message"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="form-group">
+                                            <label for="qualification">Qualification</label>
+                                            {% render_field pi_form.qualification class="form-control" placeholder="Enter Qualification"%}
+                                            <span id="id_pi_qualification-error" class="institute_type-message"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="form-group">
+                                            <label for="qualification">Designation</label>
+                                            {% render_field pi_form.designation class="form-control" placeholder="Enter Qualification" %}
+                                            <span id="id_pi_designation-error" class="institute_type-message"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="form-group">
+                                            <label for="area_expertise">Area expertise</label>
+                                            {% render_field pi_form.area_expertise class="form-control" placeholder="Enter Area expertise" %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="form-group">
+                                            <label for="institute">Institute</label>
+                                            <div class="d-flex center">
+                                                {{pi_form.institute |add_class:"form-control"}}
+            
+                                                <span class="mt-2" title="Add new institute" id="id_add_institute"
+                                                    data-bs-toggle="modal" data-bs-target="#instituteModal">
+                                                    <i class="fas fa-plus-circle success"></i>
+                                                </span>
+                                            </div>
+                                            <span id="id_pi_institute-error" class="institute_type-message"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="form-group">
+                                            <label for="contactno">Contact No</label>
+                                            {% render_field pi_form.contactno class="form-control" placeholder="Enter Contact No" %}
+                                            <span id="id_pi_contactno-error" class="institute_type-message"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="form-group">
+                                            <label for="Emailid">Email Id</label>
+                                            {% render_field pi_form.emailid class="form-control" placeholder="Enter Email Id" %}
+                                            <span id="id_pi_emailid-error" class="institute_type-message"></span>
+                                        </div>
+                                    </div>
+                                    <!-- autocomplete select state and district  -->
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="form-group">
+                                            <label for="stateid">State</label>
+                                            <select id="state_id" name="state_pi" class="form-control" disabled>
+                                                <option value="">Select State</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="form-group">
+                                            <label for="districtid">District</label>
+                                            <select id="district_id" name="district_pi" class="form-control" disabled>
+                                                <option value="">Select District</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-action">
+                                    <button type="submit" id="pi_btn_submit" class="btn btn-success">Submit</button>
+                                </div>
+                        </form>
+                                       
+                        </div>
+                        <div class="tab-pane fade p-3" id="tab2" role="tabpanel">
+                        <h4>Project Details</h4>
+                        <hr>
+                        <form method="post" id="id_projectdetail_form" enctype="multipart/form-data"> 
+                            {% csrf_token %}   
+                            <div class="row">
+                                <div class="col-md-6 col-lg-4">
+                                <div class="form-group">
+                                    <label for="projectid">Project ID</label>
+                                    {% render_field pro_form.projectid class="form-control" placeholder="Enter project ID" autocomplete="off" %}
+                                    <span id="projectid-error" class="error-message"></span>
+                                </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                <div class="form-group">
+                                    <label for="projectpi">Project PI Name</label>
+                                    {% render_field pro_form.projectpi class="form-control" placeholder="Select Project PI name" %}
+                                    <span id="projectpi-error" class="error-message"></span>
+                                </div>
+                                </div>    
+                                    
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label for="title">Project Title</label>
+                                        {% render_field pro_form.title class="form-control" placeholder="Enter project title" autocomplete="off" %}
+                                        <span id="title-error" class="error-message"></span>
+                                    </div>
+                                </div>        
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label for="filenumber">File Number</label>
+                                        {% render_field pro_form.filenumber class="form-control" placeholder="Enter project file number" autocomplete="off"  %}
+                                        <span id="filenumber-error" class="error-message"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label for="filenumber">e-Office Number</label>
+                                        {% render_field pro_form.eofficnumber class="form-control" placeholder="Enter project file number" autocomplete="off"  %}
+                                        <span id="filenumber-error" class="error-message"></span>
+                                    </div>
+                                </div>     
+                                
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label for="proposalfile">Proposal File Upload</label>
+                                        {% render_field pro_form.proposalfile class="form-control" accept=".pdf"%}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label for="approvalfile">Financial Approval Upload</label>
+                                        {% render_field pro_form.approvalfile class="form-control" accept=".pdf"%}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label for="startdate">Start Date </label>
+                                        {% render_field pro_form.start_date class="form-control" placeholder="Enter project start date" autocomplete="off" %}
+                                        <span id="startdate-error" class="error-message"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label for="enddate">End Date </label>
+                                        {% render_field pro_form.end_date class="form-control" placeholder="Enter project end date" autocomplete="off" %}
+                                        <span id="enddate-error" class="error-message"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label for="duration">Duration</label>
+                                        {% render_field pro_form.duration class="form-control" placeholder="Enter Duration in month" %}
+                                        <span id="duration-error" class="error-message"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label for="duration">PRC Date</label>
+                                        {% render_field pro_form.prc_date class="form-control" placeholder="Enter PRC Date" %}
+                                        <span id="prcdate-error" class="error-message"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label for="prcrecommend">PRC Recommendation </label>
+                                        {{pro_form.prcrecommend |add_class:"form-control"}}
+                                        <span id="prcrecommend-error" class="error-message"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4" id="id_div_prccomment">
+                                    <div class="form-group">
+                                        <label for="prccomment">PRC Comment </label>
+                                        {% render_field pro_form.prccomment class="form-control" placeholder="Enter PRC comment for rejection" autocomplete="off" %}
+                                        <span id="prccomment-error" class="error-message"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-action">
+                                <button type="submit" id="id_project_detail_btn" class="btn btn-success">Submit</button>
+                            </div>
+                        </form>
+                        </div>
+                        <div class="tab-pane fade p-3" id="tab3" role="tabpanel">
+                        <h4>Sension Budget Details</h4>
+                         <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                    <label for="projectpi">Project ID</label>
+                                        <select id="id_project_detail_filter" class="form-control" onchange="updateTitle()">
+                                                <option value="">Select Project ID</option>
+                                        </select>
+                                        <span id="projectpi-error" class="error-message"></span>
+                                        <span id="projectTitle" class=""></span> 
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="projectpi">Projects PI Name</label>
+                                        <select id="id_project_pi_select" class="form-control">
+                                            <option value="">Select PI Name</option>
+                                        </select>
+                                        <span id="projectpi-error" class="error-message"></span>
+                                    </div>
+                                </div>
+                         </div>   
+
+                         <div class="col-lg-12 table-responsive">
+                                <table id="main-table">
+                                    <thead class="bg-warning text-dark">
+                                        <tr>
+                                        <th class="th_plus">+</th>
+                                        <th class="th_width">Project Year</th>
+                                        <th class="th_width">Salary</th>
+                                        <th class="th_width">Contingencies</th>
+                                        <th class="th_width">Non contingencies</th>
+                                        <th class="th_width">Recurring</th>
+                                        <th class="th_width">Travel</th>
+                                        <th class="th_width">Overhead expens</th>
+                                        <th class="th_width">Total Amount</th>
+                                        <th class="th_width">Comment</th>
+                                        <th class="th_width"><button type="button" id="addnewrow" class="btn btn-success btn-sm" onclick="AddNewrow()">Add Row</button></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="Tbody"></tbody>
+                                </table>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>         
+</div>
+
+<!-- <div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">PI Information</div>
+            </div>
+            <div class="card-body">
+                <form method="post" id="id_piform">
+                    {% csrf_token %}    
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="myDropdown">Choose Title:</label>
+                                <select id="nameTitle" name="name_title" class="form-control">
+                                <option value="Mr.">Mr.</option>
+                                <option value="Mrs.">Mrs.</option>
+                                <option value="Dr">Dr</option>
+                                <option value="Prof">Prof</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                {% render_field pi_form.name class="form-control pi_name" placeholder="Enter name" %}
+                                <span id="id_pi_name-error" class="institute_type-message"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="name">Date of Birth</label>
+                                {% render_field pi_form.dob class="form-control" placeholder="Enter date of birth" %}
+                                <span id="id_pi_dob-error" class="institute_type-message"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                {{pi_form.gender |add_class:"form-control"}}
+                                <span id="id_pi_gender-error" class="institute_type-message"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="qualification">Qualification</label>
+                                {% render_field pi_form.qualification class="form-control" placeholder="Enter Qualification" %}
+                                <span id="id_pi_qualification-error" class="institute_type-message"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="qualification">Designation</label>
+                                {% render_field pi_form.designation class="form-control" placeholder="Enter Qualification" %}
+                                <span id="id_pi_designation-error" class="institute_type-message"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="area_expertise">Area expertise</label>
+                                {% render_field pi_form.area_expertise class="form-control" placeholder="Enter Area expertise" %}
+                            </div>
+                        </div>    
+                        <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <label for="institute">Institute</label>
+                            <div class="d-flex center">
+                            {{pi_form.institute |add_class:"form-control"}}
+                           
+                            <span class="mt-2" title="Add new institute" id="id_add_institute" data-bs-toggle="modal" data-bs-target="#instituteModal">
+                                <i class="fas fa-plus-circle success"></i>
+                            </span>
+                            </div>
+                             <span id="id_pi_institute-error" class="institute_type-message"></span>
+                        </div>
+                        </div>    
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="contactno">Contact No</label>
+                                {% render_field pi_form.contactno class="form-control" placeholder="Enter Contact No" %}
+                                <span id="id_pi_contactno-error" class="institute_type-message"></span>
+                            </div>
+                        </div>    
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="Emailid">Email Id</label>
+                                {% render_field pi_form.emailid class="form-control" placeholder="Enter Email Id" %}
+                                <span id="id_pi_emailid-error" class="institute_type-message"></span>
+                            </div>
+                        </div>        
+                        
+                         <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="stateid">State</label>
+                                <select id="state_id" name="state_pi" class="form-control" disabled>
+                                    <option value="">Select State</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="districtid">District</label>
+                                <select id="district_id" name="district_pi" class="form-control" disabled>
+                                    <option value="">Select District</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                    <button type="submit" id="pi_btn_submit" class="btn btn-success">Submit</button>
+                    </div>
+                </form>
+            </div>    
+        </div>
+    </div>
+</div> -->
+
+<!-- <div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Project Information</div>
+            </div>
+            <div class="card-body">
+                <form method="post" id="id_projectdetail_form" enctype="multipart/form-data"> 
+                    {% csrf_token %}   
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <label for="projectid">Project ID</label>
+                            {% render_field pro_form.projectid class="form-control" placeholder="Enter project ID" autocomplete="off" %}
+                            <span id="projectid-error" class="error-message"></span>
+                        </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <label for="projectpi">Project PI Name</label>
+                            {% render_field pro_form.projectpi class="form-control" placeholder="Select Project PI name" %}
+                            <span id="projectpi-error" class="error-message"></span>
+                        </div>
+                        </div>    
+                            
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="title">Project Title</label>
+                                {% render_field pro_form.title class="form-control" placeholder="Enter project title" autocomplete="off" %}
+                                <span id="title-error" class="error-message"></span>
+                            </div>
+                        </div>        
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="filenumber">File Number</label>
+                                {% render_field pro_form.filenumber class="form-control" placeholder="Enter project file number" autocomplete="off"  %}
+                                <span id="filenumber-error" class="error-message"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="filenumber">e-Office Number</label>
+                                {% render_field pro_form.eofficnumber class="form-control" placeholder="Enter project file number" autocomplete="off"  %}
+                                <span id="filenumber-error" class="error-message"></span>
+                            </div>
+                        </div>     
+                         
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="proposalfile">Proposal File Upload</label>
+                                {% render_field pro_form.proposalfile class="form-control" accept=".pdf"%}
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="approvalfile">Financial Approval Upload</label>
+                                {% render_field pro_form.approvalfile class="form-control" accept=".pdf"%}
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="startdate">Start Date </label>
+                                {% render_field pro_form.start_date class="form-control" placeholder="Enter project start date" autocomplete="off" %}
+                                 <span id="startdate-error" class="error-message"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="enddate">End Date </label>
+                                {% render_field pro_form.end_date class="form-control" placeholder="Enter project end date" autocomplete="off" %}
+                                <span id="enddate-error" class="error-message"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="duration">Duration</label>
+                                {% render_field pro_form.duration class="form-control" placeholder="Enter Duration in month" %}
+                                 <span id="duration-error" class="error-message"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="duration">PRC Date</label>
+                                {% render_field pro_form.prc_date class="form-control" placeholder="Enter PRC Date" %}
+                                 <span id="prcdate-error" class="error-message"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="prcrecommend">PRC Recommendation </label>
+                                {{pro_form.prcrecommend |add_class:"form-control"}}
+                                <span id="prcrecommend-error" class="error-message"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4" id="id_div_prccomment">
+                            <div class="form-group">
+                                <label for="prccomment">PRC Comment </label>
+                                {% render_field pro_form.prccomment class="form-control" placeholder="Enter PRC comment for rejection" autocomplete="off" %}
+                                <span id="prccomment-error" class="error-message"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 hidden" id="id_div_financial_table">
+                            <div class="col-12">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button  id="id_showcolumn" class="btn btn-sm btn-secondary justify-content-end">Show Next Column</button>
+                                </div>
+                                <table id="myTable">
+                                    <thead>
+                                    <tr>
+                                        <th>Heads</th>
+                                        <th>1st</th>
+                                        <th class="hidden">2nd</th>
+                                        <th class="hidden">3rd</th>
+                                        <th class="hidden">4th</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>Salary</td>
+                                        <td>2000</td>
+                                        <td class="hidden">10000</td>
+                                        <td class="hidden">4000</td>
+                                        <td class="hidden">1000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Contingencies</td>
+                                        <td>20000</td>
+                                        <td class="hidden">40000</td>
+                                        <td class="hidden">4000</td>
+                                        <td class="hidden">1000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Non contingencies</td>
+                                        <td>20000</td>
+                                        <td class="hidden">40000</td>
+                                        <td class="hidden">4000</td>
+                                        <td class="hidden">1000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Recurring</td>
+                                        <td>20000</td>
+                                        <td class="hidden">40000</td>
+                                        <td class="hidden">4000</td>
+                                        <td class="hidden">1000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Travel</td>
+                                        <td>20000</td>
+                                        <td class="hidden">40000</td>
+                                        <td class="hidden">4000</td>
+                                        <td class="hidden">1000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Overhead expens</td>
+                                        <td>20000</td>
+                                        <td class="hidden">40000</td>
+                                        <td class="hidden">4000</td>
+                                        <td class="hidden">1000</td>
+                                    </tr>
+                                    
+                                    </tbody>
+                                    
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="submit" id="id_project_detail_btn" class="btn btn-success">Submit</button>
+                    </div>
+                </form>
+            </div>    
+            
+        </div>
+    </div>
+</div> -->
+
+
+<!-- <div class="row" style="display: none;">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Financial Details</div>
+            </div>
+            <div class="card-body">
+                <form method="post">    
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="Projectpi">Project PI Name</label>
+                                {{fin_form.projectpi |add_class:"form-control"}}
+                            </div>
+                        </div>    
+                        <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <label for="projectdetail">Project Title</label>
+                            {{fin_form.projectdetail |add_class:"form-control"}}
+                        </div>
+                        </div>    
+                        <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <label for="year">Year</label>
+                            {{fin_form.year |add_class:"form-control"}}
+                        </div>
+                        </div>    
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="salary">Salary</label>
+                                {{fin_form.salary |add_class:"form-control"}}
+                            </div>
+                        </div>        
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="contingencies">Contingencies</label>
+                                {{fin_form.contingencies |add_class:"form-control"}}
+                            </div>
+                        </div>    
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="noncontingencies">Non contingencies</label>
+                                {{fin_form.non_contingencies |add_class:"form-control"}}
+                            </div>
+                        </div>    
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="recurring">Recurring</label>
+                                {{fin_form.recurring |add_class:"form-control"}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="travel">Travel</label>
+                                {{fin_form.travel |add_class:"form-control"}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="overheadexpens">Overhead expens</label>
+                                {{fin_form.overhead_expens |add_class:"form-control"}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="total">Total</label>
+                                {{fin_form.total |add_class:"form-control"}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label for="fileupload">File upload</label>
+                                {{fin_form.fileupload |add_class:"form-control"}}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>    
+            <div class="card-action">
+            <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Budget Session</div>
+            </div>
+            <div class="card-body">
+                <!-- <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                           <label for="projectpi">Project ID</label>
+                              <select id="id_project_detail_filter" class="form-control" onchange="updateTitle()">
+                                    <option value="">Select Project ID</option>
+                              </select>
+                            <span id="projectpi-error" class="error-message"></span>
+                            <span id="projectTitle" class=""></span> 
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="projectpi">Projects PI Name</label>
+                            <select id="id_project_pi_select" class="form-control">
+                                <option value="">Select PI Name</option>
+                            </select>
+                            <span id="projectpi-error" class="error-message"></span>
+                        </div>
+                    </div>
+                </div> -->
+                <div class="row">
+                    <div class="col-lg-12 table-responsive" style="display: none;">
+                        <table class="table table-bordered" id="id_financial_tbl">
+                                    <thead class="">
+                                    <tr>
+                                        <th scope="col"  style="padding: 5px !important;">#</th>
+                                        <th scope="col" style="padding: 5px !important;">Project Year</th>
+                                        <th scope="col" class="" style="padding: 5px !important;">Salary</th>
+                                        <th scope="col" class="" style="padding: 5px !important;">Contingencies</th>
+                                        <th scope="col" class="" style="padding: 5px !important;">Non contingencies</th>
+                                        <th scope="col" class="" style="padding: 5px !important;">Recurring</th>
+                                        <th scope="col" class="" style="padding: 5px !important;">Travel</th>
+                                        <th scope="col" class="" style="padding: 5px !important;">Overhead expens</th>
+                                        <th scope="col" class="" style="padding: 5px !important;">PDF</th>
+                                        <th scope="col" class="" style="padding: 5px !important;">Amount</th>
+                                        <th scope="col" class="NoPrint">                         
+                                            <button type="button" id="add_row_btn" class="btn btn-sm btn-success" onclick="BtnAdd()">+</button>
+                                        </th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody id="TBody">
+                                    <tr id="TRow" class="d-none">
+                                        <th scope="row">1</th>
+                                        <!-- <td style="padding: 0px !important;"><span class="d-flex"><input type="radio" name="release"><input type="text" name="year_row" class="form-control input_data_name setdata_year" readonly></span></td> -->
+                                        <td style="padding: 0px !important;"><input type="text" name="year_row" class="form-control input_data_name setdata_year" readonly></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control input_data setdata_salary"  name="salary_row"  onchange="Calc(this);" style="padding: 10px !important;"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data setdata_contingencies" name="contingencies_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data setdata_noncontingencies" name="noncontingencies_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data setdata_recurring" name="recurring_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data setdata_travel" name="travel_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data setdata_overhead" name="overhead_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="file" class="form-control text-end input_data setdata_file" id="pdfupload" name="file" multiple></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end setdata_total" name="amt" value="0" disabled=""></td>
+                                        <td class="NoPrint"><button type="button" id=`${this}` class="btn btn-sm btn-danger" onclick="BtnDel(this)">X</button></td>
+                                    </tr>
+                                    </tbody>
+                                    
+                                </table>
+
+                                <div class="row">
+                                    <div class="col-2">
+                                    
+                                        <!-- <button type="button" class="btn btn-primary" onclick="GetPrint()">Print</button> -->
+                                         <div class="input-group mb-3">
+                                            <input type="submit" id="btn_financial_save" class="btn btn-success" value="Save">
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <input type="submit" id="btn_release" class="btn btn-success mx-auto" value="Release">
+                                    </div>
+                                    <div class="col-2">
+                                        <input type="submit" id="btn_uti" class="btn btn-success mx-auto" value="UTR Add">
+                                    </div>
+                                    
+                                    <div class="col-6">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text" >Total</span>
+                                            <input type="number" class="form-control text-end" id="FTotal" name="FTotal" disabled="">
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- <div class="col-lg-12 table-responsive">
+                        <table id="main-table">
+                            <thead class="bg-warning text-dark">
+                                <tr>
+                                <th class="th_plus">+</th>
+                                <th class="th_width">Project Year</th>
+                                <th class="th_width">Salary</th>
+                                <th class="th_width">Contingencies</th>
+                                <th class="th_width">Non contingencies</th>
+                                <th class="th_width">Recurring</th>
+                                <th class="th_width">Travel</th>
+                                <th class="th_width">Overhead expens</th>
+                                <th class="th_width">Total Amount</th>
+                                <th class="th_width">Comment</th>
+                                <th class="th_width"><button type="button" id="addnewrow" class="btn btn-success btn-sm" onclick="AddNewrow()">Add Row</button></th>
+                                </tr>
+                            </thead>
+                            <tbody id="Tbody"></tbody>
+                        </table>
+                    </div> -->
+                </div>
+            </div>    
+        </div>
+    </div>
+</div>
+<!-- Modal for add institute -->
+    <div class="modal fade" id="instituteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="post" id="id_institutedetail_form">
+                {% csrf_token %}   
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Institute</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            {% render_field institute_form.name class="form-control institute_name" placeholder="Enter name" %}
+                            <span id="name-error" class="name-message"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="sortcode">Sortcode</label>
+                                    {% render_field institute_form.sortcode class="form-control institute_sortcode" placeholder="Enter sortcode" %}
+                                    <span id="sortcode-error" class="sortcode-message"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="institute_type">Institute Type</label>
+                                    {% render_field institute_form.institute_type class="form-control institute_type" placeholder="Enter Institute Type" %}
+                                    <span id="institute_type-error" class="institute_type-message"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="form-group">
+                            <label for="contactno">Contact No</label>
+                            {% render_field institute_form.contactno class="form-control institute_contact" placeholder="Enter Mobile/phone number" %}
+                            <span id="contactno-error" class="contactno-message"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="state">State</label>
+                                    {% render_field institute_form.state class="form-control state_change" placeholder="Select State" %}
+                                    <span id="state-error" class="state-message"></span>
+                                </div>
+                            </div>
+                           <div class="col-lg-6">     
+                                <div class="form-group">
+                                    <label for="district">District</label>
+                                    {% render_field institute_form.district class="form-control district_change" placeholder="Select district" %}
+                                    <span id="district-error" class="district-message"></span>
+                                </div>
+                            </div>
+                        </div>        
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            {% render_field institute_form.address class="form-control institute_address" placeholder="Enter complete address" %}
+                            <span id="address-error" class="district-message"></span>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+
+
+<!-- nested table design html start -->
+
+    
+   
+<!-- <table id="main-table">
+  <thead>
+    <tr>
+      <th>+</th>
+      <th>Project Year</th>
+      <th>Salary</th>
+      <th>Contingencies</th>
+	  <th>Non contingencies</th>
+	  <th>Recurring</th>
+	  <th>Travel</th>
+	  <th>Overhead expens</th>
+	  <th>PDF</th>
+	  <th>Total Amount</th>
+      <th>Comment</th>
+	  <th><button type="button" id="addnewrow" onclick="AddNewrow()">Add Row</button></th>
+    </tr>
+  </thead>
+  <tbody id="Tbody"></tbody>
+</table> -->
+
+
+<!-- nested table design html end -->
+
+
+
+
+
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+
+<!-- bootstrab tab script -->
+
+<script>
+  $(document).ready(function () {
+    $('#form1').on('submit', function (e) {
+      e.preventDefault(); // Prevent form submission
+      // Switch to next tab
+      var nextTab = new bootstrap.Tab($('#tab2-tab'));
+      nextTab.show();
+    });
+  });
+</script>
+
+<!-- end bootstrab tab script -->
+
+
+<!-- new table design row expandable script -->
+
+<script>
+
+    // function fetchProjectID(){
+    //     const url ="{% url 'filter_projectdetail' %}"
+    //     fetch(url)
+    //         .then(response => {
+    //             // Check if the request was successful (e.g., status code 200)
+    //             if (!response.ok) {
+    //                 throw new Error(`HTTP error! status: ${response.status}`);
+    //             }
+    //             return response.json(); // Parse the response as JSON
+    //         })
+    //         .then(data => {
+    //             console.log(data); 
+    //             console.log('project details',data); 
+    //             // Process the received data
+    //             // Update your HTML or perform other actions with the data
+    //             return data;
+    //         })
+    //         .catch(error => {
+    //             console.error('Error fetching data:', error);
+    //         });
+    // }
+
+    //  var projectDetailList = fetchProjectID()
+
+    //  console.log('projectDetailList',projectDetailList)
+
+var projectData =null
+var receivedData = null;
+async function fetchData() {
+      try {
+        const url ="{% url 'filter_projectdetail' %}"
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json(); // Await the parsing of the JSON data
+        // console.log(data);
+        projectData = data
+        return data; // Return the parsed data
+      } catch (error) {
+        console.error('Fetch error:', error);
+        // You might want to re-throw the error or return a default value here
+      }
+    }
+
+    // Call the async function
+    fetchData().then(result => {
+      if (result) {
+        // console.log('Data fetched:', result);
+        $("#id_project_detail_filter").html('<option value="">Select Project</option>');
+        $.each(result, function (key, value) {
+            $("#id_project_detail_filter").append('<option value="' + value.projectid + '">' + value.projectid + '</option>');
+        });
+        $("#id_city").html('<option value="">Select City</option>');
+
+      }
+    });
+
+    
+    function updateTitle() {
+    //   debugger 
+      const selectBox = document.getElementById('id_project_detail_filter'); 
+      const selectedId = selectBox.value
+      const matchedProjects = projectData.filter(item => item.projectid === selectedId);
+
+      // Combine all matched titles (if multiple entries with same projectid)
+      const titles = matchedProjects.map(item => item.title).join(', ');
+      document.getElementById('projectTitle').textContent = titles || 'None found';
+        const data = {
+            projectid: selectedId,
+        };
+
+        const params = new URLSearchParams(data);
+        const url = `/filter_pi_project/?${params.toString()}`;
+
+        // const url ="{% url 'filter_pi_project' %}"
+        fetch(url)
+            .then(response => {
+                // Check if the request was successful (e.g., status code 200)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json(); // Parse the response as JSON 
+            })
+            .then(data => {
+                // console.log(data); 
+                // console.log('project PI INFORMATION',data); 
+                
+                $("#id_project_pi_select").html('<option value="">Select PI Name</option>');
+                $.each(data, function (key, value) {
+                    console.log('key',key)
+                    console.log('value',value)
+                    $("#id_project_pi_select").append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+                
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    
+
+    }
+    
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+
+// select institute onchange function,on change to select state and district
+
+function getStatePI(inst_id){
+
+    $('#state_id').html('<option value="">Loading...</option>');
+    $('#district_id').html('<option value="">Select District</option>');
+    
+    $.get('/ajax/get-states/', { institute_id: inst_id }, function(data) {
+      let options = '';
+      data.forEach(function(state) {
+        options += `<option value="${state.id}">${state.name}</option>`;
+      });
+      $('#state_id').html(options);
+    });
+
+}
+function getDistrictPI(inst_id){
+    $('#district_id').html('<option value="">Loading...</option>');
+    
+    $.get('/ajax/get-districts/', { institute_id: inst_id }, function(data) {
+      let options = '';
+      data.forEach(function(district) {
+        options += `<option value="${district.id}">${district.name}</option>`;
+      });
+      $('#district_id').html(options);
+    });    
+}
+$('#id_institute').on('change',function(){
+
+    var instituteId = $('#id_institute').val()
+    getStatePI(instituteId)
+    getDistrictPI(instituteId)
+    
+});
+
+
+
+    
+  // Sample nested JSON data
+  //const jsonData=[]
+  const jsonData1 = [
+    {
+      year: "1st",
+      Salary: 3000,
+      contingencies: 3000,
+	  noncontingencies: 3000,
+	  recurring: 3000,
+	  travel: 3000,
+	  overhead_expens: 3000,
+	  pdf: "PDF",
+	  total_amount: 3000,
+      projects: [
+        {
+          year: "1st-release-1",
+		  Salary: 3000,
+		  contingencies: 3000,
+		  noncontingencies: 3000,
+		  recurring: 3000,
+		  travel: 3000,
+		  overhead_expens: 3000,
+		  pdf: "PDF",
+		  total_amount: 3000,
+          tasks: [
+            { task: "Design", status: "Done" },
+            { task: "Development", status: "In Progress" }
+          ]
+        },
+        {
+          year: "1st-release-2",
+		  Salary: 3000,
+		  contingencies: 3000,
+		  noncontingencies: 3000,
+		  recurring: 3000,
+		  travel: 3000,
+		  overhead_expens: 3000,
+		  pdf: "PDF",
+		  total_amount: 3000,
+          tasks: [
+            { task: "Research", status: "Pending" }
+          ]
+        }
+      ]
+    },
+    {
+	  year: "2nd",
+      Salary: 3000,
+      contingencies: 3000,
+	  noncontingencies: 3000,
+	  recurring: 3000,
+	  travel: 3000,
+	  overhead_expens: 3000,
+	  pdf: "PDF",
+	  total_amount: 3000,
+      projects: [
+        {
+          year: "2nd-release-1",
+		  Salary: 3000,
+		  contingencies: 3000,
+		  noncontingencies: 3000,
+		  recurring: 3000,
+		  travel: 3000,
+		  overhead_expens: 3000,
+		  pdf: "PDF",
+		  total_amount: 3000,
+          tasks: [
+            { task: "Sketching", status: "Done" },
+            { task: "Prototype", status: "Done" }
+          ]
+        }
+      ]
+    },
+	{
+	  year: "3rd",
+      Salary: 3000,
+      contingencies: 3000,
+	  noncontingencies: 3000,
+	  recurring: 3000,
+	  travel: 3000,
+	  overhead_expens: 3000,
+	  pdf: "PDF",
+	  total_amount: 3000,
+      projects: [{
+          year: "3rd-release-1",
+		  Salary: 3000,
+		  contingencies: 3000,
+		  noncontingencies: 3000,
+		  recurring: 3000,
+		  travel: 3000,
+		  overhead_expens: 3000,
+		  pdf: "PDF",
+		  total_amount: 3000,
+          tasks: [
+            { task: "Sketching", status: "Done" },
+            { task: "Prototype", status: "Done" }
+          ]
+        }]
+    }
+  ];
+  
+  const jsonData2 = [{'id': 19, 'year': '1st', 'salary': 10000.0, 'contingencies': 10000.0, 'non_contingencies': 10000.0, 'recurring': 10000.0, 'travel': 10000.0, 'overhead_expens': 10000.0, 'file': 'pdf', 'total': 60000.0, 'release': [{'id': 4, 'year': '1st-release-1', 'salary': 8000.0, 'contingencies': 8000.0, 'non_contingencies': 8000.0, 'recurring': 8000.0, 'travel': 8000.0, 'overhead_expens': 8000.0, 'file': 'pdf', 'total': 48000.0}, {'id': 5, 'year': '1st-release-2', 'salary': 2000.0, 'contingencies': 2000.0, 'non_contingencies': 2000.0, 'recurring': 2000.0, 'travel': 2000.0, 'overhead_expens': 2000.0, 'file': 'pdf', 'total': 12000.0}, {'id': 1, 'year': '1st-uc-1', 'salary': 9000.0, 'contingencies': 9000.0, 'non_contingencies': 9000.0, 'recurring': 9000.0, 'travel': 9000.0, 'overhead_expens': 9000.0, 'file': 'pdf', 'total': 54000.0, 'flag': 'uc'}]}, {'id': 20, 'year': '2rd', 'salary': 10000.0, 'contingencies': 10000.0, 'non_contingencies': 10000.0, 'recurring': 10000.0, 'travel': 10000.0, 'overhead_expens': 10000.0, 'file': 'pdf', 'total': 60000.0, 'release': [{'id': 6, 'year': '2nd-release-1', 'salary': 9000.0, 'contingencies': 9000.0, 'non_contingencies': 9000.0, 'recurring': 9000.0, 'travel': 9000.0, 'overhead_expens': 9000.0, 'file': 'pdf', 'total': 54000.0}, {'id': 7, 'year': '2nd-release-2', 'salary': 1000.0, 'contingencies': 1000.0, 'non_contingencies': 1000.0, 'recurring': 1000.0, 'travel': 1000.0, 'overhead_expens': 1000.0, 'file': 'pdf', 'total': 6000.0}, {'id': 2, 'year': '2nd-uc-1', 'salary': 10000.0, 'contingencies': 10000.0, 'non_contingencies': 10000.0, 'recurring': 10000.0, 'travel': 10000.0, 'overhead_expens': 10000.0, 'file': 'pdf', 'total': 60000.0, 'flag': 'uc'}]}, {'id': 21, 'year': '3rd', 'salary': 10000.0, 'contingencies': 10000.0, 'non_contingencies': 10000.0, 'recurring': 10000.0, 'travel': 10000.0, 'overhead_expens': 10000.0, 'file': 'pdf', 'total': 60000.0, 'release': [{'id': 8, 'year': '3th-release-1', 'salary': 9000.0, 'contingencies': 9000.0, 'non_contingencies': 9000.0, 'recurring': 9000.0, 'travel': 9000.0, 'overhead_expens': 9000.0, 'file': 'pdf', 'total': 54000.0}]}]
+  
+//   $(document).ready(function() {
+    function processData1() {
+        $('#main-table tbody').empty(); 
+    const jsonData = receivedData
+    const $tbody = $('#main-table tbody');
+
+    // Render main table rows
+    //   <td class="outer-file">${person.file}</td>
+    jsonData.forEach((person, index) => {
+      const mainRow = `
+        <tr id="Trow-${index}" class="main-row" data-index="${index}" data-set-id="${person.id}">
+          <td class="expand-icon"><i class="fa fa-plus"></i></td>
+          <td class="outer-year">${person.year}</td>
+          <td class="outer-salary">${person.salary}</td>
+          <td class="outer-contingencies">${person.contingencies}</td>
+		  <td class="outer-non_contingencies">${person.non_contingencies}</td>
+          <td class="outer-recurring">${person.recurring}</td>
+		  <td class="outer-travel">${person.travel}</td>
+          <td class="outer-overhead_expens">${person.overhead_expens}</td>
+		  <td class="outer-total">${person.total}</td>
+          <td class="outer-comment">${person.comment}</td>
+          <td class="outer-total"></td>
+        </tr>
+        <tr class="details-row" id="details-${index}" data-set-id="${person.id}">
+          <td colspan="12">
+            ${renderProjectsTable(person.release, index)}
+          </td>
+        </tr>
+      `;
+	  
+      $tbody.append(mainRow);
+    });
+	
+	const columnSums = {};
+
+		jsonData.forEach(row => {
+		  Object.keys(row).forEach(key => {
+			if (typeof row[key] === 'number' && key !== 'id') {
+			  columnSums[key] = (columnSums[key] || 0) + row[key];
+			}
+		  });
+		});
+		// console.log("Column Sums:", columnSums);
+        //   <td>pdf</td>
+		if (JSON.stringify(columnSums) != '{}') {
+			const mainRowTotal = `
+			<tr id="mainTotal" style="background-color:#bd8146;color:white;">
+			  <td class="expand-icon"></td>
+			  <td><b>Total</b></td>
+			  <td><b>${columnSums.salary}</b></td>
+			  <td><b>${columnSums.contingencies}</b></td>
+			  <td><b>${columnSums.non_contingencies}</b></td>
+			  <td><b>${columnSums.recurring}</b></td>
+			  <td><b>${columnSums.travel}</b></td>
+			  <td><b>${columnSums.overhead_expens}</b></td>
+			  <td><b>${columnSums.total}</b></td>
+              <td></td>
+              <td></td>
+			</tr>
+		  `;
+		  $tbody.append(mainRowTotal);
+		 }else{
+		 const mainRowTotal = `
+			<tr id="mainTotal">
+			  <td class="expand-icon"></td>
+			  <td>Total</td>
+			  <td>0</td>
+			  <td>0</td>
+			  <td>0</td>
+			  <td>0</td>
+			  <td>0</td>
+			  <td>0</td>
+			  <td>0</td>
+              <td></td>
+              <td></td>
+              <td></td>
+			</tr>
+		  `;
+		  $tbody.append(mainRowTotal);
+		 }
+// Toggle main row details  <td>pdf</td>
+    $(document).on('click', '.main-row .expand-icon', function() {
+      const $icon = $(this);
+      const $mainRow = $icon.closest('tr');
+      const index = $mainRow.data('index');
+      const $detailsRow = $(`#details-${index}`);
+
+      if ($detailsRow.is(':visible')) {
+        $detailsRow.hide();
+        $icon.text('+');
+        $icon.css("font-size","30px")
+      } else {
+        $detailsRow.show();
+        $icon.text('-');
+        $icon.css("font-size","30px")
+      }
+    });
+
+    // Toggle nested project tasks rows
+    $(document).on('click', '.project-expand-icon', function() {
+      const $icon = $(this);
+      const projectIndex = $icon.data('project-index');
+      const personIndex = $icon.data('person-index');
+      const $tasksRow = $(`#tasks-${personIndex}-${projectIndex}`);
+
+      if ($tasksRow.is(':visible')) {
+        $tasksRow.hide();
+        $icon.text('[+]');
+      } else {
+        $tasksRow.show();
+        $icon.text('[-]');
+      }
+    });
+
+    // Helper to render projects table with expandable task rows
+    function renderProjectsTable(projects, personIndex) {
+	
+      if (!projects || projects.length === 0) return `<tr class="project-row new_row">
+		<td><button class="deleteRow" onclick="delBtn(this)" style="color:red;">X</button></td>
+        <td><input type="text" name="name[]" placeholder="Enter name"></td>
+		<td><input type="text" name="name[]" placeholder="Enter name"></td>
+		<td><input type="text" name="name[]" placeholder="Enter name"></td>
+		<td><input type="text" name="name[]" placeholder="Enter name"></td>
+		<td><input type="text" name="name[]" placeholder="Enter name"></td>
+		<td><input type="text" name="name[]" placeholder="Enter name"></td>
+		<td><input type="text" name="name[]" placeholder="Enter name"></td>
+		<td><input type="file" name="file" placeholder="Enter name" accept=".pdf"></td>
+		<td><input type="text" name="name[]" placeholder="Enter name"></td>
+        <td><div style="display: flex;"><button>Release</button><button style="margin-left:5px">UC</button></div></td>
+      </tr>`;
+
+      let html = `
+      
+      <table class="nested-table table table-bordered table-head-bg-info table-bordered-bd-info mt-4" id="nestedtable">
+	  <thead>
+        <tr>
+      <th class="th_plus"></th>
+      <th class="nested_th">Project Year</th>
+      <th class="nested_th">Salary</th>
+      <th class="nested_th">Contingencies</th>
+	  <th class="nested_th">Non contingencies</th>
+	  <th class="nested_th">Recurring</th>
+	  <th class="nested_th">Travel</th>
+	  <th class="nested_th">Overhead expens</th>
+	  <th class="nested_th">PDF</th>
+	  <th class="nested_th">Total Amount</th>
+      <th class="nested_th">Comment</th>
+	  <th class="nested_th">Action</th>
+     
+      </tr>
+	  </thead>
+        <tbody>
+		
+      `;
+		
+      projects.forEach((project, projIndex) => {
+	//   console.log('project.year',project.year)
+	//   console.log('project.Salary',project.Salary)
+        html += `
+          <tr id="Trow-${personIndex}${projIndex}" class="project-row" data-person-index="${personIndex}" data-project-index="${projIndex}" data-set-id="${project.id}">
+            
+          <td><input type="checkbox" name="editbox" class="edit-toggle"></td>    
+		  <td class="release-year">${project.year}</td>
+          <td class="row-${personIndex}"><input type="number" id="salary-${personIndex}${projIndex}" class="release-salary edit-input text-center" name="salary" value="${project.salary}" onchange="nestedRowCalc(this);" disabled></td>
+          <td class="row-${personIndex}"><input type="number" id="contingencies-${personIndex}${projIndex}" class="release-contingencies edit-input text-center" name="contingencies" value="${project.contingencies}" onchange="nestedRowCalc(this);" disabled></td>
+		  <td class="row-${personIndex}"><input type="number" id="non_contingencies-${personIndex}${projIndex}" class="release-non_contingencies edit-input text-center" name="non_contingencies" value="${project.non_contingencies}" onchange="nestedRowCalc(this);" disabled></td>
+          <td class="row-${personIndex}"><input type="number" id="recurring-${personIndex}${projIndex}" class="release-recurring edit-input text-center" name="recurring" value="${project.recurring}" onchange="nestedRowCalc(this);" disabled></td>
+		  <td class="row-${personIndex}"><input type="number" id="travel-${personIndex}${projIndex}" class="release-travel edit-input text-center" name="travel" value="${project.travel}" onchange="nestedRowCalc(this);" disabled></td>
+          <td class="row-${personIndex}"><input type="number" id="overhead_expens-${personIndex}${projIndex}" class="release-overhead_expens edit-input text-center" name="overhead_expens" value="${project.overhead_expens}" onchange="nestedRowCalc(this);" disabled></td>
+		  <td class="row-${personIndex}"><input type="file" id="fileupload-${personIndex}${projIndex}" class="release-file edit-input" name="file"></td>
+    	  <td class="row-${personIndex}"><input type="number" id="total-${personIndex}${projIndex}" class="release-total text-center" name="total" value="${project.total}" onchange="nestedRowCalc(this);" disabled></td></td>
+		  <td class="row-${personIndex}"><input type="text" id="comment-${personIndex}${projIndex}" class="release-comment edit-input text-center" name="comment" value="${project.comment}" disabled></td>
+          <td class="d-flex"><button type="button" class="btn btn-success btn-xs" id="addRow" onclick="BtnAddInner('${personIndex}${projIndex}')"><i class="far fa-plus-square" style="font-size: 1rem;"></i></button> <button class="btn btn-warning btn-xs text-white mx-2"><i class="far fa-save" style="font-size: 1rem;"></i></button></td>
+          </tr>
+        `;
+		
+		
+      });
+		const projectSums = {};
+		projects.forEach(row => {
+            if(row['flag'] !== 'uc'){
+                Object.keys(row).forEach(key => {
+                    if (typeof row[key] === 'number' && key !== 'id') {
+                    projectSums[key] = (projectSums[key] || 0) + row[key];
+                    }
+                });
+            }    
+		});
+		console.log("project Column Sums:", projectSums);
+        const balanceSums = {};
+		projects.forEach(row => {
+			if(row['flag'] === 'uc'){
+			  Object.keys(row).forEach(key => {
+				if (typeof row[key] === 'number' && key !== 'id') {
+				  balanceSums[key] = (projectSums[key] || 0) - row[key];
+				}
+			  });
+			}
+		});
+		// console.log("project Balance Sums:", balanceSums);
+		html += `
+          <tr class="bg-info" style="background:#72c27e !important;color:white;font-weight:600;border:1px solid black;">
+            
+           <td></td> 
+		  <td class="text-success">Balance</td>
+          <td class="text-success">${balanceSums.salary||0}</td>
+          <td class="text-success">${balanceSums.contingencies||0}</td>
+		  <td class="text-success">${balanceSums.non_contingencies||0}</td>
+          <td class="text-success">${balanceSums.recurring||0}</td>
+		  <td class="text-success">${balanceSums.travel||0}</td>
+          <td class="text-success">${balanceSums.overhead_expens||0}</td>
+		  <td class="text-success"> </td>
+		  <td class="text-success">${balanceSums.total||0}</td>
+          <td></td>
+		  <td></td>
+          </tr>
+        `;
+		
+      html += `</tbody></table>`;
+
+      return html;
+    }
+$('.edit-toggle').on('change', function(){
+    const row = $(this).closest('tr');
+	var isChecked = $(this).prop('checked');
+    row.find('.edit-input').prop('disabled', !isChecked);
+  });
+}
+//   });
+  </script>
+  <script>
+let countInner = 0
+ function BtnAddInner(v){
+ debugger;
+	if (countInner == 0){
+    const newRow = `
+      <tr id="Trow-new" class="project-row new_row" data-set-id="new">
+		<td><button class="deleteRow bg-danger text-white" onclick="delBtn(this)" style="color:red;">X</button></td>
+        <td><input type="text" id="year-new" class="text-center" name="year" placeholder="Enter year"></td>
+		<td><input type="number" id="salary-new" class="release-salary text-center" name="salary" value="" onchange="nestedRowCalc(this);"></td>
+		<td><input type="number" id="contingencies-new" class="release-contingencies text-center" name="contingencies" placeholder="Enter contingencies" onchange="nestedRowCalc(this);"></td>
+		<td><input type="number" id="non_contingencies-new" class="release-non_contingencies" name="non_contingencies" placeholder="Enter non contingencies" onchange="nestedRowCalc(this);"></td>
+		<td><input type="number" id="recurring-new" class="release-recurring" name="recurring" placeholder="Enter recurring" onchange="nestedRowCalc(this);"></td>
+		<td><input type="number" id="travel-new" class="release-travel" name="travel" placeholder="Enter travel" onchange="nestedRowCalc(this);"></td>
+		<td><input type="number" id="overhead_expens-new" class="release-overhead_expens" name="overheadexpens" placeholder="Enter overheadexpens" onchange="nestedRowCalc(this);"></td>
+		<td><input type="file" id="uploadfile" class="release-file" name="file" placeholder="Enter name" accept=".pdf"></td>
+		<td><input type="number" id="total-new" name="total" class="release-total" placeholder="Enter name" disabled></td>
+        <td><input type="text" id="comment-new" name="comment" class="release-comment" placeholder="Enter comment"></td>
+        <td><div style="display: flex;"><button id="btn_releasesave" class="btn btn-secondary btn-sm" onclick="releaseFormSave(this)">Release</button><button onclick="ucFormSave(this)" class="btn btn-warning btn-sm" style="margin-left:5px">UC</button></div></td>
+      </tr>
+    `;
+	
+    $(`#nestedtable tbody #Trow-${v}`).after(newRow);
+	countInner = 1
+	}
+  };
+  
+   function delBtn(v) {
+    $(v).closest('tr').remove();
+  };
+
+
+</script>
+
+<script>
+
+// function updateSequence() {
+//     // reloadTable()
+//     $('#main-table tbody tr').each(function (index) {
+//         debugger
+//       var sequence = $(this).find('.seq').text(index + 1);
+//       console.log('sequence',sequence)
+//     });
+//     var getRowIndex_rowcount = $(`#main-table tbody tr`).length
+//     return getRowIndex_rowcount
+//   }
+
+let count_outer = 1
+ function AddNewrow() {
+    // var rownu = updateSequence()
+    // reloadTable()
+    var newrow = outerRowCount
+    console.log('outerRowCount',outerRowCount)
+    
+    // console.log('rownu',rownu)
+  debugger;
+  var yeararray = ["1st","2nd","3rd","4rd","5th"]
+  var getRowIndex = $(`#main-table tbody tr`).length - 1
+  var nextYear = yeararray[outerRowCount+1]   
+  let newRow = ''
+//   if (count_outer == 5){ $('#addnewrow').css('display','none')}
+// <td><input type="file" id="id_file" name="file" placeholder="Enter file" accept=".pdf"></td>
+    if (getRowIndex === -1 ){
+    newRow = `
+      <tr data-set-id="new" class="seq" id="newrow">
+		<td><button class="" onclick="delBtnOuter(this)" style="color:red;">X</button></td>
+        <td><input type="text" id="year" name="year" placeholder="Enter Year" value="1st" disabled></td>
+		<td><input type="number" id="salary" name="salary" placeholder="Enter salary" onchange="CalcTotal(this);"></td>
+		<td><input type="number" id="contingencies" name="contingencies" placeholder="Enter Contingencies" onchange="CalcTotal(this);"></td>
+		<td><input type="number" id="noncontingencies" name="noncontingencies" placeholder="Enter Noncontingencies" onchange="CalcTotal(this);"></td>
+		<td><input type="number" id="recurring"  name="recurring" placeholder="Enter Recurring" onchange="CalcTotal(this);"></td>
+		<td><input type="number" id="travel" name="travel" placeholder="Enter Travel" onchange="CalcTotal(this);"></td>
+		<td><input type="number" id="overheadexpens"  name="overheadexpens" placeholder="Enter Overhead expens" onchange="CalcTotal(this);"></td>
+		<td><input type="number" id="id_outertotal" name="total" disabled></td>
+        <td><input type="text" id="id_comment" placeholder="Enter Comment" value=""></td>
+        <td><button id="outerSave" onclick="newYearForm(this)">Save</td>
+      </tr>
+    `;
+    // $(`#main-table`).append(newRow1);
+    }else{
+        newRow = `
+      <tr data-set-id="new" class="seq">
+		<td><button class="" onclick="delBtnOuter(this)" style="color:red;">X</button></td>
+        <td><input type="text" id="year" name="year" placeholder="Enter Year" value="${nextYear}" disabled></td>
+		<td><input type="number" id="salary" name="salary" placeholder="Enter salary" onchange="CalcTotal(this);"></td>
+		<td><input type="number" id="contingencies" name="contingencies" placeholder="Enter Contingencies" onchange="CalcTotal(this);"></td>
+		<td><input type="number" id="noncontingencies" name="noncontingencies" placeholder="Enter Noncontingencies" onchange="CalcTotal(this);"></td>
+		<td><input type="number" id="recurring"  name="recurring" placeholder="Enter Recurring" onchange="CalcTotal(this);"></td>
+		<td><input type="number" id="travel" name="travel" placeholder="Enter Travel" onchange="CalcTotal(this);"></td>
+		<td><input type="number" id="overheadexpens"  name="overheadexpens" placeholder="Enter Overhead expens" onchange="CalcTotal(this);"></td>
+		<td><input type="number" id="id_outertotal" name="total" disabled></td>
+        <td><input type="text" id="id_comment" placeholder="Enter Comment" value=""></td>
+        <td><button id="outerSave" onclick="newYearForm(this)">Save</td>
+      </tr>
+    `;
+    } 
+     var cour_row = $('.main-row').length-1;
+	 console.log('cour_row',cour_row)
+	 if (cour_row <0){
+        // reloadTable()
+	//  $(`#mainTotal`).before(newRow);
+    $(`#mainTotal`).remove();
+    $(`#main-table`).append(newRow);
+	 }
+     else{
+        $(`#Trow-${cour_row}`).after(newRow);
+     }
+    outerRowCount +=1
+	count_outer += 1
+	}
+//   };
+
+  // Optional: Handle delete row
+  function delBtnOuter(d) {
+    $(d).closest('tr').remove();
+    reloadTable()
+  };
+  
+ 
+// $(document).ready(function(){
+//   $('.edit-toggle').on('change', function(){
+//     const row = $(this).closest('tr');
+// 	var isChecked = $(this).prop('checked');
+//     row.find('.edit-input').prop('disabled', !isChecked);
+//   });
+// });
+
+function CalcTotal(v)
+{
+debugger;
+	var index = $(v).parent().parent().index();
+    // var salary = $('#salary').val()
+	// var contingencies = $('#contingencies').val()
+	// var noncontingencies = $('#noncontingencies').val()
+	// var recurring = $('#recurring').val()
+	// var travel = $('#travel').val()
+	// var overhead = $('#overheadexpens').val()
+    // var amt = +(salary)+  +(contingencies)+  +(noncontingencies)+  +(recurring)+  +(travel)+  +(overhead)
+    // $('#id_outertotal').val(amt);
+	// console.log('amount',amt)
+
+    // var index = $(v).parent().parent().index();
+    
+    var year = document.getElementsByName("year")[index].value;
+    var salary = document.getElementsByName("salary")[index].value;
+    var contingencies = document.getElementsByName("contingencies")[index].value;
+    var noncontingencies = document.getElementsByName("noncontingencies")[index].value;
+    var recurring = document.getElementsByName("recurring")[index].value;
+    var travel = document.getElementsByName("travel")[index].value;
+    var overhead = document.getElementsByName("overheadexpens")[index].value;
+     
+    var amt = +(salary)+  +(contingencies)+  +(noncontingencies)+  +(recurring)+  +(travel)+  +(overhead)
+    document.getElementsByName("total")[index].value = amt;
+}
+
+function nestedRowCalc(v)
+{
+    debugger
+    var vcopy = v
+	var input_id = v.id.split('-')[1]	
+    if (input_id == null && input_id == undefined){input_id='new'}else{input_id=input_id}
+	
+    var index = $(v).parent().parent().index();
+    	
+    //var salary = document.getElementsById(`${v.id}`)[index].value;
+	var salary = $(`#salary-${input_id}`).val()
+	var contingencies = $(`#contingencies-${input_id}`).val()
+	var noncontingencies = $(`#non_contingencies-${input_id}`).val()
+	var recurring = $(`#recurring-${input_id}`).val()
+	var travel = $(`#travel-${input_id}`).val()
+	var overhead = $(`#overhead_expens-${input_id}`).val()
+    
+     
+    var amt = +(salary)+  +(contingencies)+  +(noncontingencies)+  +(recurring)+  +(travel)+  +(overhead)
+	$(`#total-${input_id}`).val(amt)
+    console.log('Total Amount:',amt)
+    // GetTotal();
+	addInputChangeListener(v)
+}
+
+function addInputChangeListener(vcopy) {
+debugger;
+	  var index = $(vcopy).parent().parent().index();
+	  var input_id = vcopy.id.split('-')[1]	
+      //const parentRow = $(this).closest('#Trow-0');
+      var oid = ''
+      if (input_id !== 'new'){
+        oid = vcopy.parentElement.className.split('-')[1]
+        }else{
+            oid = vcopy.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.id.split('-')[1]
+        }	
+    
+	  var rowId = `#Trow-${oid}`
+	  var outerSalary = $(rowId).find(".outer-salary").text();
+	  var outerContingencies = $(rowId).find(".outer-contingencies").text();
+	  var outerNonecontingencies = $(rowId).find(".outer-non_contingencies").text();
+	  var outerRecurring = $(rowId).find(".outer-recurring").text();
+	  var outerTravel = $(rowId).find(".outer-travel").text();
+	  var outerOverhead_expens = $(rowId).find(".outer-overhead_expens").text();
+	  
+	  var inputSalary = $(`#salary-${input_id}`).val()
+	  var inputContingencies = $(`#contingencies-${input_id}`).val()
+	  var inputNoncontingencies = $(`#non_contingencies-${input_id}`).val()
+	  var inputRecurring = $(`#recurring-${input_id}`).val()
+	  var inputTravel = $(`#travel-${input_id}`).val()
+	  var inputOverhead = $(`#overhead_expens-${input_id}`).val()
+	  
+      // Highlight the inputs if their values are greater than the outer table
+      if (Number(inputSalary) > Number(outerSalary)) {
+        //$(rowId).closest('tr').find(".release-salary").css("border", "2px solid red");
+		$(`#salary-${input_id}`).css("border", "2px solid red");
+      } else {
+        $(`#salary-${input_id}`).css("border", "");
+      }
+
+      if (Number(inputContingencies) > Number(outerContingencies)) {
+        $(`#contingencies-${input_id}`).css("border", "2px solid red");
+      } else {
+        $(`#contingencies-${input_id}`).css("border", "");
+      }
+	  
+	  if (Number(inputNoncontingencies) > Number(outerNonecontingencies)) {
+        $(`#non_contingencies-${input_id}`).css("border", "2px solid red");
+      } else {
+        $(`#non_contingencies-${input_id}`).css("border", "");
+      }
+	  if (Number(inputRecurring) > Number(outerRecurring)) {
+        $(`#recurring-${input_id}`).css("border", "2px solid red");
+      } else {
+        $(`#recurring-${input_id}`).css("border", "");
+      }
+	  if (Number(inputTravel) > Number(outerTravel)) {
+        $(`#travel-${input_id}`).css("border", "2px solid red");
+      } else {
+        $(`#travel-${input_id}`).css("border", "");
+      }
+	  if (Number(inputOverhead) > Number(outerOverhead_expens)) {
+        $(`#overhead_expens-${input_id}`).css("border", "2px solid red");
+      } else {
+        $(`#overhead_expens-${input_id}`).css("border", "");
+      }
+    //});
+  }
+
+function newYearForm(v){
+    debugger;
+    // alert("Add new year function calling")
+    // var index = $(v).parent().parent().index();
+    var id = v.parentElement.parentElement.dataset.setId
+    // var year = document.getElementsByName("year")[index].value;
+    // var salary = document.getElementsByName("salary")[index].value;
+    // var contingencies = document.getElementsByName("contingencies")[index].value;
+    // var noncontingencies = document.getElementsByName("noncontingencies")[index].value;
+    // var recurring = document.getElementsByName("recurring")[index].value;
+    // var travel = document.getElementsByName("travel")[index].value;
+    // var overheadexpens = document.getElementsByName("overheadexpens")[index].value;
+    // var file = document.getElementsByName("file")[index].value;
+    // var total = document.getElementsByName("total")[index].value;
+    // var comment = document.getElementsByName("comment")[index].value;
+    var formData = new FormData()
+    
+    var projectpi = $('#id_project_pi_select').val()
+    var projects = $('#id_project_detail_filter').val()
+    
+    if(projectpi !== "" && projects !==""){
+    var year = $('#year').val()
+    var salary = $('#salary').val()
+    var contingencies = $('#contingencies').val()
+    var noncontingencies = $('#noncontingencies').val()
+    var recurring = $('#recurring').val()
+    var travel = $('#travel').val()
+    var overheadexpens = $('#overheadexpens').val()
+    // var uploadfile = $('#id_file')[0].files[0]
+    var total = $('#id_outertotal').val()
+    var comment = $('#id_comment').val()
+    
+    formData.append('id',id);
+    formData.append('projectpi',projectpi);
+    formData.append('projects',projects);
+    formData.append('year',year);
+    formData.append('salary',salary);
+    formData.append('contingencies',contingencies);
+    formData.append('noncontingencies',noncontingencies);
+    formData.append('recurring',recurring);
+    formData.append('travel',travel);
+    formData.append('overheadexpens',overheadexpens);
+    // formData.append('uploadfile',uploadfile);
+    formData.append('total',total);
+    formData.append('comment',comment);
+    $.ajax({
+        url: "{% url 'financial_save' %}",      // Your Django URL for upload
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },  // CSRF token included
+        success: function(response) {
+            reloadTable()
+            alert('Upload successful');
+
+            console.log(response);
+            // location.reload();
+        },
+        error: function(xhr, status, error) {
+            alert('Upload failed');
+            console.error(error);
+        }
+        });
+    }else{swal("First select Project PI and Project",{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});}
+        
+
+}
+
+function releaseFormSave(v){
+    debugger;
+    // alert("Release function calling")
+    console.log('Release function calling',v)
+    var parenent = v.parentElement.parentElement.parentElement.parentElement.closest('tr').closest('tr')
+    var senssion_id = parenent.attributes[2].value
+   
+
+    var createExistid = v.parentElement.parentElement.parentElement.dataset.setId
+    var formData = new FormData()
+    
+    var projectpi = $('.project_pi_filter').val()
+    var projects = $('#id_project_detail_filter').val()
+    
+    if(projectpi !== "" && projects !==""){
+    var year = $(`#year-${createExistid}`).val()
+    var salary = $(`#salary-${createExistid}`).val()
+    var contingencies = $(`#contingencies-${createExistid}`).val()
+    var noncontingencies = $(`#non_contingencies-${createExistid}`).val()
+    var recurring = $(`#recurring-${createExistid}`).val()
+    var travel = $(`#travel-${createExistid}`).val()
+    var overheadexpens = $(`#overhead_expens-${createExistid}`).val()
+    var uploadfile = $('#uploadfile')[0].files[0]
+    var total = $(`#total-${createExistid}`).val()
+    var comment = $(`#comment-${createExistid}`).val()
+
+    formData.append('createExistid',createExistid);
+    formData.append('senssion_id',senssion_id);
+    formData.append('projectpi',projectpi);
+    formData.append('projects',projects);
+    formData.append('year',year);
+    formData.append('salary',salary);
+    formData.append('contingencies',contingencies);
+    formData.append('noncontingencies',noncontingencies);
+    formData.append('recurring',recurring);
+    formData.append('travel',travel);
+    formData.append('overheadexpens',overheadexpens);
+    formData.append('uploadfile',uploadfile);
+    formData.append('total',total);
+    formData.append('comment',comment);
+    $.ajax({
+        url: "{% url 'release_save' %}",      // Your Django URL for upload
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },  // CSRF token included
+        success: function(response) {
+            // alert('Upload successful');
+            console.log(response);
+            swal(response.message,{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});
+            // location.reload();
+        },
+        error: function(xhr, status, error) {
+            alert('Upload failed');
+            console.error(error);
+        }
+        });
+    }else{swal("First select Project PI and Project",{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});}
+}
+
+function ucFormSave(v){
+    var parenent = v.parentElement.parentElement.parentElement.parentElement.closest('tr').closest('tr')
+    var senssion_id = parenent.attributes[2].value
+    // console.log('UC function calling getParentId',senssion_id)
+    var createExistid = v.parentElement.parentElement.parentElement.dataset.setId
+    var formData = new FormData()
+    
+    var projectpi = $('.project_pi_filter').val()
+    var projects = $('#id_project_detail_filter').val()
+    
+    if(projectpi !== "" && projects !==""){
+    var year = $(`#year-${createExistid}`).val()
+    var salary = $(`#salary-${createExistid}`).val()
+    var contingencies = $(`#contingencies-${createExistid}`).val()
+    var noncontingencies = $(`#non_contingencies-${createExistid}`).val()
+    var recurring = $(`#recurring-${createExistid}`).val()
+    var travel = $(`#travel-${createExistid}`).val()
+    var overheadexpens = $(`#overhead_expens-${createExistid}`).val()
+    var uploadfile = $('#uploadfile')[0].files[0]
+    var total = $(`#total-${createExistid}`).val()
+    var comment = $(`#comment-${createExistid}`).val()
+
+    formData.append('createExistid',createExistid);
+    formData.append('senssion_id',senssion_id);
+    formData.append('projectpi',projectpi);
+    formData.append('projects',projects);
+    formData.append('year',year);
+    formData.append('salary',salary);
+    formData.append('contingencies',contingencies);
+    formData.append('noncontingencies',noncontingencies);
+    formData.append('recurring',recurring);
+    formData.append('travel',travel);
+    formData.append('overheadexpens',overheadexpens);
+    formData.append('uploadfile',uploadfile);
+    formData.append('total',total);
+    formData.append('comment',comment);
+    $.ajax({
+        url: "{% url 'uc_save' %}",      // Your Django URL for upload
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },  // CSRF token included
+        success: function(response) {
+            // alert('Upload successful');
+            console.log(response);
+            swal(response.message,{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});
+            // location.reload();
+        },
+        error: function(xhr, status, error) {
+            alert('Upload failed');
+            console.error(error);
+        }
+        });
+    }else{swal("First select Project PI and Project",{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});}
+}
+  
+</script>
+
+
+<!-- end row expandable script  -->
+
+
+
+  
+
+  <!-- date picker start and end date -->
+<script>
+       
+    $(function () {
+        $("#id_start_date").datepicker({ dateFormat: 'yy-mm-dd' });
+        $("#id_end_date").datepicker({ dateFormat: 'yy-mm-dd'});
+        $("#id_prc_date").datepicker({ dateFormat: 'yy-mm-dd'});
+        $("#id_dob").datepicker({ dateFormat: 'yy-mm-dd'});
+    });
+  
+</script>
+
+<script>
+    function getMonthsDiffBetweenDates(date1, date2) {
+  
+    const startDate = date1 < date2 ? date1 : date2;
+    const endDate = date1 < date2 ? date2 : date1;
+
+    const yearDiff = endDate.getFullYear() - startDate.getFullYear();
+    const monthDiff = endDate.getMonth() - startDate.getMonth();
+
+    let totalMonths = yearDiff * 12 + monthDiff;
+
+    if (endDate.getDate() < startDate.getDate()) {
+        totalMonths--;
+    }
+
+    return totalMonths;
+    }
+
+    $('#id_end_date').change(function(){
+        var statdate1 = $('#id_start_date').val()
+        var enddate1 = $('#id_end_date').val()
+        // console.log('statdate1',statdate1)
+        // console.log('enddate1',enddate1)
+        const dateA = new Date(statdate1);
+        const dateB = new Date(enddate1);
+
+        const monthsDifference = getMonthsDiffBetweenDates(dateA, dateB);
+        $('#id_duration').val(monthsDifference)
+    })
+    
+</script>
+
+<!-- PRC Recommendation Show and hide scripts -->
+<script>
+	$(document).ready(function(){
+		$('#id_prcrecommend').on('change', function(){
+			var prcrecommend = $(this).val();
+			if(prcrecommend == 'Rejected'){
+				$("#id_div_prccomment").show();
+			}
+			else
+			{
+				$("#id_div_prccomment").hide();
+			}
+		});
+	});
+</script>
+
+
+<!-- PI Details submission scripts -->
+<script>
+    $(document).ready(function(){
+
+        function isValidEmail(email) {
+    
+            var regex = /^([a-zA-Z0-9_.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        return regex.test(email);
+        }
+
+        function isValidMobileNumber(mobileNumber) {
+            var mobileNumberPattern = /^[0-9]{10}$/; 
+            return mobileNumberPattern.test(mobileNumber);
+        }
+
+    function validatePIForm() {
+        debugger
+        let isValid = true;
+        var name = $('#id_name').val()
+        var dob = $('#id_dob').val()
+        var gender = $('#id_gender').val()
+        var qualification = $('#id_qualification').val()
+        var designation = $('#id_designation').val()
+        var institute = $('#id_institute').val()
+        var contactno = $('#id_contactno').val()
+        var emailid = $('#id_emailid').val()
+        var state = $('#state_id').val()
+        var district = $('#district_id').val()
+        var address = $('#id_address').val()
+
+        if (name === "") {
+            $('#id_pi_name-error').text("Please enter PI name.")
+            $('#id_pi_name-error').css("color","red")
+            isValid = false;
+        }
+        if (dob === "") {
+            $('#id_pi_dob-error').text("Please enter PI Date of birth.")
+            $('#id_pi_dob-error').css("color","red")
+            isValid = false;
+        }
+        if (gender === "") {
+            $('#id_pi_gender-error').text("Please select gender of PI.")
+            $('#id_pi_gender-error').css("color","red")
+            isValid = false;
+        }
+        if (qualification === "") {
+            $('#id_pi_qualification-error').text("Please select gender of PI.")
+            $('#id_pi_qualification-error').css("color","red")
+            isValid = false;
+        }
+        if (designation === "") {
+            $('#id_pi_designation-error').text("Please select gender of PI.")
+            $('#id_pi_designation-error').css("color","red")
+            isValid = false;
+        }
+        if (institute === "") {
+            $('#id_pi_institute-error').text("Please select institute name..")
+            $('#id_pi_institute-error').css("color","red")
+            isValid = false;
+        }
+        if (contactno === "") {
+            $('#id_pi_contactno-error').text("Please enter PI contact number.")
+            $('#id_pi_contactno-error').css("color","red")
+            isValid = false;
+        }
+        if (contactno !== "") {
+            if(!isValidMobileNumber(contactno)){
+                $('#id_pi_contactno-error').text("Please enter complete PI contact number.")
+                $('#id_pi_contactno-error').css("color","red")
+                isValid = false;
+            }
+            
+        }
+        if (emailid === "") {
+            $('#id_pi_emailid-error').text("Please enter emailid.")
+            $('#id_pi_emailid-error').css("color","red")
+            isValid = false;
+        }
+        if (emailid != "") {
+            if (!isValidEmail(emailid)){
+                $('#id_pi_emailid-error').text("Please enter complete emailid.")
+                $('#id_pi_emailid-error').css("color","red")
+                isValid = false;
+            }
+        }
+        if (state === "") {
+            $('#id_pi_state-error').text("Please select state.")
+            $('#id_pi_state-error').css("color","red")
+            isValid = false;
+        }
+        if (district === "") {
+            $('#id_pi_district-error').text("Please select district.")
+            $('#id_pi_district-error').css("color","red")
+            isValid = false;
+        }
+        // if (address === "") {
+        //     $('#id_pi_address-error').text("Please enter address.")
+        //     $('#id_pi_address-error').css("color","red")
+        //     isValid = false;
+        // }
+
+        return isValid
+    }    
+
+    // $("#pi_btn_submit").click(function(e){
+    $('#id_piform').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this); // Create FormData object from the form
+        var state = $('#state_id').val()
+        var district = $('#district_id').val()
+        formData.append('state_pi', state);
+        formData.append('district_pi', district);
+        console.log('formData',formData)
+        var valid = validatePIForm()
+        if (valid){
+            
+            $('#id_pi_name-error').css("display","none");
+            $('#id_pi_dob-error').css("display","none");
+            $('#id_pi_gender-error').css("display","none");
+            $('#id_pi_qualification-error').css("display","none");
+            $('#id_pi_designation-error').css("display","none");
+            $('#id_pi_institute-error').css("display","none");
+            $('#id_pi_contactno-error').css("display","none");
+            $('#id_pi_emailid-error').css("display","none");
+            $('#id_pi_state-error').css("display","none");
+            $('#id_pi_district-error').css("display","none");
+            // $('#id_pi_address-error').css("display","none");
+            
+           $.ajax({
+                url: "{% url 'pidetailsave' %}",
+                type: 'POST',
+                data: formData,
+                processData: false, 
+                contentType: false, 
+                success: function(response) {
+                    // console.log(response.message)
+                    if(response.status === '200 OK'){
+                        $("#id_piform").trigger('reset');
+                            $('#id_projectpi').append(
+                                $('<option>', {
+                                    value: response.id,
+                                    text: response.name
+                                })
+                            );
+                            swal(response.message,{
+                            buttons: {
+                                confirm: {
+                                className: "btn btn-success",
+                                },
+                            },
+                        });
+                    }else{
+                            if(response.status === '403'){
+                                swal(response.message,{
+                                buttons: {
+                                    confirm: {
+                                    className: "btn btn-danger",
+                                    },
+                                },
+                            });
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $('#status').text('Error: ' + error);
+                    console.log(error)
+                }
+            });
+            }else{console.log('Validation is failed.')}
+    
+    });
+});
+</script>
+
+<!-- loads pi details district data scripts -->
+
+<script>
+    $(document).ready(function() {
+        $('#id_state_pi').change(function() {
+            var stateId = $(this).val();
+            if (stateId) {
+                $.ajax({
+                    url : "{% url 'load_districts' %}",
+                    data: {
+                        'state_id': stateId
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log(data)
+                        var districtDropdown = $('#id_district_pi');
+                        districtDropdown.empty().append('<option value="">Select District</option>');
+                        $.each(data, function(key, value) {
+                            districtDropdown.append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#id_district_pi').empty().append('<option value="">Select District</option>');
+            }
+        });
+    });
+</script>
+
+
+<!-- loads institute details district data scripts -->
+
+<script>
+    $(document).ready(function() {
+        $('.state_change').change(function() {
+            var stateId = $(this).val();
+            if (stateId) {
+                $.ajax({
+                    url : "{% url 'load_districts' %}",
+                    data: {
+                        'state_id': stateId
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        var districtDropdown = $('.district_change');
+                        districtDropdown.empty().append('<option value="">Select District</option>');
+                        $.each(data, function(key, value) {
+                            districtDropdown.append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('.district_change').empty().append('<option value="">Select District</option>');
+            }
+        });
+    });
+</script>
+
+<!--table scripts -->
+
+<script>
+    let currentCol = 0;
+ $("#id_showcolumn").click(function(e){
+        e.preventDefault()
+        const table = document.getElementById("myTable");
+        const rows = table.rows;
+
+        currentCol++;
+
+        // Prevent going beyond available columns
+        if (currentCol > rows[0].cells.length - 1) return;
+
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].cells[currentCol].classList.remove("hidden");
+        }
+    });
+    // function showNextColumn() {
+    //   const table = document.getElementById("myTable");
+    //   const rows = table.rows;
+
+    //   currentCol++;
+
+    //   // Prevent going beyond available columns
+    //   if (currentCol > rows[0].cells.length - 1) return;
+
+    //   for (let i = 0; i < rows.length; i++) {
+    //     rows[i].cells[currentCol].classList.remove("hidden");
+    //   }
+    // }
+</script>
+
+<!-- Project Details submission scripts -->
+<script>
+    
+    $(document).ready(function() {
+        function validateForm() {
+            debugger
+           let isValid = true;
+            var projectpi = $('#id_projectpi').val()
+            var projectid = $('#id_projectid').val()
+            var title = $('#id_title').val()
+            var filenumber = $('#id_filenumber').val()
+            var duration = $('#id_duration').val()
+            var prcrecommend = $('#id_prcrecommend').val()
+            var prccomment = $('#id_prccomment').val()
+            
+            if (projectpi === "") {
+                $('#projectpi-error').text("Please select project PI.")
+                $('#projectpi-error').css("color","red")
+                isValid = false;
+            }
+            if (projectid === "") {
+                $('#projectid-error').text("Please enter project id.")
+                $('#projectid-error').css("color","red")
+                isValid = false;
+            }
+            if (title === "") {
+                $('#title-error').text("Please enter project title.")
+                $('#title-error').css("color","red")
+                isValid = false;
+            }
+            if (filenumber === "") {
+                $('#filenumber-error').text("Please enter project filenumber.")
+                $('#filenumber-error').css("color","red")
+                isValid = false;
+            }
+            // if (duration >=1) {
+            //     $('#duration-error').text("Please enter duration properly.")
+            //     $('#duration-error').css("color","red")
+            //     isValid = false;
+            // }
+            if (prcrecommend === "") {
+                $('#prcrecommend-error').text("Please select PRC Recommendation.")
+                $('#prcrecommend-error').css("color","red")
+                isValid = false;
+            }
+            if (prcrecommend === "Rejected") {
+                if(prccomment === ""){
+                    $('#prccomment-error').text("Please enter PRC Rejection comment.")
+                    $('#prccomment-error').css("color","red")
+                    isValid = false;
+                }
+                
+            }
+            return isValid
+        }
+
+
+        $('#id_projectdetail_form').on('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            var formData = new FormData(this); // Create FormData object from the form
+            console.log('formData',formData)
+            var valid = validateForm()
+            if (valid){
+               
+                $('#projectpi-error').css("display","none");
+                $('#projectid-error').css("display","none")
+                $('#title-error').css("display","none")
+                $('#filenumber-error').css("display","none")
+                $('#prccomment-error').css("display","none")
+                $('#prcrecommend-error').css("display","none")
+                
+            $.ajax({
+                url: "{% url 'proejct_detailsave' %}",
+                type: 'POST',
+                data: formData,
+                processData: false, 
+                contentType: false, 
+                success: function(response) {
+                    // console.log(response.message)
+                    if(response.status === '200 OK'){
+                    $("#id_projectdetail_form").trigger('reset');
+                            $('#id_project_detail_filter').append(
+                                $('<option>', {
+                                    value: response.id,
+                                    text: response.name
+                                })
+                            );
+                            swal(response.message,{
+                            buttons: {
+                                confirm: {
+                                className: "btn btn-success",
+                                },
+                            },
+                        });
+                    }else{
+                            if(response.status === '403'){
+                                swal(response.message,{
+                                buttons: {
+                                    confirm: {
+                                    className: "btn btn-danger",
+                                    },
+                                },
+                            });
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $('#status').text('Error: ' + error);
+                    console.log(error)
+                }
+            });
+            }else{
+                swal("Please fill all the fields.",{
+                                buttons: {
+                                    confirm: {
+                                    className: "btn btn-danger",
+                                    },
+                                },
+                            });
+                console.log('Validation is failed.')}
+        });
+    });
+    
+</script>
+
+<!-- institute Details submission scripts -->
+<script>
+    $(document).ready(function() {
+        function ValidMobileNumber(mobileNumber) {
+            var mobileNumberPattern = /^[0-9]{10}$/; 
+            return mobileNumberPattern.test(mobileNumber);
+        }
+
+        function validateInstituteForm() {
+            debugger
+            let isValid = true;
+            var name = $('.institute_name').val()
+            var sortcode = $('.institute_sortcode').val()
+            var institute_type = $('.institute_type').val()
+            var contactno = $('.institute_contact').val()
+            var state = $('.state_change').val()
+            var district = $('.district_change').val()
+            var address = $('.institute_address').val()
+
+            if (name === "") {
+                $('#name-error').text("Please enter institute name.")
+                $('#name-error').css("color","red")
+                isValid = false;
+            }
+            if (sortcode === "") {
+                $('#sortcode-error').text("Please enter institute short name.")
+                $('#sortcode-error').css("color","red")
+                isValid = false;
+            }
+            if (institute_type === "") {
+                $('#institute_type-error').text("Please select institute type.")
+                $('#institute_type-error').css("color","red")
+                isValid = false;
+            }
+            if (contactno === "") {
+                $('#contactno-error').text("Please enter contact number.")
+                $('#contactno-error').css("color","red")
+                isValid = false;
+            }
+            if (contactno != ""){
+                if (!ValidMobileNumber(contactno)){
+                    $('#contactno-error').text("Please enter complte     contact number.")
+                    $('#contactno-error').css("color","red")
+                    isValid = false;
+                }
+
+            }
+            if (state == "") {
+                $('#state-error').text("Please select state.")
+                $('#state-error').css("color","red")
+                isValid = false;
+            }
+            if (district == "") {
+                $('#district-error').text("Please select district.")
+                $('#district-error').css("color","red")
+                isValid = false;
+            }
+            if (address === "") {
+                $('#address-error').text("Enter complete address.")
+                $('#address-error').css("color","red")
+                isValid = false;
+            }
+            return isValid
+        }
+        $('#id_institutedetail_form').on('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            var formData = new FormData(this); // Create FormData object from the form
+            console.log('formData',formData)
+            var valid = validateInstituteForm()
+            if (valid){
+               
+                $('#name-error').css("display","none");
+                $('#sortcode-error').css("display","none")
+                $('#institute_type-error').css("display","none")
+                $('#contactno-error').css("display","none")
+                $('#state-error').css("display","none")
+                $('#district-error').css("display","none")
+                $('#address-error').css("display","none")
+                
+            $.ajax({
+                url: "{% url 'institute' %}",
+                type: 'POST',
+                data: formData,
+                processData: false, 
+                contentType: false, 
+                success: function(response) {
+                    if(response.status === '200 OK'){
+                        $("#id_institutedetail_form").trigger('reset');
+                        $('#instituteModal').modal('hide');
+                        $('#id_institute').append(
+                        $('<option>', {
+                            value: response.id,
+                            text: response.name
+                        })
+                        );
+                        swal(response.message,{
+                            buttons: {
+                                confirm: {
+                                className: "btn btn-success",
+                                },
+                            },
+                        });
+                    }else{
+                            if(response.status === '403'){
+                                swal(response.message,{
+                                buttons: {
+                                    confirm: {
+                                    className: "btn btn-danger",
+                                    },
+                                },
+                            });
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $('#status').text('Error: ' + error);
+                    console.log(error)
+                }
+            });
+            }else{console.log('Validation is failed.')}
+        });
+    });        
+</script>
+
+<!-- load project detail by filteraccroding to pi scripts -->
+<script>
+    $(".project_pi_filter1").change(function () {
+
+            // alert('function calling')
+            debugger;
+            var url = "{% url 'filter_project' %}";
+            // var projectpi = $(this).val();
+            var projectpi = $(this).val()[0];
+            var pi_id = Number(projectpi)
+            $.ajax({
+                url: url,
+                data: {
+                    'projectpi_id': pi_id
+                },
+                success: function (data) {
+                    console.log('data',data)
+                    $("#id_project_detail_filter").html('<option value="">Select Project</option>');
+                    $.each(data, function (key, value) {
+                        $("#id_project_detail_filter").append('<option value="' + value.id + '">' + value.title + '</option>');
+                    });
+                    $("#id_city").html('<option value="">Select City</option>'); // Clear city dropdown
+                }
+            });
+        });
+</script>
+
+<script>
+    
+function BtnAdd()
+{
+    /*Add Button*/
+    debugger
+    var v = $("#TRow").clone().prependTo("#TBody") ;
+    if (v.length === 0){
+        var secondToLastRowId = $("#id_financial_tbl tr:nth-last-child(2)").attr("id");
+        var secondToLastRowId_split = secondToLastRowId.split('-')[1]
+        console.log('secondToLastRowId_split',secondToLastRowId_split) 
+        var newrow_id=Number(secondToLastRowId) + 1
+        console.log(newrow_id);
+        v = $('#'+secondToLastRowId).clone().prependTo("#TBody ") ;
+        // $('#'+secondToLastRowId).find("data-set-id").val('000');
+        $(v).attr("data-set-id", '000'); 
+    }
+    $(v).find("input").val('');
+    // $(v).find("data-set-id").val('000');
+    $(v).removeClass("d-none");
+    $(v).find("th").first().html($('#TBody tr').length - 1);
+    
+        
+    const yeararray = ["","1st","2nd","3rd","4th","5th"]
+    var va = yeararray[cour_row]
+    console.log("automate row add",va)
+    // $('.input_data_name').val(va)
+    // alert('count'+cour_row)
+    const rows = document.querySelectorAll('th[scope="row"]');
+    rows.forEach(th => {
+    console.log(th.textContent); // Outputs: "1", "2", etc.
+        
+    document.querySelectorAll('#id_financial_tbl th[scope="row"]').forEach(th => {
+
+    if (th.textContent.trim() === "1") {
+        const input = th.parentElement.querySelector('input[type="text"]');
+        const radio = th.parentElement.querySelector('input[type="radio"]');
+        if (input) {
+        input.id = `id-${input.name}-${th.textContent.trim()}`;
+        var va = yeararray[th.textContent.trim()]
+        const inputs = document.querySelectorAll('input#id-year_row-1');  
+        if (inputs.length > 1) {
+        const lastInput = inputs[inputs.length - 1];
+        lastInput.value = va
+        }
+       
+        if (radio) {
+            radio.id = `Rel-1st`;
+        }
+           
+
+        }
+    }
+
+    if (th.textContent.trim() === "2") {
+        const input = th.parentElement.querySelector('input[type="text"]');
+        const radio = th.parentElement.querySelector('input[type="radio"]');
+        if (input) {
+        // Assign new id based on current name attribute
+        input.id = `id-${input.name}-${th.textContent.trim()}`;
+        var va = yeararray[th.textContent.trim()]
+        $(`#id-${input.name}-${th.textContent.trim()}`).val(va)
+        }
+        if (radio) {
+            radio.id = `Rel-2nd`;
+        }
+    }
+    });
+
+    if (th.textContent.trim() === "3") {
+        const input = th.parentElement.querySelector('input[type="text"]');
+        const radio = th.parentElement.querySelector('input[type="radio"]');
+        if (input) {
+        // Assign new id based on current name attribute
+        input.id = `id-${input.name}-${th.textContent.trim()}`;
+         var va = yeararray[th.textContent.trim()]
+        $(`#id-${input.name}-${th.textContent.trim()}`).val(va)
+        }
+        if (radio) {
+            radio.id = `Rel-3rd`;
+        }
+    }
+    
+    if (th.textContent.trim() === "4") {
+        const input = th.parentElement.querySelector('input[type="text"]');
+        const radio = th.parentElement.querySelector('input[type="radio"]');
+        if (input) {
+        // Assign new id based on current name attribute
+        input.id = `id-${input.name}-${th.textContent.trim()}`;
+         var va = yeararray[th.textContent.trim()]
+        $(`#id-${input.name}-${th.textContent.trim()}`).val(va)
+        }
+        if (radio) {
+            radio.id = `Rel-4th`;
+        }
+    }
+
+    if (th.textContent.trim() === "5") {
+        const input = th.parentElement.querySelector('input[type="text"]');
+        const radio = th.parentElement.querySelector('input[type="radio"]');
+        if (input) {
+        // Assign new id based on current name attribute
+        input.id = `id-${input.name}-${th.textContent.trim()}`;
+         var va = yeararray[th.textContent.trim()]
+        $(`#id-${input.name}-${th.textContent.trim()}`).val(va)
+        }
+        if (radio) {
+            radio.id = `Rel-5th`;
+        }
+    }
+    if (th.textContent.trim() === "5") {
+        // const input = th.parentElement.querySelector('input[type="text"]');
+        // if (input) {
+        // // Assign new id based on current name attribute
+        // input.id = `id-${input.name}-${th.textContent.trim()}`;
+        //  var va = yeararray[th.textContent.trim()]
+        // $(`#id-${input.name}-${th.textContent.trim()}`).val(va)
+        // }
+        $('#add_row_btn').css("display","none")
+    }
+
+    });
+}
+
+
+
+function BtnDel(v)
+{
+    /*Delete Button*/
+       $(v).parent().parent().remove(); 
+       GetTotal();
+
+        $("#TBody").find("tr").each(
+        function(index)
+        {
+            debugger
+           $(this).find("th").first().html(index);
+        }
+
+       );
+}
+// var row_list = []
+function Calc(v)
+{
+    
+    var index = $(v).parent().parent().index();
+    
+    var year = document.getElementsByName("year_row")[index].value;
+    var salary = document.getElementsByName("salary_row")[index].value;
+    var contingencies = document.getElementsByName("contingencies_row")[index].value;
+    var noncontingencies = document.getElementsByName("noncontingencies_row")[index].value;
+    var recurring = document.getElementsByName("recurring_row")[index].value;
+    var travel = document.getElementsByName("travel_row")[index].value;
+    var overhead = document.getElementsByName("overhead_row")[index].value;
+     
+    var amt = +(salary)+  +(contingencies)+  +(noncontingencies)+  +(recurring)+  +(travel)+  +(overhead)
+    document.getElementsByName("amt")[index].value = amt;
+    GetTotal();
+}
+
+function GetTotal()
+{
+    /*Footer Calculation*/   
+
+    var sum=0;
+    var amts =  document.getElementsByName("amt");
+
+    for (let index = 0; index < amts.length; index++)
+    {
+        var amt = amts[index].value;
+        sum = +(sum) +  +(amt) ; 
+    }
+
+    document.getElementById("FTotal").value = sum;
+
+    // var gst =  document.getElementById("FGST").value;
+    // var net = +(sum) + +(gst);
+    // document.getElementById("FNet").value = net;
+
+}
+</script>
+
+<!-- add utilize row script -->
+ <script>
+
+    $(document).ready(function() {
+            
+            $('#btn_uti').click(function() {
+                var selectedRadio = $('input[type="radio"][name="utilize"]:checked');
+                var selectedRadioId = $('input[name="utilize"]:checked').attr('id');
+                debugger;
+                
+                if (selectedRadio.length > 0) {
+                    // count += 1
+                    var selectedRow = selectedRadio.closest('tr');
+                    var newRow = `
+                                    <tr id="Rel-row-">
+                                        <th scope="row"></th>
+                                        <td style="padding: 0px !important;"><input type="text" name="year_row" id="id_release_year_row" value="uti" class="form-control input_data_name" readonly></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control input_data"  name="salary_row"  onchange="Calc(this);" style="padding: 10px !important;"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data" name="contingencies_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data" name="noncontingencies_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data" name="recurring_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data" name="travel_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data" name="overhead_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="file" class="form-control text-end input_data" id="pdfupload" name="file" multiple></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end" name="amt" value="0" disabled=""></td>
+                                        <td class="NoPrint"><button type="button" class="btn btn-sm btn-danger" onclick="BtnDel(this)">X</button></td>
+                                    </tr> `;
+                    selectedRow.after(newRow);                
+                }
+            })
+        });                
+ </script>
+
+
+<!-- add rows for release transaction -->
+
+<script>
+        var countid = 1
+        $(document).ready(function() {
+            var countrelease = 1
+            $('#btn_release').click(function() {
+                var selectedRadio = $('input[type="radio"][name="release"]:checked');
+                var selectedRadioId = $('input[name="release"]:checked').attr('id');
+                debugger;
+                var count_row = $('#TBody tr').length-1;
+                console.log("Total rows:", count_row);
+                if (selectedRadio.length > 0) {
+                    count_row += 1
+                    var selectedRow = selectedRadio.closest('tr');
+                        var rowid = `${selectedRadioId}-${countrelease}`
+                        console.log('rowid',selectedRadioId)
+                         
+                        var rowid_split = selectedRadioId.split('-')
+                        if (rowid_split.length >1){
+                            var covnum = Number(rowid_split[1]) + countid
+                            var new_rowid = `${rowid_split[0]}-${covnum}`
+                            countid += 1
+                            console.log('new_rowid',new_rowid)
+                        }else{
+                            new_rowid = rowid
+                            countid += 1
+                            console.log('new_rowid else',new_rowid)
+                        }
+
+                        // <tr id="Rel-row-${count}" class="finrow">
+                        var newRow = `
+                                    <tr id="TRow-${count_row}" data-set-id="000">
+                                        <th scope="row"></th>
+
+                                        <td style="padding: 0px !important;"><span class="d-flex"><input type="radio" name="utilize"><input type="text" name="year_row" id="id_release_year_row" value="${new_rowid}" class="form-control input_data_name" readonly></span></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control input_data"  name="salary_row"  onchange="Calc(this);" style="padding: 10px !important;"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data" name="contingencies_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data" name="noncontingencies_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data" name="recurring_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data" name="travel_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end input_data" name="overhead_row"  onchange="Calc(this);"></td>
+                                        <td style="padding: 0px !important;"><input type="file" class="form-control text-end input_data" id="pdfupload" name="file" multiple></td>
+                                        
+                                        <td style="padding: 0px !important;"><input type="number" class="form-control text-end" name="amt" value="0" disabled=""></td>
+                                        <td class="NoPrint"><button type="button" class="btn btn-sm btn-danger" onclick="BtnDel(this)">X</button></td>
+                                    </tr> `;
+                        if (countrelease == '1'){
+                            countrelease += 1
+                            selectedRow.after(newRow);
+                            
+                            console.log('count',countrelease)
+                        }else{
+                            console.log('else part calling..')
+                            var row_ass_id = count_row - 1
+                            const rel_rowid = `#TRow-${row_ass_id}`
+                            console.log('rowid',rel_rowid)
+                            $(rel_rowid).after(newRow);
+                            countrelease += 1}
+                        
+                        // $('#id_release_year_row').after(newRow);
+                        // $('#id_release_year_row').val(rowid)
+                    
+                } else {
+                    alert("Please select a radio button first.");
+                }
+            });
+        });
+    </script>
+
+
+<!-- financial table row submit script -->
+ <script>
+function getRowData() {
+    debugger;
+  const table = document.getElementById("id_financial_tbl");
+  const rows = table.getElementsByTagName("tr");
+   var projectpi = $('.project_pi_filter').val()
+    var projects = $('#id_project_detail_filter').val()
+    const formData = new FormData();
+  var row_data = []  
+  var count_row = 0
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const rowId = row.id;
+    var dataSetId = row.getAttribute('data-set-id');
+    const inputs = row.getElementsByTagName("input");
+    
+    
+    var rowData = {
+      rowId: rowId,
+      id:dataSetId,
+      projectpi_id:projectpi,
+      projects_id:projects,  
+      inputs: {}
+    };
+
+    
+
+    for (let input of inputs) {
+      if (input.type === "file") {
+        const files = input.files;
+        if (files.length > 0) {
+          rowData.inputs[`${input.name}[]`] = files[0]; // or use files[0] to get full File object
+          const file = files[0];
+            rowData[`file_${count_row}`]=file
+            formData.append(`file_${count_row}`, file);
+
+          
+        } else {
+          rowData.inputs[`${input.name}[]`] = null;
+        }
+      } else {
+        rowData.inputs[input.name] = input.value;
+      }
+    }
+    if (rowData.inputs.year_row !=null && rowData.inputs.year_row != ""){
+        row_data.push(rowData)
+        count_row += 1
+        console.log('count_row',count_row)
+    }
+    //  row_data.push(rowData)
+    
+  }
+  console.log('rowData1',row_data);
+  return row_data
+}
+</script>
+
+<script>
+    $('#btn_financial_save').on('click', function() {
+        debugger 
+        // var return_data = getRowData()
+    // console.log('return_data',return_data)    
+    const table = document.getElementById("id_financial_tbl");
+    const rows = table.getElementsByTagName("tr");
+    var projectpi = $('.project_pi_filter').val()[0]
+    var projects = $('#id_project_detail_filter').val()
+    const formData1 = new FormData();
+  var row_data = []  
+  var count_row = 0
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const rowId = row.id;
+    var dataSetId = row.getAttribute('data-set-id');
+    const inputs = row.getElementsByTagName("input");
+    
+    if (dataSetId == null){
+        dataSetId = '000'
+    }
+    
+    var rowData = {
+      rowId: rowId,
+      id:dataSetId,
+      projectpi_id:Number(projectpi),
+      projects_id:projects,  
+      inputs: {}
+    };
+
+    console.log('rowData',rowData)
+
+    for (let input of inputs) {
+      if (input.type === "file") {
+        const files = input.files;
+        if (files.length > 0) {
+        //   rowData.inputs[`${input.name}[]`] = files[0]; // or use files[0] to get full File object
+            var file_name = files[0].name
+            // console.log("file name ",file_name)
+            const file = files[0];
+            rowData['file_key']=`file_${count_row}`
+            formData1.append(`file_${count_row}`, file);
+
+          
+        } else {
+        //   rowData.inputs[`${input.name}[]`] = null;
+        rowData['file_key']=null
+        }
+      } else {
+        rowData.inputs[input.name] = input.value;
+      }
+    }
+    if (rowData.inputs.year_row !=null && rowData.inputs.year_row != ""){
+        row_data.push(rowData)
+        count_row += 1
+        console.log('count_row',count_row)
+    }
+    // if (rowData.id !== null){
+    //     row_data.push(rowData)
+    //     count_row += 1
+    //     // console.log('count_row',count_row)
+    // }
+    
+    
+  }
+  console.log('rowData1',row_data);
+  debugger
+
+  formData1.append('return_data', JSON.stringify(row_data));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // var rowCount = $('#id_financial_tbl tr').length;
+        // console.log("Total rows:", rowCount);
+
+        // var table_body = $('#TBody tr').length;
+        // console.log("Total rows:", table_body);
+
+        // var row_body = $('#TRow').length;
+        // console.log("Total rows:", row_body);
+        var projectpi = $('.project_pi_filter').val()
+        var projects = $('#id_project_detail_filter').val()
+        
+        if(projectpi !== "" && projects !==""){
+        
+        var json_data=[];
+        var table_body = $('#TBody tr').length-1;
+        console.log("Total rows:", table_body);
+        var formData = new FormData();
+        
+        
+        
+
+             
+        for(index=0; index<table_body;index++){
+            debugger;
+            // var row = $(`#TRow-${index}`).closest('tr');  // Get the closest tr element (the row)
+            // var dataSetId = row.data('set-id');
+            // // var rowid = $(`#TRow-${index}`);
+            // if (dataSetId) {
+            //     var rowData = {};
+            //     rowData['id'] = dataSetId;
+            //     row.find('input').each(function() {
+            //         var inputName = $(this).attr('name');  // Get input field name
+            //         var inputValue = $(this).val();       // Get input field value
+            //         rowData[inputName] = inputValue;      // Store name/value pair in the rowData object
+            //     });
+            //     console.log('rowData',rowData)
+            // }
+             
+            
+            if ($(`tr#TRow-${index}`).attr('data-set-id') !== '000') {
+                var trrow = `tr#TRow-${index}`
+                console.log('this row exist',trrow)
+                var setId = $(`#TRow-${index}`).data('set-id');
+                var year = document.getElementsByName("year_row")[index].value;
+                var salary = document.getElementsByName("salary_row")[index].value;
+                var contingencies = document.getElementsByName("contingencies_row")[index].value;
+                var noncontingencies = document.getElementsByName("noncontingencies_row")[index].value;
+                var recurring = document.getElementsByName("recurring_row")[index].value;
+                var travel = document.getElementsByName("travel_row")[index].value;
+                var overhead = document.getElementsByName("overhead_row")[index].value;
+                const fileInput = document.getElementById('pdfupload')[index];
+
+            }else{console.log('this row not exist')
+            var setId = $(`#TRow-${index}`).data('set-id');
+            var year = document.getElementsByName("year_row")[index].value;
+            var salary = document.getElementsByName("salary_row")[index].value;
+            var contingencies = document.getElementsByName("contingencies_row")[index].value;
+            var noncontingencies = document.getElementsByName("noncontingencies_row")[index].value;
+            var recurring = document.getElementsByName("recurring_row")[index].value;
+            var travel = document.getElementsByName("travel_row")[index].value;
+            var overhead = document.getElementsByName("overhead_row")[index].value;
+            const fileInput = document.getElementById('pdfupload')[index];
+            }
+            // console.log('setIdRel',setIdRel)
+            var single_data={"id":setId,"projectpi_id":projectpi,"projects_id":projects,"year":year,"salary":salary,"contingencies":contingencies,"noncontingencies":noncontingencies,"recurring":recurring,"travel":travel,"overhead":overhead};
+            json_data.push(single_data);
+        }
+
+        console.log('json_data',json_data)
+        
+        formData.append('json_data', JSON.stringify(json_data));
+        // formData.append('return_data', JSON.stringify(return_data));
+        // var files = $('#pdfupload')[0].files;
+        var fileInputs1 = $('input#pdfupload');
+        for (var i = 1; i < fileInputs1.length; i++) {
+        formData.append('files[]',fileInputs1[i].files[0]);  // Note: use same key 'files' for multiple files
+        }
+        console.log('formData',formData)
+      
+        $.ajax({
+        url: "{% url 'financial' %}",      // Your Django URL for upload
+        type: 'POST',
+        data: formData1,
+        contentType: false,
+        processData: false,
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },  // CSRF token included
+        success: function(response) {
+            alert('Upload successful');
+            console.log(response);
+            // location.reload();
+        },
+        error: function(xhr, status, error) {
+            alert('Upload failed');
+            console.error(error);
+        }
+        });
+    }else{swal("First select Project PI and Project",{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});}
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    });
+</script>
+
+<!-- fetch finacial records scripts -->
+ <script>
+
+var outerRowCount = 0
+
+function reloadTable() {
+    $('#main-table tbody').empty();
+    var financial_record_url = "{% url 'financial_record' %}";
+
+    var project_id = $('#id_project_detail_filter').val();
+    var projectpi_id = $('#id_project_pi_select').val();
+    const baseURL = "http://127.0.0.1:8000/financial_record/";
+    const params = {
+    projectpi_id: projectpi_id,
+    project_id: project_id,
+    };
+
+    const url = new URL(baseURL);
+    url.search = new URLSearchParams(params).toString();
+
+    console.log('projectpi_id reloadTable',projectpi_id)
+    console.log('project_id reloadTable',project_id)
+    
+    fetch(url.toString())
+        .then(response => {
+            // Check if the request was successful (e.g., status code 200)
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json(); // Parse the response as JSON
+        })
+        .then(data => {
+            // console.log(data); 
+            console.log('financial_record_url',data); 
+             $('#main-table tbody').empty(); 
+            // $('#main-table tbody').remove()
+            const jsonData = data
+            const $tbody = $('#main-table tbody');
+
+            // Render main table rows
+            //   <td class="outer-file">${person.file}</td> 
+            if (data.newData.length == 0){
+                AddNewrow();
+                alert('function calling')
+            }else{$('#newrow').remove()}
+            data.newData.forEach((person, index) => {
+                outerRowCount = index
+                console.log('******************************* index',index)
+            if (index == '4'){$('#addnewrow').css('display','none')}
+            
+            const mainRow = `
+                <tr id="Trow-${index}" class="main-row" data-index="${index}" data-set-id="${person.id}">
+                <td class="expand-icon"><i class="fa fa-plus"></i></td>
+                <td class="outer-year">${person.year}</td>
+                <td class="outer-salary">${person.salary}</td>
+                <td class="outer-contingencies">${person.contingencies}</td>
+                <td class="outer-non_contingencies">${person.non_contingencies}</td>
+                <td class="outer-recurring">${person.recurring}</td>
+                <td class="outer-travel">${person.travel}</td>
+                <td class="outer-overhead_expens">${person.overhead_expens}</td>
+                <td class="outer-total">${person.total}</td>
+                <td class="outer-comment">${person.comment}</td>
+                <td class="outer-total"></td>
+                </tr>
+                <tr class="details-row" id="details-${index}" data-set-id="${person.id}">
+                <td colspan="12">
+                    ${renderProjectsTable(person.release, index)}
+                </td>
+                </tr>
+            `;
+            
+            $tbody.append(mainRow);
+            });
+            
+            const columnSums = {};
+
+                data.data.forEach(row => {
+                Object.keys(row).forEach(key => {
+                    if (typeof row[key] === 'number' && key !== 'id') {
+                    columnSums[key] = (columnSums[key] || 0) + row[key];
+                    }
+                });
+                });
+                // console.log("Column Sums:", columnSums);
+                //   <td>pdf</td>
+                if (JSON.stringify(columnSums) != '{}') {
+                    const mainRowTotal = `
+                    <tr id="mainTotal" style="background-color:#bd8146;color:white;">
+                    <td class="expand-icon"></td>
+                    <td><b>Total</b></td>
+                    <td><b>${columnSums.salary}</b></td>
+                    <td><b>${columnSums.contingencies}</b></td>
+                    <td><b>${columnSums.non_contingencies}</b></td>
+                    <td><b>${columnSums.recurring}</b></td>
+                    <td><b>${columnSums.travel}</b></td>
+                    <td><b>${columnSums.overhead_expens}</b></td>
+                    <td><b>${columnSums.total}</b></td>
+                    <td></td>
+                    <td></td>
+                    </tr>
+                `;
+                $tbody.append(mainRowTotal);
+                }else{
+                const mainRowTotal = `
+                    <tr id="mainTotal">
+                    <td class="expand-icon"></td>
+                    <td>Total</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    </tr>
+                `;
+                $tbody.append(mainRowTotal);
+                }
+        // Toggle main row details  <td>pdf</td>
+            $(document).on('click', '.main-row .expand-icon', function() {
+            const $icon = $(this);
+            const $mainRow = $icon.closest('tr');
+            const index = $mainRow.data('index');
+            const $detailsRow = $(`#details-${index}`);
+
+            if ($detailsRow.is(':visible')) {
+                $detailsRow.hide();
+                $icon.text('+');
+                $icon.css("font-size","30px")
+            } else {
+                $detailsRow.show();
+                $icon.text('-');
+                $icon.css("font-size","30px")
+            }
+            });
+
+            // Toggle nested project tasks rows
+            $(document).on('click', '.project-expand-icon', function() {
+            const $icon = $(this);
+            const projectIndex = $icon.data('project-index');
+            const personIndex = $icon.data('person-index');
+            const $tasksRow = $(`#tasks-${personIndex}-${projectIndex}`);
+
+            if ($tasksRow.is(':visible')) {
+                $tasksRow.hide();
+                $icon.text('[+]');
+            } else {
+                $tasksRow.show();
+                $icon.text('[-]');
+            }
+            });
+
+            // Helper to render projects table with expandable task rows
+            function renderProjectsTable(projects, personIndex) {
+            console.log('************************************',projects)
+            if (!projects || projects.length === 0) return `<tr class="project-row new_row">
+                <td><button class="deleteRow" onclick="delBtn(this)" style="color:red;">X</button></td>
+                <td><input type="text" name="name[]" placeholder="Enter name"></td>
+                <td><input type="text" name="name[]" placeholder="Enter name"></td>
+                <td><input type="text" name="name[]" placeholder="Enter name"></td>
+                <td><input type="text" name="name[]" placeholder="Enter name"></td>
+                <td><input type="text" name="name[]" placeholder="Enter name"></td>
+                <td><input type="text" name="name[]" placeholder="Enter name"></td>
+                <td><input type="text" name="name[]" placeholder="Enter name"></td>
+                <td><input type="file" name="file" placeholder="Enter name" accept=".pdf"></td>
+                <td><input type="text" name="name[]" placeholder="Enter name"></td>
+                <td><div style="display: flex;"><button>Release</button><button style="margin-left:5px">UC</button></div></td>
+            </tr>`;
+
+            let html = `
+            
+            <table class="nested-table table table-bordered table-head-bg-info table-bordered-bd-info mt-4" id="nestedtable">
+            <thead>
+                <tr>
+            <th class="th_plus"></th>
+            <th class="nested_th">Project Year</th>
+            <th class="nested_th">Salary</th>
+            <th class="nested_th">Contingencies</th>
+            <th class="nested_th">Non contingencies</th>
+            <th class="nested_th">Recurring</th>
+            <th class="nested_th">Travel</th>
+            <th class="nested_th">Overhead expens</th>
+            <th class="nested_th">PDF</th>
+            <th class="nested_th">Total Amount</th>
+            <th class="nested_th">Comment</th>
+            <th class="nested_th">Action</th>
+            
+            </tr>
+            </thead>
+                <tbody>
+                
+            `;
+                
+            projects.forEach((project, projIndex) => {
+            //   console.log('project.year',project.year)
+            //   console.log('project.Salary',project.Salary)
+                html += `
+                <tr id="Trow-${personIndex}${projIndex}" class="project-row" data-person-index="${personIndex}" data-project-index="${projIndex}" data-set-id="${project.id}">
+                    
+                <td><input type="checkbox" name="editbox" class="edit-toggle"></td>    
+                <td class="release-year">${project.year}</td>
+                <td class="row-${personIndex}"><input type="number" id="salary-${personIndex}${projIndex}" class="release-salary edit-input text-center" name="salary" value="${project.salary}" onchange="nestedRowCalc(this);" disabled></td>
+                <td class="row-${personIndex}"><input type="number" id="contingencies-${personIndex}${projIndex}" class="release-contingencies edit-input text-center" name="contingencies" value="${project.contingencies}" onchange="nestedRowCalc(this);" disabled></td>
+                <td class="row-${personIndex}"><input type="number" id="non_contingencies-${personIndex}${projIndex}" class="release-non_contingencies edit-input text-center" name="non_contingencies" value="${project.non_contingencies}" onchange="nestedRowCalc(this);" disabled></td>
+                <td class="row-${personIndex}"><input type="number" id="recurring-${personIndex}${projIndex}" class="release-recurring edit-input text-center" name="recurring" value="${project.recurring}" onchange="nestedRowCalc(this);" disabled></td>
+                <td class="row-${personIndex}"><input type="number" id="travel-${personIndex}${projIndex}" class="release-travel edit-input text-center" name="travel" value="${project.travel}" onchange="nestedRowCalc(this);" disabled></td>
+                <td class="row-${personIndex}"><input type="number" id="overhead_expens-${personIndex}${projIndex}" class="release-overhead_expens edit-input text-center" name="overhead_expens" value="${project.overhead_expens}" onchange="nestedRowCalc(this);" disabled></td>
+                <td class="row-${personIndex}"><input type="file" id="fileupload-${personIndex}${projIndex}" class="release-file edit-input" name="file"></td>
+                <td class="row-${personIndex}"><input type="number" id="total-${personIndex}${projIndex}" class="release-total text-center" name="total" value="${project.total}" onchange="nestedRowCalc(this);" disabled></td></td>
+                <td class="row-${personIndex}"><input type="text" id="comment-${personIndex}${projIndex}" class="release-comment edit-input text-center" name="comment" value="${project.comment}" disabled></td>
+                <td class="d-flex"><button type="button" class="btn btn-success btn-xs" id="addRow" onclick="BtnAddInner('${personIndex}${projIndex}')"><i class="far fa-plus-square" style="font-size: 1rem;"></i></button> <button class="btn btn-warning btn-xs text-white mx-2"><i class="far fa-save" style="font-size: 1rem;"></i></button></td>
+                </tr>
+                `;
+                
+                
+            });
+                const projectSums = {};
+                projects.forEach(row => {
+                    if(row['flag'] !== 'uc'){
+                        Object.keys(row).forEach(key => {
+                            if (typeof row[key] === 'number' && key !== 'id') {
+                            projectSums[key] = (projectSums[key] || 0) + row[key];
+                            }
+                        });
+                    }    
+                });
+                console.log("project Column Sums:", projectSums);
+                const balanceSums = {};
+                projects.forEach(row => {
+                    if(row['flag'] === 'uc'){
+                    Object.keys(row).forEach(key => {
+                        if (typeof row[key] === 'number' && key !== 'id') {
+                        balanceSums[key] = (projectSums[key] || 0) - row[key];
+                        }
+                    });
+                    }
+                });
+                // console.log("project Balance Sums:", balanceSums);
+                html += `
+                <tr class="bg-info" style="background:#72c27e !important;color:white;font-weight:600;border:1px solid black;">
+                    
+                <td></td> 
+                <td class="text-success">Balance</td>
+                <td class="text-success">${balanceSums.salary||0}</td>
+                <td class="text-success">${balanceSums.contingencies||0}</td>
+                <td class="text-success">${balanceSums.non_contingencies||0}</td>
+                <td class="text-success">${balanceSums.recurring||0}</td>
+                <td class="text-success">${balanceSums.travel||0}</td>
+                <td class="text-success">${balanceSums.overhead_expens||0}</td>
+                <td class="text-success"> </td>
+                <td class="text-success">${balanceSums.total||0}</td>
+                <td></td>
+                <td></td>
+                </tr>
+                `;
+                
+            html += `</tbody></table>`;
+
+            return html;
+            }
+        $('.edit-toggle').on('change', function(){
+            const row = $(this).closest('tr');
+            var isChecked = $(this).prop('checked');
+            row.find('.edit-input').prop('disabled', !isChecked);
+        });
+
+        
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+  
+}
+
+
+// end financial table fetch
+
+
+//  $("#id_project_detail_filter1").change(function () {
+$("#id_project_pi_select").change(function () {
+        // alert('function calling')
+        
+        reloadTable()
+        debugger;
+        var url = "{% url 'financial_record' %}";
+        
+        var project_id = $('#id_project_detail_filter').val();
+        var projectpi_id = $('#id_project_pi_select').val();
+        console.log('projectpi_id',projectpi_id)
+        console.log('project_id',project_id)
+        $.ajax({
+            url: url,
+            data: {
+                'projectpi_id': projectpi_id,
+                'project_id': project_id,
+            },
+            success: function (data) {
+                 debugger
+                console.log('data',data.data)
+                var jsonData = data.data
+                receivedData = data.newData
+                // processData()
+                console.log('jsonData',jsonData)
+                console.log('receivedData',receivedData)
+                if (jsonData.length>0){
+                        $('#id_financial_tbl tbody').empty();
+                        var salary_sum = 0
+                        var contingencies_sum = 0
+                        var non_contingencies_sum = 0
+                        var recurring_sum = 0
+                        var travel_sum = 0
+                        var overhead_expens_sum = 0
+                        var column_total = 0
+                        var count_row = 0
+                        // $.each(jsonData, function (index,item) {
+                        //     count_row += 1
+                        //     salary_sum += item.salary
+                        //     contingencies_sum += item.contingencies
+                        //     non_contingencies_sum += item.non_contingencies
+                        //     recurring_sum += item.recurring
+                        //     travel_sum += item.travel
+                        //     overhead_expens_sum += item.overhead_expens
+                        //     if (count_row < 5){$('#add_row_btn').css("display","none")}{$('#add_row_btn').css("display","")}
+                            
+                        //     //  if (item.year.startsWith('1st')){
+                        //     $('#id_financial_tbl tbody').append(
+                        //     ` 
+                        //     <tr id="TRow-${index}" data-set-id="${item.id}" disabled>
+                                
+                        //         <th scope="row"></th>
+                        //         <td style="padding: 0px !important;"><span class="d-flex"><input type="radio" id="${item.year}" name="release"><input type="text" data-set-id="${item.id}" id="id-year_row-${index+1}" name="year_row" value="${item.year}" class="form-control input_data_name" readonly></span></td>
+                        //         <td style="padding: 0px !important;"><input type="number" data-set-id="${item.id}" class="form-control input_data setdata_salary"  name="salary_row" value="${item.salary}"  onchange="Calc(this);" style="padding: 10px !important;"></td>
+                        //         <td style="padding: 0px !important;"><input type="number" data-set-id="${item.id}" class="form-control text-end input_data setdata_contingencies" name="contingencies_row" value="${item.contingencies}"  onchange="Calc(this);"></td>
+                        //         <td style="padding: 0px !important;"><input type="number" data-set-id="${item.id}" class="form-control text-end input_data setdata_noncontingencies" name="noncontingencies_row" value="${item.non_contingencies}"  onchange="Calc(this);"></td>
+                        //         <td style="padding: 0px !important;"><input type="number" data-set-id="${item.id}" class="form-control text-end input_data setdata_recurring" name="recurring_row" value="${item.recurring}"   onchange="Calc(this);"></td>
+                        //         <td style="padding: 0px !important;"><input type="number" data-set-id="${item.id}" class="form-control text-end input_data setdata_travel" name="travel_row" value="${item.travel}"   onchange="Calc(this);"></td>
+                        //         <td style="padding: 0px !important;"><input type="number" data-set-id="${item.id}" class="form-control text-end input_data setdata_overhead" name="overhead_row" value="${item.overhead_expens}"  onchange="Calc(this);"></td>
+                        //         <td style="padding: 0px !important;"><input type="file" data-set-id="${item.id}" class="form-control text-end input_data setdata_file" id="pdfupload" name="file" multiple>
+                        //             <span><a href="/media/${item.fileupload}">show</span>
+                        //             </td>
+                        //         <td style="padding: 0px !important;"><input type="number" class="form-control text-end setdata_total" name="amt" value="${item.total}" value="0" disabled=""></td>
+                        //         <td class="NoPrint"></td>
+                                
+                        //     </tr>
+                            
+                        //     `
+                        //     );
+                        // // }
+                        // // $div1st.append(row);
+                        // // $('#output').append($div1st);
+                        // });
+                        // // $('#id_financial_tbl tbody').append(div1st)
+                        // column_total = salary_sum + contingencies_sum + non_contingencies_sum + recurring_sum + travel_sum + overhead_expens_sum
+                        // $('#id_financial_tbl tbody').append(`
+                        //     <tr id="">
+                        //         <th scope="row"></th>
+                        //         <th scope="row">Total</th>
+                        //         <td>${salary_sum}</td>
+                        //         <td>${contingencies_sum}</td>
+                        //         <td>${non_contingencies_sum}</td>
+                        //         <td>${recurring_sum}</td>
+                        //         <td>${travel_sum}</td>
+                        //         <td>${overhead_expens_sum}</td>
+                        //         <td></td>
+                        //         <td>${column_total}</td>
+                        //     </tr>   
+                        // `)
+                    
+                    }
+                }
+                
+        
+        });
+    });
+
+</script>
+
+
+{% endblock content %}

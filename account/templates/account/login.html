@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Login Form</title>
+  <!---Custom CSS File--->
+  <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}" />
+   <link rel="stylesheet" href="{% static 'assets/css/plugins.min.css' %}" />
+    <!-- <link rel="stylesheet" href="{% static 'assets/css/kaiadmin.min.css' %}" /> -->
+  <link rel="stylesheet" href="{% static 'account/css/login.css' %}">
+</head>
+<body>
+  <div class="container">
+    <input type="checkbox" id="check">
+    <div class="login form">
+      <header>Login</header>
+      <form action="#" id="login_form">
+        {% csrf_token %}
+        <input type="text" id="id_username" placeholder="Enter your username">
+        <input type="password" id="id_password" placeholder="Enter your password">
+        <a href="#">Forgot password?</a>
+        <input type="submit" class="button" value="Login">
+      </form>
+      <div class="signup" style="display: none;">
+        <span class="signup">Don't have an account?
+         <label for="check">Signup</label>
+        </span>
+      </div>
+    </div>
+    <div class="registration form">
+      <header>Signup</header>
+      <form action="#">
+        <input type="text" placeholder="Enter your email">
+        <input type="password" placeholder="Create a password">
+        <input type="password" placeholder="Confirm your password">
+        <input type="button" class="button" value="Signup">
+      </form>
+      <div class="signup">
+        <span class="signup">Already have an account?
+         <label for="check">Login</label>
+        </span>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+  <script src="{% static 'assets/js/plugin/sweetalert/sweetalert.min.js' %}"></script>
+  <script src="{% static 'assets/js/plugin/webfont/webfont.min.js' %}"></script>
+  <script src="{% static 'account/js/login.js'%}"></script>
+  
+</body>
+</html>
