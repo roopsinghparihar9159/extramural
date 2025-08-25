@@ -1349,9 +1349,9 @@ let count_outer = 0
   var nextYear = yeararray[newrow]
   var blankYear = yeararray[count_outer]   
   let newRow = ''
-  if (count_outer == 4){ $('#addnewrow').css('display','none')}
-//   if (newrow){ count_outer=0}
-// <td><input type="file" id="id_file" name="file" placeholder="Enter file" accept=".pdf"></td>
+  if (newrow == 4){ $('#addnewrow').css('display','none')}
+
+if(count_outer === 0){
     if (getRowIndex === -1 ){
     newRow = `
       <tr data-set-id="new" class="seq" id="newrow">
@@ -1386,13 +1386,14 @@ let count_outer = 0
       </tr>
     `;
     } 
+    
+
      var cour_row = $('.main-row').length-1;
 	 console.log('cour_row',cour_row)
 	 if (cour_row <0){
         // reloadTable()
 	 $(`#mainTotal`).before(newRow);
-    // $(`#mainTotal`).remove();
-    // $(`#main-table`).append(newRow);
+    
 	 }
      else{
         $(`#Trow-${cour_row}`).after(newRow);
@@ -1400,7 +1401,7 @@ let count_outer = 0
     outerRowCount +=1
 	count_outer += 1
 	}
-//   };
+  };
 
   // Optional: Handle delete row
   function delBtnOuter(d) {
@@ -1651,6 +1652,7 @@ function newYearForm(v){
 
             console.log(response);
             // location.reload();
+            count_outer = 0
         },
         error: function(xhr, status, error) {
             alert('Upload failed');
