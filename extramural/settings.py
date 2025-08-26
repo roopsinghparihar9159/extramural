@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'account',
     'widget_tweaks',
+    'import_export',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
