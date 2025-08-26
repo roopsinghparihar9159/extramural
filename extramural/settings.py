@@ -25,9 +25,13 @@ SECRET_KEY = 'django-insecure-6b$-kan09hbgo%e0ywcv973dmg3p@*6v*7-mmmae3m4hab1vi7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://10.1.18.138:8000/',
+]
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'account',
     'widget_tweaks',
+    'import_export',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +55,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'extramural.urls'
