@@ -67,7 +67,7 @@ class ProjectDetail(models.Model):
     projectid           = models.CharField(max_length=200,null=True,blank=True)
     title               = models.CharField(max_length=200,null=True,blank=True)
     filenumber          = models.CharField(max_length=200,null=True,blank=True)
-    eofficnumber        = models.IntegerField(default=0)
+    eofficnumber        = models.CharField(max_length=200,null=True,blank=True)
     duration            = models.IntegerField(default=0)
     approvalfile        = models.FileField(upload_to='pdfs/',null=True,blank=True)
     proposalfile        = models.FileField(upload_to='pdfs/',null=True,blank=True)

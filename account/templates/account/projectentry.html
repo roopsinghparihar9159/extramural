@@ -17,18 +17,19 @@
 </html> -->
 
 <style>
-    table {
+    
+    /*table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
       margin-bottom: 20px;
-    }
+    }*/
 
-    th, td {
+    /* th, td {
       border: 1px solid #aaa;
       padding: 10px 0px !important;
       text-align: center;
-    }
+    } */
 
     .hidden {
       display: none;
@@ -45,13 +46,12 @@
     input{
 	width:100%;
 	justify-content:center;
-	/* border:0px; */
+	
 	}
 	.edit-toggle{
 	width:1rem;
 	}
     .th_width {
-        /* width: 10%; */
         width:8rem;
     }
     .nested_th{
@@ -67,16 +67,41 @@
         width: 350px !important; 
         font-size: 10px;
     }
-    .table>tbody>tr>td, .table>tbody>tr>th{
+    /* .table>tbody>tr>td, .table>tbody>tr>th{
         padding: 4px 6px !important; 
-    }
+    } */
     .select2-selection__choice__remove{
         padding: 2px !important;
     }
 
-    /* .table thead th {
-        padding: 2px 5px !important;
+    /* .main-head {
+        background: cadetblue !important;
     } */
+
+    #main-table thead th {
+    background-color: #b081b6 !important;
+    color: white !important;
+    }
+    #main-table td, #main-table th {
+        border-color: #234db5 !important;
+    }
+    #nestedtable thead th {
+        background-color: #42af9d !important;
+        color: white !important;
+    }
+    #nestedtable td, #nestedtable th {
+        border-color: #913db8 !important;
+        padding: 10px 8px !important;
+    }
+    #nestedtable td{
+        font-size: 12px;
+        font-weight: 600;
+        color: rgb(24, 23, 23);
+    }
+    #mainTotal b{
+        /* background-color: #b081b6 !important; */
+        color:rgb(236, 85, 39) !important;
+    }
   </style>
 
   <!-- nested table styling start -->
@@ -228,7 +253,7 @@
                                     <div class="col-md-6 col-lg-4">
                                         <div class="form-group">
                                             <label for="contactno">Contact No</label>
-                                            {% render_field pi_form.contactno class="form-control" placeholder="Enter Contact No" maxlength="10" %}
+                                            {% render_field pi_form.contactno class="form-control" placeholder="Enter Contact No" maxlength="10" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" %}
                                             <span id="id_pi_contactno-error" class="institute_type-message"></span>
                                         </div>
                                     </div>
@@ -313,7 +338,7 @@
                                 <div class="col-md-6 col-lg-4">
                                     <div class="form-group">
                                         <label for="filenumber">e-Office Number</label>
-                                        {% render_field pro_form.eofficnumber class="form-control" placeholder="Enter project file number" autocomplete="off"  %}
+                                        {% render_field pro_form.eofficnumber class="form-control" placeholder="Enter project file number" autocomplete="off" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"  %}
                                         <span id="filenumber-error" class="error-message"></span>
                                     </div>
                                 </div>     
@@ -404,10 +429,10 @@
                          </div>   
 
                          <div class="col-lg-12 table-responsive">
-                                <table id="main-table">
-                                    <thead class="bg-warning text-dark">
+                                <table id="main-table" class="table p-3">
+                                    <thead class="text-dark main-head">
                                         <tr>
-                                        <th class="th_plus">+</th>
+                                        <th class="th_width expand-icon"><i class="fa fa-plus"></i></th>
                                         <th class="th_width">Project Year</th>
                                         <th class="th_width">Salary</th>
                                         <th class="th_width">Contingencies</th>
@@ -418,7 +443,7 @@
                                         <th class="th_width">Total Amount</th>
                                         <th class="th_width">Comment</th>
                                         <th class="th_width">Sub Total</th>
-                                        <th class="th_width"><button type="button" id="addnewrow" class="btn btn-success btn-sm" onclick="AddNewrow()">Add Row</button></th>
+                                        <th class="th_width"><button type="button" id="addnewrow" class="btn btn-success btn-sm p-2" onclick="AddNewrow()">Add Year</button></th>
                                         </tr>
                                     </thead>
                                     <tbody id="Tbody"></tbody>
@@ -969,7 +994,7 @@
                         
                         <div class="form-group">
                             <label for="contactno">Contact No</label>
-                            {% render_field institute_form.contactno class="form-control institute_contact" placeholder="Enter Mobile/phone number" maxlength="10" %}
+                            {% render_field institute_form.contactno class="form-control institute_contact" placeholder="Enter Mobile/phone number" maxlength="10" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" %}
                             <span id="contactno-error" class="contactno-message"></span>
                         </div>
                         <div class="row">
@@ -1423,6 +1448,7 @@ if(count_outer === 0){
 	 if (cour_row <0){
         // reloadTable()
 	 $(`#mainTotal`).before(newRow);
+     
     
 	 }
      else{
@@ -3456,7 +3482,7 @@ function reloadTable() {
                 //   <td>pdf</td>
                 if (JSON.stringify(columnSums) != '{}') {
                     const mainRowTotal = `
-                    <tr id="mainTotal" style="background-color:#bd8146;color:white;">
+                    <tr id="mainTotal" class="bg-info">
                     <td></td>
                     <td><b>Total</b></td>
                     <td><b>${columnSums.salary}</b></td>
@@ -3467,7 +3493,7 @@ function reloadTable() {
                     <td><b>${columnSums.overhead_expens}</b></td>
                     <td><b>${columnSums.total}</b></td>
                     <td></td>
-                    <td></td>
+                    <td><b>${columnSums.subtotal}</b></td>
                     <td></td>
                     </tr>
                 `;
@@ -3529,7 +3555,7 @@ function reloadTable() {
 
             let html = `
             
-            <table class="nested-table table table-bordered table-head-bg-info table-bordered-bd-info mt-4" id="nestedtable">
+            <table class="nested-table table  table-sm mt-4" id="nestedtable">
             <thead>
             <tr>
             <th class="th_plus"></th>
@@ -3607,7 +3633,7 @@ function reloadTable() {
                 console.log("project Column Sums:", projectSumsBalance);
 
                 html += `
-                <tr class="bg-info" style="background:#72c27e !important;color:white;font-weight:600;border:1px solid black;">
+                <tr class="bg-info" style="background:#72c27e !important;color:white;font-weight:600;">
                     
                 <td></td> 
                 <td class="text-success">${objDict.balance}</td>
@@ -3619,6 +3645,7 @@ function reloadTable() {
                 <td class="text-success">${projectSumsBalance.overhead_expens||0}</td>
                 <td class="text-success"> </td>
                 <td class="text-success">${projectSumsBalance.total||0}</td>
+                <td></td>
                 <td></td>
                 <td></td>
                 </tr>
