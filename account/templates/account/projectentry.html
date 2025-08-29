@@ -18,7 +18,7 @@
 
 <style>
     table {
-      /* width: 100%; */
+      width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
       margin-bottom: 20px;
@@ -26,7 +26,7 @@
 
     th, td {
       border: 1px solid #aaa;
-      padding: 2px !important;
+      padding: 10px 0px !important;
       text-align: center;
     }
 
@@ -70,6 +70,13 @@
     .table>tbody>tr>td, .table>tbody>tr>th{
         padding: 4px 6px !important; 
     }
+    .select2-selection__choice__remove{
+        padding: 2px !important;
+    }
+
+    /* .table thead th {
+        padding: 2px 5px !important;
+    } */
   </style>
 
   <!-- nested table styling start -->
@@ -121,8 +128,8 @@
             <div class="card-header">
                 <div class="card-title">Budget Details</div>
             </div>
-            <div class="card-body">
-                <div class="container mt-5">
+            <div class="card-body ">
+                <div class=" mt-5">
                     <!-- Tabs nav -->
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
@@ -184,6 +191,13 @@
                                             <span id="id_pi_qualification-error" class="institute_type-message"></span>
                                         </div>
                                     </div>
+                                    <div class="col-md-6 col-lg-4" id="div_id_qualification_other">
+                                        <div class="form-group">
+                                            <label for="qualification">Qualification Other</label>
+                                            {% render_field pi_form.qualification_other class="form-control" placeholder="Enter Qualification other"%}
+                                            <span id="id_pi_qualification-error" class="institute_type-message"></span>
+                                        </div>
+                                    </div>
                                     <div class="col-md-6 col-lg-4">
                                         <div class="form-group">
                                             <label for="qualification">Designation</label>
@@ -214,7 +228,7 @@
                                     <div class="col-md-6 col-lg-4">
                                         <div class="form-group">
                                             <label for="contactno">Contact No</label>
-                                            {% render_field pi_form.contactno class="form-control" placeholder="Enter Contact No" %}
+                                            {% render_field pi_form.contactno class="form-control" placeholder="Enter Contact No" maxlength="10" %}
                                             <span id="id_pi_contactno-error" class="institute_type-message"></span>
                                         </div>
                                     </div>
@@ -256,6 +270,13 @@
                             {% csrf_token %}   
                             <div class="row">
                                 <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label for="project_type">Project Type</label>
+                                        {% render_field pro_form.project_type class="form-control" placeholder="Select Project type" %}
+                                        <span id="project_type-error" class="error-message"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
                                 <div class="form-group">
                                     <label for="projectid">Project ID</label>
                                     {% render_field pro_form.projectid class="form-control" placeholder="Enter project ID" autocomplete="off" %}
@@ -263,11 +284,13 @@
                                 </div>
                                 </div>
                                 <div class="col-md-6 col-lg-4">
-                                <div class="form-group">
                                     <label for="projectpi">Project PI Name</label>
-                                    <div style="width: 350px;">
+                                <div class="form-group">
+                                    
+                                    <!-- <div style="width: 350px;"> -->
                                         {% render_field pro_form.projectpi class="form-control" %}
-                                    </div>
+                                        <a class="btn btn-warning btn-sm" id="add_pi">Add PI</a>
+                                    <!-- </div> -->
                                     
                                     <span id="projectpi-error" class="error-message"></span>
                                 </div>
@@ -309,6 +332,13 @@
                                 </div>
                                 <div class="col-md-6 col-lg-4">
                                     <div class="form-group">
+                                        <label for="duration">PRC Date</label>
+                                        {% render_field pro_form.prc_date class="form-control" placeholder="Enter PRC Date" %}
+                                        <span id="prcdate-error" class="error-message"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group">
                                         <label for="startdate">Start Date </label>
                                         {% render_field pro_form.start_date class="form-control" placeholder="Enter project start date" autocomplete="off" %}
                                         <span id="startdate-error" class="error-message"></span>
@@ -328,13 +358,7 @@
                                         <span id="duration-error" class="error-message"></span>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="form-group">
-                                        <label for="duration">PRC Date</label>
-                                        {% render_field pro_form.prc_date class="form-control" placeholder="Enter PRC Date" %}
-                                        <span id="prcdate-error" class="error-message"></span>
-                                    </div>
-                                </div>
+                                
                                 <div class="col-md-6 col-lg-4">
                                     <div class="form-group">
                                         <label for="prcrecommend">PRC Recommendation </label>
@@ -943,10 +967,9 @@
                             </div>
                         </div>
                         
-                        
                         <div class="form-group">
                             <label for="contactno">Contact No</label>
-                            {% render_field institute_form.contactno class="form-control institute_contact" placeholder="Enter Mobile/phone number" %}
+                            {% render_field institute_form.contactno class="form-control institute_contact" placeholder="Enter Mobile/phone number" maxlength="10" %}
                             <span id="contactno-error" class="contactno-message"></span>
                         </div>
                         <div class="row">
@@ -1019,7 +1042,14 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('#id_projectpi').select2( {placeholder: 'Select project PI name',class:'form-control'});
+        $('#id_projectpi').select2( {placeholder: 'Select project PI name',class:'form-control',tags: true,});
+
+        
+         $('#add_pi').click(function(e){
+            e.preventDefault();
+            var preTab = new bootstrap.Tab($('#tab1-tab'));
+                preTab.show();
+        })
     });
 </script>
 
@@ -1294,7 +1324,7 @@ $('#id_institute').on('change',function(){
   <script>
 let countInner = 0
  function BtnAddInner(v){
- debugger;
+//  debugger;
 	if (countInner == 0){
     const newRow = `
       <tr id="Trow-new" class="project-row new_row" data-set-id="new">
@@ -1336,7 +1366,7 @@ let countInner = 0
 let count_outer = 0
 
  function AddNewrow() {
-    debugger;
+    // debugger;
     var newrow = outerRowCount
     // if(outerRowCount > 0){newrow = outerRowCount += 1}
     
@@ -1414,7 +1444,7 @@ if(count_outer === 0){
 
 function CalcTotal(v)
 {
-debugger;
+// debugger;
 	var index = $(v).parent().parent().index();
     // var salary = $('#salary').val()
 	// var contingencies = $('#contingencies').val()
@@ -1442,7 +1472,7 @@ debugger;
 
 function nestedRowCalc(v)
 {
-    debugger
+    // debugger
     var vcopy = v
 	var input_id = v.id.split('-')[1]	
     if (input_id == null && input_id == undefined){input_id='new'}else{input_id=input_id}
@@ -1466,7 +1496,7 @@ function nestedRowCalc(v)
 }
 
 function addInputChangeListener(vcopy) {
-debugger;
+// debugger;
 	//   var index = $(vcopy).parent().parent().index();
     var va = $(vcopy)
 	  var input_id = vcopy.id.split('-')[1]	
@@ -1592,7 +1622,7 @@ function validateYearForm(){
 }
 
 function newYearForm(v){
-    debugger;
+    // debugger;
     // alert("Add new year function calling")
     // var index = $(v).parent().parent().index();
     var id = v.parentElement.parentElement.dataset.setId
@@ -1679,7 +1709,7 @@ function newYearForm(v){
 
 
 function releaseFormSave(v){
-    debugger;
+    // debugger;
     // var parenent = v.parentElement.parentElement.parentElement.parentElement.closest('tr').closest('tr')
     // var senssion_id = parenent.attributes[2].value
 
@@ -1785,7 +1815,7 @@ function releaseFormSave(v){
 
 
 function releaseFormSaveNestedRow(v){
-    debugger;
+    // debugger;
     
 
     var va = $(v)
@@ -1883,7 +1913,7 @@ function releaseFormSaveNestedRow(v){
 }
 
 function releaseFormUpdate(v){
-    debugger;
+    // debugger;
     // alert("Release function calling")
     console.log('Release function calling',v)
     // var lastRow = $('.details-row');
@@ -1983,7 +2013,7 @@ function releaseFormUpdate(v){
 
 
 function ucFormSave(v){
-    debugger
+    // debugger
 
     var va = $(v)
 	var parent_row = va.parents().closest('tr')
@@ -2110,16 +2140,38 @@ function ucFormSave(v){
 
 
 
-  
+ <script>
+    $('#id_start_date').change(function(){
+        var prc_date = $('#id_prc_date').val()
+        var start_date = $('#id_start_date').val()
+        
+        const prc = new Date(prc_date);
+        const start = new Date(start_date);
+        if (prc_date && start_date) {
+        if (prc > start) {
+        swal("Start date must be after or equal to the PRC date.",{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});
+        $('#id_start_date').val('')
+        } else {
+        // alert("PRC date must ");
+        }
+      }
+    })
+
+  </script>  
 
   <!-- date picker start and end date -->
 <script>
        
     $(function () {
-        $("#id_start_date").datepicker({ dateFormat: 'yy-mm-dd' });
-        $("#id_end_date").datepicker({ dateFormat: 'yy-mm-dd'});
-        $("#id_prc_date").datepicker({ dateFormat: 'yy-mm-dd'});
-        $("#id_dob").datepicker({ dateFormat: 'yy-mm-dd'});
+        $("#id_start_date").datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true });
+        $("#id_end_date").datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true});
+        $("#id_prc_date").datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true});
+        $("#id_dob").datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true});
     });
   
 </script>
@@ -2145,17 +2197,45 @@ function ucFormSave(v){
     $('#id_end_date').change(function(){
         var statdate1 = $('#id_start_date').val()
         var enddate1 = $('#id_end_date').val()
-        // console.log('statdate1',statdate1)
-        // console.log('enddate1',enddate1)
-        const dateA = new Date(statdate1);
-        const dateB = new Date(enddate1);
+      
+        const startdate = new Date(statdate1);
+        const enddate = new Date(enddate1);
 
-        const monthsDifference = getMonthsDiffBetweenDates(dateA, dateB);
+        if (statdate1 && enddate1) {
+        if (startdate > enddate) {
+        swal("End date must be after to the start date.",{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});
+        $('#id_start_date').val('')
+        } else {
+        // alert("PRC date must ");
+        }
+      }
+
+        const monthsDifference = getMonthsDiffBetweenDates(startdate, enddate);
         $('#id_duration').val(monthsDifference)
     })
     
 </script>
-
+<!-- Qualification Other Show and hide scripts -->
+<script>
+	$(document).ready(function(){
+		$('#id_qualification').on('change', function(){
+			var qualification_other_val = $(this).val();
+			if(qualification_other_val == 'Other'){
+				$("#div_id_qualification_other").show();
+			}
+			else
+			{
+				$("#div_id_qualification_other").hide();
+			}
+		});
+        $("#div_id_qualification_other").hide();
+	});
+</script>
 <!-- PRC Recommendation Show and hide scripts -->
 <script>
 	$(document).ready(function(){
@@ -2169,6 +2249,7 @@ function ucFormSave(v){
 				$("#id_div_prccomment").hide();
 			}
 		});
+        $("#id_div_prccomment").hide();
 	});
 </script>
 
@@ -2189,7 +2270,7 @@ function ucFormSave(v){
         }
 
     function validatePIForm() {
-        debugger
+        // debugger
         let isValid = true;
         var name = $('#id_name').val()
         var dob = $('#id_dob').val()
@@ -2428,7 +2509,7 @@ function ucFormSave(v){
     
     $(document).ready(function() {
         function validateForm() {
-            debugger
+            // debugger
            let isValid = true;
             var projectpi = $('#id_projectpi').val()
             var projectid = $('#id_projectid').val()
@@ -3297,7 +3378,7 @@ function reloadTable() {
 
     var project_id = $('#id_project_detail_filter').val();
     var projectpi_id = $('#id_project_pi_select').val();
-    const baseURL = "http://127.0.0.1:8000/financial_record/";
+    const baseURL = "http://10.1.18.138:8000/financial_record/";
     const params = {
     projectpi_id: projectpi_id,
     project_id: project_id,
@@ -3450,7 +3531,7 @@ function reloadTable() {
             
             <table class="nested-table table table-bordered table-head-bg-info table-bordered-bd-info mt-4" id="nestedtable">
             <thead>
-            
+            <tr>
             <th class="th_plus"></th>
             <th class="nested_th">Project Year</th>
             <th class="nested_th">Salary</th>
@@ -3464,7 +3545,7 @@ function reloadTable() {
             <th class="nested_th">Interest</th>
             <th class="nested_th">Comment</th>
             <th class="nested_th">Action</th>
-            
+            </tr>
            
             </thead>
                 <tbody>

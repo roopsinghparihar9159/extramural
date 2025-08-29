@@ -43,8 +43,9 @@ class ProjectPIDetail(models.Model):
     dob             = models.DateField(null=True,blank=True)
     GENDER_TYPE_CHOICE   = [('Male', 'Male'), ('Female', 'Female')]
     gender          = models.CharField(max_length=100, null=True, blank=True, choices=GENDER_TYPE_CHOICE)
-    QUALIFICATION_TYPE_CHOICE   = [('MBBS', 'MBBS'), ('MD', 'MD'),('MSC', 'MSC'),('Phd','Phd'),('M.Tech','M.Tech')]
+    QUALIFICATION_TYPE_CHOICE   = [('MBBS', 'MBBS'), ('MD', 'MD'),('MSC', 'MSC'),('Phd','Phd'),('M.Tech','M.Tech'),('Other','Other')]
     qualification   = models.CharField(max_length=100, null=True, blank=True, choices=QUALIFICATION_TYPE_CHOICE)
+    qualification_other   = models.CharField(max_length=100,null=True,blank=True)
     designation     = models.CharField(max_length=100,null=True,blank=True)
     area_expertise  = models.CharField(max_length=100,null=True,blank=True)
     contactno       = models.CharField(max_length=100,null=True,blank=True)
@@ -61,10 +62,12 @@ class ProjectPIDetail(models.Model):
 class ProjectDetail(models.Model):
     user                = models.ForeignKey(User, null=True, blank=True, related_name='user_project_detail', on_delete=models.CASCADE, )
     projectpi           = models.ManyToManyField(ProjectPIDetail,related_name='project_projectpi')
+    PROJECT_TYPE_CHOICE   = [('small_grant', 'Small Grant'), ('taskforce', 'Taskforce'),('fellowship', 'Fellowship'),('adhoc','Adhoc'),('intermediate','Intermediate'),('center_adv_research','Center Adv Research(CAR)'),('NHRP','NHRP')]
+    project_type        = models.CharField(max_length=100, null=True, blank=True, choices=PROJECT_TYPE_CHOICE)
     projectid           = models.CharField(max_length=200,null=True,blank=True)
     title               = models.CharField(max_length=200,null=True,blank=True)
     filenumber          = models.CharField(max_length=200,null=True,blank=True)
-    eofficnumber        = models.CharField(max_length=200,null=True,blank=True)
+    eofficnumber        = models.IntegerField(default=0)
     duration            = models.IntegerField(default=0)
     approvalfile        = models.FileField(upload_to='pdfs/',null=True,blank=True)
     proposalfile        = models.FileField(upload_to='pdfs/',null=True,blank=True)
@@ -247,6 +250,25 @@ class UsedBalance(models.Model):
         year_obj.uc_submit='YES'
         year_obj.save()
 
+
+    def generate_series_number(self):
+        # self.finance
+        fin_obj = FinancialDetail.objects.filter(id=self.finance.id,projectpi_id=self.projectpi,projectdetail_id=self.projectdetail).first()
+        last = UsedBalance.objects.filter(
+                projectpi_id=self.projectpi,
+                projectdetail_id=self.projectdetail,
+                finance_id=self.finance
+            ).order_by('-uc_no').first()
+        if last:
+            last_split = int(last.uc_no.split('-')[2])
+            seq = last_split + 1
+            get_year = f'{fin_obj.year}-release-{seq}'
+            # last.release_no + 1
+            print('last',last)
+            return get_year
+            # f'{last.finance.year}-release-{1}'
+        return f'{fin_obj.year}-uc-{1}'
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         
@@ -260,6 +282,9 @@ class UsedBalance(models.Model):
         self.finance.remainamount = remaining
         self.finance.save(update_fields=['remainamount'])
         self.carry_forward_to_next_year()
+        if self._state.adding:  # Only generate for new records
+            if self.uc_no is None:
+                self.uc_no = self.generate_series_number()
 
     def __str__(self):
         return str(self.id)

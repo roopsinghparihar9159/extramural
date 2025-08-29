@@ -12,7 +12,7 @@ class InstituteDetailForm(forms.ModelForm):
 class ProjectPIDetailForm(forms.ModelForm):
     class Meta:
         model = ProjectPIDetail
-        fields = ['name','dob','gender','qualification','designation','area_expertise','institute', 'contactno', 'emailid','address','state_pi','district_pi']
+        fields = ['name','dob','gender','qualification','qualification_other','designation','area_expertise','institute', 'contactno', 'emailid','address','state_pi','district_pi']
         widgets = {
                 'address': forms.Textarea(attrs={'rows': 5, 'cols': 40}),
             }
@@ -25,7 +25,7 @@ class ProjectDetailForm(forms.ModelForm):
 
     class Meta:
         model = ProjectDetail
-        fields = ['projectpi', 'projectid', 'title', 'filenumber','eofficnumber','duration','approvalfile','proposalfile','prcrecommend','prccomment','prccomment','start_date','end_date','prc_date']
+        fields = ['project_type','projectpi', 'projectid', 'title', 'filenumber','eofficnumber','duration','approvalfile','proposalfile','prcrecommend','prccomment','prccomment','start_date','end_date','prc_date']
 
         def clean(self):
             cleaned_data = super().clean()
