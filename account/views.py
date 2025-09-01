@@ -225,6 +225,7 @@ def fetch_financial_record(request):
                 dict_release = {}
                 dict_release['id']=d.id
                 dict_release['year']=d.year
+                dict_release['release_no']=d.release_no
                 dict_release['salary']=d.salary
                 dict_release['contingencies']=d.contingencies
                 dict_release['non_contingencies']=d.non_contingencies
@@ -242,6 +243,7 @@ def fetch_financial_record(request):
                 dict_uc = {}
                 dict_uc['id']=u.id
                 dict_uc['year']=u.year
+                dict_uc['uc_no']=u.uc_no
                 dict_uc['salary']=u.salary
                 dict_uc['contingencies']=u.contingencies
                 dict_uc['non_contingencies']=u.non_contingencies
@@ -450,13 +452,13 @@ def release_save_record(request):
         id_projectdetail = pi_obj[0].id
         if year == '':
             return JsonResponse({'message':'Please fill release year','status':'400 BAD_REQUEST'})
-        if year != '':
-            try:
-                year_split = year.split('-')[1]
-                if year_split != 'release':
-                    return JsonResponse({'message':'Please select currect button','status':'400 BAD_REQUEST'})
-            except IndexError as e:
-                return JsonResponse({'message':'Please fill currect year of release, Ex. 1st-release-1','status':'400 BAD_REQUEST'})
+        # if year != '':
+        #     try:
+        #         year_split = year.split('-')[1]
+        #         if year_split != 'release':
+        #             return JsonResponse({'message':'Please select currect button','status':'400 BAD_REQUEST'})
+        #     except IndexError as e:
+        #         return JsonResponse({'message':'Please fill currect year of release, Ex. 1st-release-1','status':'400 BAD_REQUEST'})
             
         # pdb.set_trace()
         if getid == 'new':
@@ -528,11 +530,11 @@ def uc_save_record(request):
         # pdb.set_trace()
         if year == '':
             return JsonResponse({'message':'Please fill uc year','status':'400 BAD_REQUEST'})
-        if year != '':
-            year_split = year.split('-')[1]
-            print('year_split',year_split)
-            if year_split != 'uc':
-                return JsonResponse({'message':'Please select currect button','status':'400 BAD_REQUEST'})
+        # if year != '':
+        #     year_split = year.split('-')[1]
+        #     print('year_split',year_split)
+        #     if year_split != 'uc':
+        #         return JsonResponse({'message':'Please select currect button','status':'400 BAD_REQUEST'})
         if getid == 'new':
             UsedBalance.objects.create(user=request.user,
                 projectpi_id = projectpi_id,

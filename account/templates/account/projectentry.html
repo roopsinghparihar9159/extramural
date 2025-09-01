@@ -98,9 +98,16 @@
         font-weight: 600;
         color: rgb(24, 23, 23);
     }
-    #mainTotal b{
-        /* background-color: #b081b6 !important; */
-        color:rgb(236, 85, 39) !important;
+    #nested-sum td{
+        background-color: #42af9d !important;
+        color: white !important;
+    }
+    #mainTotal_sum td{
+        background-color: #b081b6 !important;
+        color:#f9f9f9 !important;
+    }
+    #main-table td{
+        padding: 10px 8px !important;
     }
   </style>
 
@@ -435,8 +442,8 @@
                                         <th class="th_width expand-icon"><i class="fa fa-plus"></i></th>
                                         <th class="th_width">Project Year</th>
                                         <th class="th_width">Salary</th>
-                                        <th class="th_width">Contingencies</th>
-                                        <th class="th_width">Non contingencies</th>
+                                        <th class="th_width">Contin gencies</th>
+                                        <th class="th_width">Non-contin gencies</th>
                                         <th class="th_width">Recurring</th>
                                         <th class="th_width">Travel</th>
                                         <th class="th_width">Overhead expens</th>
@@ -1354,8 +1361,14 @@ let countInner = 0
     const newRow = `
       <tr id="Trow-new" class="project-row new_row" data-set-id="new">
 		<td><button class="deleteRow bg-danger text-white" onclick="delBtn(this)" style="color:red;">X</button></td>
-        <td><input type="text" id="year-new" class="text-center" name="year" placeholder="Enter year"></td>
-		<td><input type="number" id="salary-new" class="release-salary text-center" name="salary" value="" onchange="nestedRowCalc(this);"></td>
+        <td>
+            <select class="form-select form-select-sm option-select" aria-label=".form-select-sm example" id="year-new" name="year" onchange="releaseUcShowHide(this);">
+            <option selected>select options</option>
+            <option value="release">Release</option>
+            <option value="uc">UC</option>
+            </select>
+        </td>
+		<td><input type="number" id="salary-new" class="release-salary text-center" name="salary" value="" placeholder="Enter salary" onchange="nestedRowCalc(this);"></td>
 		<td><input type="number" id="contingencies-new" class="release-contingencies text-center" name="contingencies" placeholder="Enter contingencies" onchange="nestedRowCalc(this);"></td>
 		<td><input type="number" id="non_contingencies-new" class="release-non_contingencies" name="non_contingencies" placeholder="Enter non contingencies" onchange="nestedRowCalc(this);"></td>
 		<td><input type="number" id="recurring-new" class="release-recurring" name="recurring" placeholder="Enter recurring" onchange="nestedRowCalc(this);"></td>
@@ -1366,7 +1379,7 @@ let countInner = 0
         <td><input type="text" id="interest-new" name="interest" class="release-interest" placeholder="Enter interest"></td>
         <td><input type="text" id="comment-new" name="comment" class="release-comment" placeholder="Enter comment"></td>
         
-        <td><div style="display: flex;"><button id="btn_releasesave" class="btn btn-secondary btn-sm" onclick="releaseFormSaveNestedRow(this)">Release</button><button onclick="ucFormSave(this)" class="btn btn-warning btn-sm" style="margin-left:5px; color:black;">UC</button></div></td>
+        <td><div style="display: flex;"><button id="btn_releasesave" class="btn btn-secondary btn-sm action-btn release-btn" onclick="releaseFormSaveNestedRow(this)">Release</button><button onclick="ucFormSave(this)" class="btn btn-warning btn-sm action-btn uc-btn" style="margin-left:5px; color:black;">UC</button></div></td>
       </tr>
     `;
 	
@@ -2057,7 +2070,7 @@ function ucFormSave(v){
     var createExistid = v.parentElement.closest('tr').id.split('-')[1]
     var year = $(`#year-${createExistid}`).val()
     if (updateRecordId === 'new'){
-        var year_split = year.split('-')[1]
+        var year_split = year
         if (year_split !== 'uc'){
             return swal("Please check currect button, You have pressed!!!",{
                     buttons: {
@@ -3398,6 +3411,7 @@ var outerRowCount = 0
 
 function reloadTable() {
     outerRowCount = 0
+    countInner = 0
     $('#addnewrow').css('display','')
     $('#main-table tbody').empty();
     var financial_record_url = "{% url 'financial_record' %}";
@@ -3446,16 +3460,16 @@ function reloadTable() {
             const mainRow = `
                 <tr id="Trow-${index}" class="main-row" data-index="${index}" data-set-id="${person.id}">
                 <td class="expand-icon"><i class="fa fa-plus"></i></td>
-                <td class="outer-year">${person.year}</td>
+                <td class="outer-year text-warning">${person.year}</td>
                 <td class="outer-salary">${person.salary}</td>
                 <td class="outer-contingencies">${person.contingencies}</td>
                 <td class="outer-non_contingencies">${person.non_contingencies}</td>
                 <td class="outer-recurring">${person.recurring}</td>
                 <td class="outer-travel">${person.travel}</td>
                 <td class="outer-overhead_expens">${person.overhead_expens}</td>
-                <td class="outer-total">${person.total}</td>
+                <td class="outer-total text-success">${person.total}</td>
                 <td class="outer-comment">${person.comment}</td>
-                <td class="outer-comment">${person.subtotal}</td>
+                <td class="outer-comment text-danger">${person.subtotal}</td>
                 <td class="outer-total"></td>
                 </tr>
                 <tr class="details-row Trow-${index}" id="details-${index}" data-set-id="${person.id}">
@@ -3482,7 +3496,7 @@ function reloadTable() {
                 //   <td>pdf</td>
                 if (JSON.stringify(columnSums) != '{}') {
                     const mainRowTotal = `
-                    <tr id="mainTotal" class="bg-info">
+                    <tr id="mainTotal_sum" style="background-color:#234db5 !important;">
                     <td></td>
                     <td><b>Total</b></td>
                     <td><b>${columnSums.salary}</b></td>
@@ -3500,7 +3514,7 @@ function reloadTable() {
                 $tbody.append(mainRowTotal);
                 }else{
                 const mainRowTotal = `
-                    <tr id="mainTotal">
+                    <tr id="mainTotal_zero">
                     <td></td>
                     <td>Total</td>
                     <td>0</td>
@@ -3540,16 +3554,22 @@ function reloadTable() {
             console.log('************************************',projects)
             if (!projects || projects.length === 0) return `<tr id="Trow-new" class="project-row Trow-${personIndex}" data-set-id="new">
 		<td><button class="deleteRow bg-danger text-white" onclick="delBtn(this)" style="color:red;">X</button></td>
-        <td><input type="text" id="year-new" class="text-center" name="year" placeholder="Enter year"></td>
-		<td><input type="number" id="salary-new" class="release-salary text-center" name="salary" value="" onchange="nestedRowCalc(this);"></td>
-		<td><input type="number" id="contingencies-new" class="release-contingencies text-center" name="contingencies" placeholder="Enter contingencies" onchange="nestedRowCalc(this);"></td>
-		<td><input type="number" id="non_contingencies-new" class="release-non_contingencies" name="non_contingencies" placeholder="Enter non contingencies" onchange="nestedRowCalc(this);"></td>
-		<td><input type="number" id="recurring-new" class="release-recurring" name="recurring" placeholder="Enter recurring" onchange="nestedRowCalc(this);"></td>
-		<td><input type="number" id="travel-new" class="release-travel" name="travel" placeholder="Enter travel" onchange="nestedRowCalc(this);"></td>
-		<td><input type="number" id="overhead_expens-new" class="release-overhead_expens" name="overheadexpens" placeholder="Enter overheadexpens" onchange="nestedRowCalc(this);"></td>
-		<td><input type="file" id="uploadfile" class="release-file" name="file" placeholder="Enter name" accept=".pdf"></td>
-		<td><input type="number" id="total-new" name="total" class="release-total" placeholder="total" disabled></td>
-        <td><input type="text" id="comment-new" name="comment" class="release-comment" placeholder="Enter comment"></td>
+        <td>
+            <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="year-new" name="year">
+            <option selected>select options</option>
+            <option value="release">Release</option>
+            <option value="uc">UC</option>
+            </select>
+        </td>
+		<td><input type="number" id="salary-new" class="release-salary text-center form-control" name="salary" value="" onchange="nestedRowCalc(this);" style="padding: 2px 4px;"></td>
+		<td><input type="number" id="contingencies-new" class="release-contingencies text-center form-control" name="contingencies" placeholder="Enter contingencies" onchange="nestedRowCalc(this);" style="padding: 2px 4px;"></td>
+		<td><input type="number" id="non_contingencies-new" class="release-non_contingencies form-control" name="non_contingencies" placeholder="Enter non contingencies" onchange="nestedRowCalc(this);" style="padding: 2px 4px;"></td>
+		<td><input type="number" id="recurring-new" class="release-recurring form-control" name="recurring" placeholder="Enter recurring" onchange="nestedRowCalc(this);" style="padding: 2px 4px;"></td>
+		<td><input type="number" id="travel-new" class="release-travel form-control" name="travel" placeholder="Enter travel" onchange="nestedRowCalc(this);" style="padding: 2px 4px;"></td>
+		<td><input type="number" id="overhead_expens-new" class="release-overhead_expens form-control" name="overheadexpens" placeholder="Enter overheadexpens" onchange="nestedRowCalc(this);" style="padding: 2px 4px;"></td>
+		<td><input type="number" id="total-new" name="total" class="release-total form-control" placeholder="total" disabled style="padding: 2px 4px;"></td>
+        <td><input type="text" id="comment-new" name="comment" class="release-comment form-control" placeholder="Enter comment" style="padding: 2px 4px;"></td>
+        <td><input type="file" id="uploadfile" class="release-file form-control" name="file" placeholder="Enter name" accept=".pdf" style="padding: 2px 4px;"></td>
         <td><div style="display: flex;"><button id="btn_releasesave" class="btn btn-secondary btn-sm" onclick="releaseFormSave(this)">Release</button></div></td>
       </tr>`;
 
@@ -3584,8 +3604,17 @@ function reloadTable() {
                 html += `
                 <tr id="Trow-${personIndex}${projIndex}" class="project-row" data-person-index="${personIndex}" data-project-index="${projIndex}" data-set-flag="${project.flag}" data-set-id="${project.id}">
                     
-                <td><input type="checkbox" name="editbox" class="edit-toggle"></td>    
-                <td class="row-${personIndex} release-year"><input type="text" id="year-${personIndex}${projIndex}" class="release-year edit-input text-center" name="year" value="${project.year}" readonly disabled></td>
+                <td><input type="checkbox" name="editbox" class="edit-toggle"></td>`
+                if (project.flag == 'rel'){
+                    html += `
+                    <td class="row-${personIndex} release-year"><input type="text" id="year-${personIndex}${projIndex}" class="release-year edit-input text-center" name="year" value="${project.release_no}" readonly disabled></td>
+                    `
+                }else{
+                    html += `
+                    <td class="row-${personIndex} release-year"><input type="text" id="year-${personIndex}${projIndex}" class="release-year edit-input text-center" name="year" value="${project.uc_no}" readonly disabled></td>
+                    `
+                }
+                html += `    
                 <td class="row-${personIndex}"><input type="number" id="salary-${personIndex}${projIndex}" class="release-salary edit-input text-center" name="salary" value="${project.salary}" onchange="nestedRowCalc(this);" disabled></td>
                 <td class="row-${personIndex}"><input type="number" id="contingencies-${personIndex}${projIndex}" class="release-contingencies edit-input text-center" name="contingencies" value="${project.contingencies}" onchange="nestedRowCalc(this);" disabled></td>
                 <td class="row-${personIndex}"><input type="number" id="non_contingencies-${personIndex}${projIndex}" class="release-non_contingencies edit-input text-center" name="non_contingencies" value="${project.non_contingencies}" onchange="nestedRowCalc(this);" disabled></td>
@@ -3593,9 +3622,9 @@ function reloadTable() {
                 <td class="row-${personIndex}"><input type="number" id="travel-${personIndex}${projIndex}" class="release-travel edit-input text-center" name="travel" value="${project.travel}" onchange="nestedRowCalc(this);" disabled></td>
                 <td class="row-${personIndex}"><input type="number" id="overhead_expens-${personIndex}${projIndex}" class="release-overhead_expens edit-input text-center" name="overhead_expens" value="${project.overhead_expens}" onchange="nestedRowCalc(this);" disabled></td>
                 <td class="row-${personIndex}"><input type="file" id="uploadfile-${personIndex}${projIndex}" class="release-file edit-input" name="file" disabled></td>
-                <td class="row-${personIndex}"><input type="number" id="total-${personIndex}${projIndex}" class="release-total text-center" name="total" value="${project.total}" onchange="nestedRowCalc(this);" disabled></td></td>
+                <td class="row-${personIndex}"><input type="number" id="total-${personIndex}${projIndex}" class="release-total text-center text-success border border-warning" name="total" value="${project.total}" onchange="nestedRowCalc(this);" disabled></td></td>
                 <td class="row-${personIndex}"><input type="number" id="interest-${personIndex}${projIndex}" class="release-total text-center" name="interest" value="${project.interest}" disabled></td></td>
-                <td class="row-${personIndex}"><input type="text" id="comment-${personIndex}${projIndex}" class="release-comment edit-input text-center" name="comment" value="${project.comment}" disabled></td>
+                <td class="row-${personIndex}"><input type="text" id="comment-${personIndex}${projIndex}" class="release-comment edit-input text-center" name="comment" value="${project.comment}" data-bs-toggle="tooltip" data-bs-placement="top" title="${project.comment}" disabled></td>
                 `;
                 if (project.flag == 'rel'){
                     html += `
@@ -3633,7 +3662,7 @@ function reloadTable() {
                 console.log("project Column Sums:", projectSumsBalance);
 
                 html += `
-                <tr class="bg-info" style="background:#72c27e !important;color:white;font-weight:600;">
+                <tr class="bg-info" id="nested-sum">
                     
                 <td></td> 
                 <td class="text-success">${objDict.balance}</td>
@@ -3822,6 +3851,26 @@ $("#id_project_pi_select").change(function () {
         });
     });
 
+</script>
+ <!-- // Event delegation for dynamic elements -->
+<script>
+    // $('#nestedtable').on('change', '.option-select', function () {
+    function releaseUcShowHide(v){
+        debugger
+        var input_id = v.id
+        const selectedVal = $(`#${input_id}`).val();
+        const $row = $(v).closest('tr');
+
+        // Hide both buttons first
+        $row.find('.action-btn').hide();
+
+        // Show only the button based on selection
+        if (selectedVal === 'release') {
+            $row.find('.release-btn').show();
+        } else if (selectedVal === 'uc') {
+            $row.find('.uc-btn').show();
+        }
+    };
 </script>
 
 

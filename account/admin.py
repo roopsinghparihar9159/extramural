@@ -10,7 +10,7 @@ admin.site.register(ProjectDetail)
 admin.site.register(FinancialDetail)
 admin.site.register(InstituteDetail)
 # admin.site.register(ReleaseBuget)
-admin.site.register(UsedBalance)
+# admin.site.register(UsedBalance)
 
 
 class StateAdmin(ImportExportModelAdmin):
@@ -28,3 +28,7 @@ class DistrictAdmin(ImportExportModelAdmin,DistrictAdmin1):
 @admin.register(ReleaseBuget)
 class ReleaseBugetAdmin(admin.ModelAdmin):
     readonly_fields = ('release_no',)
+
+@admin.register(UsedBalance)
+class UsedBalanceAdmin(admin.ModelAdmin):
+    readonly_fields = ('uc_no',)

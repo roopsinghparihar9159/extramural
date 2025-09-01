@@ -201,7 +201,7 @@ class UsedBalance(models.Model):
     projectpi           = models.ForeignKey(ProjectPIDetail, null=True, blank=True, related_name='projectpi_ub_detail', on_delete=models.CASCADE, )
     projectdetail       = models.ForeignKey(ProjectDetail, null=True, blank=True, related_name='projectdetail_ub_detail', on_delete=models.CASCADE, )
     finance             = models.ForeignKey(FinancialDetail, null=True, blank=True, related_name='financial_ub_detail', on_delete=models.CASCADE, )
-    uc_no               = models.IntegerField(null=True,blank=True)
+    uc_no               = models.CharField(max_length=200,null=True,blank=True)
     year                = models.CharField(max_length=200,null=True,blank=True)
     salary              = models.FloatField(default=0.00)
     contingencies       = models.FloatField(default=0.00)
@@ -251,7 +251,7 @@ class UsedBalance(models.Model):
         year_obj.save()
 
 
-    def generate_series_number(self):
+    def generate_series_number_uc(self):
         # self.finance
         fin_obj = FinancialDetail.objects.filter(id=self.finance.id,projectpi_id=self.projectpi,projectdetail_id=self.projectdetail).first()
         last = UsedBalance.objects.filter(
@@ -262,7 +262,7 @@ class UsedBalance(models.Model):
         if last:
             last_split = int(last.uc_no.split('-')[2])
             seq = last_split + 1
-            get_year = f'{fin_obj.year}-release-{seq}'
+            get_year = f'{fin_obj.year}-uc-{seq}'
             # last.release_no + 1
             print('last',last)
             return get_year
@@ -270,8 +270,6 @@ class UsedBalance(models.Model):
         return f'{fin_obj.year}-uc-{1}'
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        
         total_released = ReleaseBuget.objects.filter(projectpi_id=self.projectpi,projectdetail_id=self.projectdetail,finance_id=self.finance).aggregate(
                 total=models.Sum('total')
             )['total'] or 0    
@@ -284,7 +282,8 @@ class UsedBalance(models.Model):
         self.carry_forward_to_next_year()
         if self._state.adding:  # Only generate for new records
             if self.uc_no is None:
-                self.uc_no = self.generate_series_number()
+                self.uc_no = self.generate_series_number_uc()
+        super().save(*args, **kwargs)        
 
     def __str__(self):
         return str(self.id)
