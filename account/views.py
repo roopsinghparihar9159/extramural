@@ -571,3 +571,46 @@ def uc_save_record(request):
             print("update record")
             return JsonResponse({'message':'Record updated successfully!!','status':'200 OK'})
     return JsonResponse({'message':'Something went wrong!!','status':'400 BAD_REQUEST'})   
+
+@login_required(login_url="login")
+def autocomplete_area_experties(request):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        term = request.GET.get('term', '')
+        suggestions = ProjectPIDetail.objects.filter(area_expertise__icontains=term).values_list('area_expertise', flat=True)[:10]
+        return JsonResponse(list(suggestions), safe=False)
+    return JsonResponse([])
+
+@login_required(login_url="login")
+def autocomplete_designation(request):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        term = request.GET.get('term', '')
+        suggestions = ProjectPIDetail.objects.filter(designation__icontains=term).values_list('designation', flat=True)[:10]
+        print('suggestions',suggestions)
+        return JsonResponse(list(suggestions), safe=False)
+    return JsonResponse([])
+
+@login_required(login_url="login")
+def projectview(request):
+    project_list = []
+    projects = ProjectDetail.objects.prefetch_related('projectpi__state_pi','projectpi__institute').all()
+    for project in projects:
+        project_dict = {}
+        # print(f"Project: {project.title},ProjectId:{project.projectid}")
+        project_dict['projectid']=project.id
+        project_dict['project_filenumber']=project.filenumber
+        project_dict['project_title']=project.title
+        project_dict['project_id']=project.projectid
+        project_dict['project_type']=project.project_type
+        for pi in project.projectpi.all():
+            # print(f"  PI: {pi.name}, Email: {pi.emailid}, State: {pi.state_pi.name},Institute: {pi.institute.name}")
+            project_dict['piid']=pi.id
+            project_dict['pi_name']=pi.name
+            project_dict['pi_state']=pi.state_pi.name
+            project_dict['pi_institute']=pi.institute.name
+            project_list.append(project_dict)
+            # print(project_dict)
+        # print()
+    # print(project_list)
+    context = {'projects': project_list}
+    return render(request,"account/projectview.html",context)
+    

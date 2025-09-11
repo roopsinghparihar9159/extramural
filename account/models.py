@@ -62,7 +62,7 @@ class ProjectPIDetail(models.Model):
 class ProjectDetail(models.Model):
     user                = models.ForeignKey(User, null=True, blank=True, related_name='user_project_detail', on_delete=models.CASCADE, )
     projectpi           = models.ManyToManyField(ProjectPIDetail,related_name='project_projectpi')
-    PROJECT_TYPE_CHOICE   = [('small_grant', 'Small Grant'), ('taskforce', 'Taskforce'),('fellowship', 'Fellowship'),('adhoc','Adhoc'),('intermediate','Intermediate'),('center_adv_research','Center Adv Research(CAR)'),('NHRP','NHRP')]
+    PROJECT_TYPE_CHOICE   = [('adhoc','Adhoc'),('center_adv_research','Center for Advanced Research(CAR)'),('fellowship', 'Fellowship'),('intermediate','Intermediate'),('NHRP','NHRP'),('small_grant', 'Small Grant'), ('taskforce', 'Taskforce')]
     project_type        = models.CharField(max_length=100, null=True, blank=True, choices=PROJECT_TYPE_CHOICE)
     projectid           = models.CharField(max_length=200,null=True,blank=True)
     title               = models.CharField(max_length=200,null=True,blank=True)
@@ -74,8 +74,8 @@ class ProjectDetail(models.Model):
     PRC_STATUS_CHOICE   = [('Approved', 'Approved'), ('Rejected', 'Rejected')]
     prcrecommend        = models.CharField(max_length=100, null=True, blank=True, choices=PRC_STATUS_CHOICE)
     prccomment          = models.CharField(max_length=100,null=True,blank=True)
-    start_date          = models.DateField()
-    end_date            = models.DateField()
+    start_date          = models.DateField(null=True,blank=True)
+    end_date            = models.DateField(null=True,blank=True)
     prc_date            = models.DateField(null=True,blank=True)
     created             = models.DateTimeField(auto_now_add=True)
     updated             = models.DateTimeField(auto_now=True)

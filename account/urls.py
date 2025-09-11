@@ -22,5 +22,10 @@ urlpatterns = [
 
     path('ajax/get-states/', views.get_states, name='get_states'),
     path('ajax/get-districts/', views.get_districts, name='get_districts'),
+    path('autocomplete_area_experties/', views.autocomplete_area_experties, name='autocomplete_area_experties'),
+    path('autocomplete_designation/', views.autocomplete_designation, name='autocomplete_designation'),
+
+    # project views urls
+    path("projectview/",views.projectview,name="projectview"),
 ]
 
