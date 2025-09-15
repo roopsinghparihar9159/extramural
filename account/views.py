@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -613,4 +613,14 @@ def projectview(request):
     # print(project_list)
     context = {'projects': project_list}
     return render(request,"account/projectview.html",context)
-    
+
+@login_required(login_url="login")
+def project_detail_view(request,pk):
+    project = get_object_or_404(ProjectDetail,pk=pk)
+    form = ProjectDetailForm(request.POST or None, instance=project)
+    # if form.is_valid():
+    #     form.save()
+    #     return redirect('projectview')
+    context = {'form':form}
+    return render(request,"account/project_detail_view.html",context)
+

@@ -27,5 +27,6 @@ urlpatterns = [
 
     # project views urls
     path("projectview/",views.projectview,name="projectview"),
+    path("project_detail_view/<int:pk>/",views.project_detail_view,name="project_detail_view"),
 ]
 

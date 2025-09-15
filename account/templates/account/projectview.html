@@ -3,6 +3,12 @@
 
 {% load widget_tweaks %}
 {% block content %}
+
+<style>
+    #basic-datatables td{
+        padding: 10px 8px !important;
+    }
+</style>
 <!-- <div class="row">
     <div class="col-md-12">
         <div class="card">
@@ -67,15 +73,15 @@
                                         {% for project in projects %}
                                         <tr role="row" class="odd">
                                             <td class="">{{project.project_filenumber}}</td>
-                                            <td class="">{{project.project_id}}</td>
+                                            <td class=""><a href="{% url 'project_detail_view' project.projectid %}"> {{project.project_id}}</a></td>
                                             <td class="">{{project.project_title|truncatechars:20}}</td>
                                             <td class="">{{project.pi_name}}</td>
                                             <td class="sorting_1">{{project.pi_institute|truncatechars:20}}</td>
                                             <td>{{project.pi_state}}</td>
                                             <td>
-                                                <div class="d-flex justify-content-between">
+                                                <div class="d-flex justify-content-md-around justify-content-sm-around">
                                                     <a href="#" class="btn btn-success btn-sm">View</a>
-                                                    <a href="#" class="btn btn-warning btn-sm">Edit</a>
+                                                    <a href="#" class="btn btn-warning btn-sm" style="margin-left: 3px;">Edit</a>
                                                 </div>
                                             </td>
                                         </tr>

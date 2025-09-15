@@ -1,0 +1,194 @@
+{% extends 'account/main.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+   
+     @media (min-width: 576px) { 
+        .lebel_div{
+            width: 100%;
+        }
+        .input_div{
+            width: 100%;
+        }
+     }
+     @media (min-width: 768px) { 
+        .lebel_div{
+            width: 20%;
+        }
+        .input_div{
+            width: 70%;
+        }
+     }
+
+    #id_proposalfile{
+        display: none;
+    } 
+    #id_approvalfile{
+        display: none;
+    }
+    #approvalfile-clear_id{
+        display: none;
+    }
+    #id_project_type,#id_title,.selection,#id_filenumber,#id_eofficnumber,#id_prc_date,#id_prcrecommend,
+    #id_start_date,#id_end_date{
+         pointer-events: none;
+    }
+
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <div class="card-title">Project Details</div>
+                <div class=""><a href="#" class="btn btn-primary btn-sm start-end" id="edit_btn">Edit</a><span></span><input type="checkbox" id="myCheck" onclick="myFunction()"> </div>
+            </div>
+            <div class="card-body">
+                <div class="row p-3">
+                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
+                        <div class="mt-3 lebel_div">
+                            <label for="floatingInput">Project Type</label>
+                        </div>
+                        <div class="form-floating-custom input_div">
+                             {% render_field form.project_type class="form-control" %}
+                        </div>
+                    </div>  
+                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
+                        <div class="mt-3 lebel_div">
+                            <label for="floatingInput">Project Id</label>
+                        </div>
+                        <div class="form-floating-custom input_div">
+                             {% render_field form.projectid class="form-control" %}
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
+                        <div class="mt-3 lebel_div">
+                            <label for="floatingInput">Pro.PI Name</label>
+                        </div>
+                        <div class="form-floating-custom input_div">
+                             {% render_field form.projectpi class="form-control" %}
+                        </div>
+                    </div>
+                    <!-- <hr/> -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
+                        <div class="mt-3 lebel_div">
+                            <label for="floatingInput">Project Title</label>
+                        </div>
+                        <div class="form-floating-custom input_div">
+                             {% render_field form.title class="form-control" %}
+                        </div>
+                    </div>  
+                     
+                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
+                        <div class="mt-3 lebel_div">
+                            <label for="floatingInput">File Number</label>
+                        </div>
+                        <div class="form-floating-custom input_div">
+                             {% render_field form.filenumber class="form-control" %}
+                        </div>
+                    </div>  
+                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
+                        <div class="mt-3 lebel_div">
+                            <label for="floatingInput">e-Office Number</label>
+                        </div>
+                        <div class="form-floating-custom input_div">
+                             {% render_field form.eofficnumber class="form-control" %}
+                        </div>
+                    </div> 
+                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
+                        <div class="mt-3 lebel_div">
+                            <label for="floatingInput">Proposal File Upload</label>
+                        </div>
+                        <div class="form-floating-custom input_div">
+                             {% render_field form.proposalfile class="form-control" %}
+                        </div>
+                    </div>  
+                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
+                        <div class="mt-3 lebel_div">
+                            <label for="floatingInput">Approval Upload</label>
+                        </div>
+                        <div class="form-floating-custom input_div">
+                             {% render_field form.approvalfile class="form-control" %}
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
+                        <div class="mt-3 lebel_div">
+                            <label for="floatingInput">PRC Date</label>
+                        </div>
+                        <div class="form-floating-custom input_div">
+                             {% render_field form.prc_date class="form-control" %}
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
+                        <div class="mt-3 lebel_div">
+                            <label for="floatingInput">PRC Recommendation</label>
+                        </div>
+                        <div class="form-floating-custom input_div">
+                             {% render_field form.prcrecommend class="form-control" %}
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
+                        <div class="mt-3 lebel_div">
+                            <label for="floatingInput">Start Date</label>
+                        </div>
+                        <div class="form-floating-custom input_div">
+                             {% render_field form.start_date class="form-control" %}
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
+                        <div class="mt-3 lebel_div">
+                            <label for="floatingInput">End Date</label>
+                        </div>
+                        <div class="form-floating-custom input_div">
+                             {% render_field form.end_date class="form-control" %}
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
+                        <div class="mt-3 lebel_div">
+                            <label for="floatingInput">Duration</label>
+                        </div>
+                        <div class="form-floating-custom input_div">
+                             {% render_field form.duration class="form-control" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#id_projectpi').select2( {placeholder: 'Select project PI name',class:'form-control',tags: true,});
+
+    //    $('#edit_btn').click(function(){
+    //         $('#id_projectid').css('pointer-events','');
+    //         alert('done');
+    //     }); 
+    
+
+    });
+    function myFunction() {
+        // Get the checkbox
+        var checkBox = document.getElementById("myCheck");
+        // Get the output text
+        // var text = document.getElementById("text");
+
+        // If the checkbox is checked, display the output text
+        if (checkBox.checked == true){
+            // text.style.display = "block";
+            $('#id_projectid').css('pointer-events','');
+            alert('check box checked')
+        } else {
+            // text.style.display = "none";
+            $('#id_projectid').css('pointer-events','none');
+            alert('check box unchecked')
+            
+        }
+    }
+</script>
+{% endblock%}
