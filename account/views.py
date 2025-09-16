@@ -597,6 +597,7 @@ def projectview(request):
         project_dict = {}
         # print(f"Project: {project.title},ProjectId:{project.projectid}")
         project_dict['projectid']=project.id
+        project_dict['project_eofficnumber']=project.eofficnumber
         project_dict['project_filenumber']=project.filenumber
         project_dict['project_title']=project.title
         project_dict['project_id']=project.projectid
@@ -617,10 +618,35 @@ def projectview(request):
 @login_required(login_url="login")
 def project_detail_view(request,pk):
     project = get_object_or_404(ProjectDetail,pk=pk)
-    form = ProjectDetailForm(request.POST or None, instance=project)
-    # if form.is_valid():
-    #     form.save()
-    #     return redirect('projectview')
+    form = ProjectDetailForm(request.POST or None,request.FILES or None, instance=project)
+    pi_ids = request.POST.getlist('projectpi')
+    print('pi_ids',pi_ids)
+    if form.is_valid():
+        form_save = form.save(commit=False)
+        form_save.user = request.user
+        form_save.save()
+        if pi_ids:
+            form_save.projectpi.set(pi_ids)
+            return JsonResponse({'id': form_save.projectid, 'name': form_save.projectid,'message':'Form submit successfully!!','status':'200 OK'})
+        else:
+            return JsonResponse({'message':"Please check it. Something went wrong.",'status':'403'})  
     context = {'form':form}
     return render(request,"account/project_detail_view.html",context)
 
+@login_required(login_url="login")
+def pi_detail_view(request,pk):
+    project = get_object_or_404(ProjectPIDetail,pk=pk)
+    form = ProjectPIDetailForm(request.POST or None,request.FILES or None, instance=project)
+    # pi_ids = request.POST.getlist('projectpi')
+    
+    if form.is_valid():
+        form_save = form.save(commit=False)
+        form_save.user = request.user
+        # form_save.save()
+        # if pi_ids:
+        #     form_save.projectpi.set(pi_ids)
+        return JsonResponse({'message':'Form submit successfully!!','status':'200 OK'})
+        # else:
+        #     return JsonResponse({'message':"Please check it. Something went wrong.",'status':'403'})  
+    context = {'form':form}
+    return render(request,"account/pi_detail_view.html",context)

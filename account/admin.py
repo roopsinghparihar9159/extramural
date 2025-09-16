@@ -2,6 +2,7 @@ from django.contrib import admin
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from account.models import State, District, ProjectPIDetail, ProjectDetail,FinancialDetail,InstituteDetail,ReleaseBuget,UsedBalance
+from django import forms
 # Register your models here.
 
 
@@ -22,8 +23,6 @@ class DistrictAdmin1(admin.ModelAdmin):
 
 class DistrictAdmin(ImportExportModelAdmin,DistrictAdmin1):
     pass
-
-
 
 @admin.register(ReleaseBuget)
 class ReleaseBugetAdmin(admin.ModelAdmin):

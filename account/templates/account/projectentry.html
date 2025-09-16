@@ -4,17 +4,7 @@
 {% block content %}
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<!-- </head>
-<body>
-    <select class="js-example-basic-single" name="state">
-        <option value="AL">Alabama</option>
-        <option value="WY">Wyoming</option>
-    </select> -->
 
-    
-    </script>
-<!-- </body>
-</html> -->
 
 <style>
     
@@ -125,20 +115,23 @@
         border-width: 2px !important;
       }
       .select2{
-        width: 365px !important;
+        width: 100% !important;
       }
       .select2-selection {width: 100% !important;}
     }
 
     @media (min-width: 1000px) {
         .select2{
-        width: 180px !important;
+        width: 100% !important;
       }
-      @media (min-width: 1300px) {
+      
+    }
+    @media (min-width: 1500px) {
         .select2{
-        width: 365px !important;
+        width: 100% !important;
       }
     }
+    
   </style>
 
   <!-- nested table styling start -->
@@ -376,7 +369,7 @@
                                     <div class="form-group">
                                         <label for="filenumber">e-Office Number</label>
                                         {% render_field pro_form.eofficnumber class="form-control" placeholder="Enter project file number" autocomplete="off" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;"  %}
-                                        <span id="filenumber-error" class="error-message"></span>
+                                        <span id="eofficnumber-error" class="error-message"></span>
                                     </div>
                                 </div>     
                                 
@@ -1099,9 +1092,7 @@
 
 
   <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-  <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
-
-  
+<script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>  
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {

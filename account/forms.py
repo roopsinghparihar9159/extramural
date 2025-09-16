@@ -1,5 +1,6 @@
 from django import forms
 from account.models import  InstituteDetail,ProjectPIDetail, ProjectDetail,FinancialDetail
+from django.forms.widgets import ClearableFileInput
 
 class InstituteDetailForm(forms.ModelForm):
     class Meta:
@@ -18,14 +19,17 @@ class ProjectPIDetailForm(forms.ModelForm):
             }
 
 
+
 class ProjectDetailForm(forms.ModelForm):
     duration = forms.CharField(
         label="Read-Only Field",
         widget=forms.TextInput(attrs={'readonly': 'readonly'}))
-
+    
     class Meta:
         model = ProjectDetail
         fields = ['project_type','projectpi', 'projectid', 'title', 'filenumber','eofficnumber','duration','approvalfile','proposalfile','prcrecommend','prccomment','prccomment','start_date','end_date','prc_date']
+        
+        
 
         def clean(self):
             cleaned_data = super().clean()
@@ -35,7 +39,7 @@ class ProjectDetailForm(forms.ModelForm):
             if start_date and end_date and end_date < start_date:
                 self.add_error('end_date', "End date must be after the start date.")
             return cleaned_data
-
+    
 
 class FinancialDetailForm(forms.ModelForm):
     class Meta:

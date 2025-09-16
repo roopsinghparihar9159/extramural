@@ -33,55 +33,60 @@
                     <div id="basic-datatables_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
                         <div class="row">
                             <div class="col-sm-12">
-                                <table id="basic-datatables" class="display table table-striped table-hover dataTable"
+                                <table id="basic-datatables" class="display table table-striped table-hover dataTable text-center"
                                     role="grid" aria-describedby="basic-datatables_info">
                                     <thead>
                                         <tr role="row">
                                             <th class="sorting" tabindex="0" aria-controls="basic-datatables"
                                                 rowspan="1" colspan="1"
-                                                aria-label="Name: activate to sort column ascending"
-                                                style="">File Number</th>
+                                                aria-label="Salary: activate to sort column ascending"
+                                                style="width:7%;">Project ID</th>
                                             <th class="sorting" tabindex="0" aria-controls="basic-datatables"
                                                 rowspan="1" colspan="1"
                                                 aria-label="Salary: activate to sort column ascending"
-                                                style="">Project ID</th>
+                                                style="width:7%;">e-Office No.</th>
+                                            <th class="sorting" tabindex="0" aria-controls="basic-datatables"
+                                                rowspan="1" colspan="1"
+                                                aria-label="Name: activate to sort column ascending"
+                                                style="width:7%;">File Number</th>
+                                            
                                             <th class="sorting" tabindex="0" aria-controls="basic-datatables"
                                                 rowspan="1" colspan="1"
                                                 aria-label="Position: activate to sort column ascending"
-                                                style="">Project Title</th>
+                                                style="width:20%;">Project Title</th>
                                             <th class="sorting" tabindex="0" aria-controls="basic-datatables"
                                                 rowspan="1" colspan="1"
                                                 aria-label="Office: activate to sort column ascending"
-                                                style="">PI Name</th>
+                                                style="width:10%;">PI Name</th>
                                             <th class="sorting" tabindex="0" aria-controls="basic-datatables"
                                                 rowspan="1" colspan="1"
                                                 aria-label="Age: activate to sort column ascending"
-                                                style="">PI Institute</th>
+                                                style="width:20%;">PI Institute</th>
                                             <th class="sorting_asc" tabindex="0" aria-controls="basic-datatables"
                                                 rowspan="1" colspan="1"
                                                 aria-label="Start date: activate to sort column descending"
-                                                style="" aria-sort="ascending">PI State</th>
+                                                style="width: 7%;" aria-sort="ascending">PI State</th>
                                             
                                             <th class="sorting" tabindex="0" aria-controls="basic-datatables"
                                                 rowspan="1" colspan="1"
                                                 aria-label="Salary: activate to sort column ascending"
-                                                style="">Action</th>
+                                                style="width: 5%;">Action</th>
                                         </tr>
                                     </thead>
                                    
                                     <tbody>
                                         {% for project in projects %}
                                         <tr role="row" class="odd">
-                                            <td class="">{{project.project_filenumber}}</td>
                                             <td class=""><a href="{% url 'project_detail_view' project.projectid %}"> {{project.project_id}}</a></td>
-                                            <td class="">{{project.project_title|truncatechars:20}}</td>
+                                            <td class="">{{project.project_eofficnumber}}</td>
+                                            <td class="">{{project.project_filenumber}}</td>
+                                            <td class="">{{project.project_title|truncatechars:50}}</td>
                                             <td class="">{{project.pi_name}}</td>
-                                            <td class="sorting_1">{{project.pi_institute|truncatechars:20}}</td>
+                                            <td class="sorting_1">{{project.pi_institute|truncatechars:70}}</td>
                                             <td>{{project.pi_state}}</td>
                                             <td>
-                                                <div class="d-flex justify-content-md-around justify-content-sm-around">
-                                                    <a href="#" class="btn btn-success btn-sm">View</a>
-                                                    <a href="#" class="btn btn-warning btn-sm" style="margin-left: 3px;">Edit</a>
+                                                <div class="text-center">
+                                                    <a href="{% url 'pi_detail_view' project.piid %}" class="btn btn-warning text-black p-7 btn-sm"><i class="far fa-eye"></i></a>
                                                 </div>
                                             </td>
                                         </tr>

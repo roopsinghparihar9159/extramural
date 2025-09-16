@@ -1,0 +1,222 @@
+{% extends 'account/main.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+<style>
+    @media (min-width: 576px) { 
+        .lebel_div{
+            width: 100%;
+        }
+        .input_div{
+            width: 100%;
+        }
+     }
+     @media (min-width: 768px) { 
+        .lebel_div{
+            width: 20%;
+        }
+        .input_div{
+            width: 70%;
+        }
+     }
+    
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <div class="card-title">PI Details</div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="myCheck" onclick="myFunction()" style="height: 22px;width: 38px;">
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Click for edit mode</label>
+                </div>
+            </div>
+            <div class="card-body">
+                <form action="POST" id="id_piform" enctype="multipart/form-data">
+                    {% csrf_token %}
+                <div class="row p-3">
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                        <div class=" my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Choose Title:</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                <select id="nameTitle" name="name_title" class="form-control">
+                                                <option value="Mr.">Mr.</option>
+                                                <option value="Miss.">Miss.</option>
+                                                <option value="Mrs.">Mrs.</option>
+                                                <option value="Dr">Dr.</option>
+                                                <option value="Prof">Prof</option>
+                                            </select>
+                                <span id="nameTitle-error" class="error-message"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">   
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Name</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.name class="form-control" %}
+                            </div>
+                            <span id="name-error" class="error-message"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Date of Birth</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.dob class="form-control" %}
+                                <span id="dob-error" class="error-message"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <hr id="lg_hr" class="text-danger"> -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Gender</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.gender class="form-control" %}
+                                <span id="gender-error" class="error-message"></span>
+                            </div>
+                        </div>
+                    </div>  
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Qualification</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.qualification class="form-control" %}
+                                <span id="qualification-error" class="error-message"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2" id="div_id_qualification_other">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Qualification Other</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.qualification_other class="form-control" %}
+                                <span id="qualification_other-error" class="error-message"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">  
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Designation</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.designation class="form-control" %}
+                                <span id="designation-error" class="error-message"></span>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Area expertise</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.area_expertise class="form-control" %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">  
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Institute</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.institute class="form-control" %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Contact No</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.contactno class="form-control" %}
+                                <span id="contactno-error" class="error-message"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Email Id</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.emailid class="form-control" %}
+                                <span id="emailid-error" class="error-message"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2" id="id_div_prccomment">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">State</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.state_pi class="form-control" %}
+                                <span id="state_pi-error" class="error-message"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2" id="id_div_startdate">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">District</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.district_pi class="form-control" %}
+                                
+                                <span id="district_pi-error" class="error-message"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="">
+                    <input type="submit" class="btn btn-warning" value="Update">
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script>
+    $(document).ready(function(){
+       
+       $('#id_state_pi').css('pointer-events','none');
+        $('#id_district_pi').css('pointer-events','none');
+    
+    })
+</script>
+<script>
+	$(document).ready(function(){
+		$('#id_qualification').on('change', function(){
+			var qualification_other_val = $(this).val();
+			if(qualification_other_val == 'Other'){
+				$("#div_id_qualification_other").show();
+			}
+			else
+			{
+				$("#div_id_qualification_other").hide();
+			}
+		});
+        $("#div_id_qualification_other").hide();
+	});
+</script>
+{% endblock%}

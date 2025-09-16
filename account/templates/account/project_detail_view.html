@@ -23,172 +23,531 @@
         }
      }
 
-    #id_proposalfile{
-        display: none;
-    } 
-    #id_approvalfile{
-        display: none;
-    }
-    #approvalfile-clear_id{
-        display: none;
-    }
-    #id_project_type,#id_title,.selection,#id_filenumber,#id_eofficnumber,#id_prc_date,#id_prcrecommend,
-    #id_start_date,#id_end_date{
-         pointer-events: none;
+     @media (min-width: 576px) {
+      #id_projectpi{
+        font-size: 1rem !important;
+        border-color: #ebedf2 !important;
+        padding: 1rem !important;
+        height: inherit !important;
+        border-width: 2px !important;
+      }
+      .select2{
+        width: 100% !important;
+      }
+      .select2-selection {width: 100% !important;}
+      
     }
 
+    @media (min-width: 1000px) {
+        .select2{
+        width: 100% !important;
+      }
+     
+      
+    }
+    @media (min-width: 1500px) {
+        .select2{
+        width: 100% !important;
+      }
+      
+    }
+    
+   
 </style>
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="card-title">Project Details</div>
-                <div class=""><a href="#" class="btn btn-primary btn-sm start-end" id="edit_btn">Edit</a><span></span><input type="checkbox" id="myCheck" onclick="myFunction()"> </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="myCheck" onclick="myFunction()" style="height: 22px;width: 38px;">
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Click for edit mode</label>
+                </div>
             </div>
             <div class="card-body">
+                <form action="POST" id="id_projectdetail_form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    
                 <div class="row p-3">
-                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
-                        <div class="mt-3 lebel_div">
-                            <label for="floatingInput">Project Type</label>
-                        </div>
-                        <div class="form-floating-custom input_div">
-                             {% render_field form.project_type class="form-control" %}
-                        </div>
-                    </div>  
-                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
-                        <div class="mt-3 lebel_div">
-                            <label for="floatingInput">Project Id</label>
-                        </div>
-                        <div class="form-floating-custom input_div">
-                             {% render_field form.projectid class="form-control" %}
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                        <div class=" my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Project Type</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.project_type class="form-control" %}
+                                <span id="project_type-error" class="error-message"></span>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
-                        <div class="mt-3 lebel_div">
-                            <label for="floatingInput">Pro.PI Name</label>
-                        </div>
-                        <div class="form-floating-custom input_div">
-                             {% render_field form.projectpi class="form-control" %}
+                    <!-- <hr id="sm_hr">    -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">   
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Project Id</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.projectid class="form-control" %}
+                            </div>
+                            <span id="projectid-error" class="error-message"></span>
                         </div>
                     </div>
-                    <!-- <hr/> -->
-                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
-                        <div class="mt-3 lebel_div">
-                            <label for="floatingInput">Project Title</label>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Pro.PI Name</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.projectpi class="form-control" %}
+                                <span id="projectpi-error" class="error-message"></span>
+                            </div>
                         </div>
-                        <div class="form-floating-custom input_div">
-                             {% render_field form.title class="form-control" %}
+                    </div>
+                    <!-- <hr id="lg_hr" class="text-danger"> -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Project Title</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.title class="form-control" %}
+                                <span id="title-error" class="error-message"></span>
+                            </div>
                         </div>
                     </div>  
-                     
-                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
-                        <div class="mt-3 lebel_div">
-                            <label for="floatingInput">File Number</label>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">File Number</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.filenumber class="form-control" %}
+                                <span id="filenumber-error" class="error-message"></span>
+                            </div>
                         </div>
-                        <div class="form-floating-custom input_div">
-                             {% render_field form.filenumber class="form-control" %}
-                        </div>
-                    </div>  
-                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
-                        <div class="mt-3 lebel_div">
-                            <label for="floatingInput">e-Office Number</label>
-                        </div>
-                        <div class="form-floating-custom input_div">
-                             {% render_field form.eofficnumber class="form-control" %}
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">  
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">e-Office Number</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.eofficnumber class="form-control" %}
+                                <span id="eofficnumber-error" class="error-message"></span>
+                            </div>
                         </div>
                     </div> 
-                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
-                        <div class="mt-3 lebel_div">
-                            <label for="floatingInput">Proposal File Upload</label>
-                        </div>
-                        <div class="form-floating-custom input_div">
-                             {% render_field form.proposalfile class="form-control" %}
-                        </div>
-                    </div>  
-                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
-                        <div class="mt-3 lebel_div">
-                            <label for="floatingInput">Approval Upload</label>
-                        </div>
-                        <div class="form-floating-custom input_div">
-                             {% render_field form.approvalfile class="form-control" %}
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Proposal File Upload</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.proposalfile class="form-control" %}
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
-                        <div class="mt-3 lebel_div">
-                            <label for="floatingInput">PRC Date</label>
-                        </div>
-                        <div class="form-floating-custom input_div">
-                             {% render_field form.prc_date class="form-control" %}
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
-                        <div class="mt-3 lebel_div">
-                            <label for="floatingInput">PRC Recommendation</label>
-                        </div>
-                        <div class="form-floating-custom input_div">
-                             {% render_field form.prcrecommend class="form-control" %}
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">  
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Approval Upload</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.approvalfile class="form-control" %}
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
-                        <div class="mt-3 lebel_div">
-                            <label for="floatingInput">Start Date</label>
-                        </div>
-                        <div class="form-floating-custom input_div">
-                             {% render_field form.start_date class="form-control" %}
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
-                        <div class="mt-3 lebel_div">
-                            <label for="floatingInput">End Date</label>
-                        </div>
-                        <div class="form-floating-custom input_div">
-                             {% render_field form.end_date class="form-control" %}
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">PRC Date</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.prc_date class="form-control" %}
+                                <span id="prcdate-error" class="error-message"></span>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 col-sm-12 my-2 d-md-flex flex-md-nowrap justify-content-around">
-                        <div class="mt-3 lebel_div">
-                            <label for="floatingInput">Duration</label>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">PRC Recommendation</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.prcrecommend class="form-control" %}
+                                <span id="prcrecommend-error" class="error-message"></span>
+                            </div>
                         </div>
-                        <div class="form-floating-custom input_div">
-                             {% render_field form.duration class="form-control" %}
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2" id="id_div_prccomment">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">PRC Comment</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.prccomment class="form-control" %}
+                                <span id="prccomment-error" class="error-message"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2" id="id_div_startdate">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Start Date</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.start_date class="form-control" %}
+                                <span id="startdate-error" class="error-message"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2" id="id_div_enddate">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">End Date</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.end_date class="form-control" %}
+                                <span id="enddate-error" class="error-message"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2" id="id_div_duration">
+                        <div class="my-2 d-md-flex flex-md-nowrap justify-content-around">
+                            <div class="mt-3 lebel_div">
+                                <label for="floatingInput">Duration</label>
+                            </div>
+                            <div class="form-floating-custom input_div">
+                                {% render_field form.duration class="form-control" %}
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="">
+                    <input type="submit" class="btn btn-warning" value="Update">
+                </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script> 
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+ 
+
+<script>
+	$(document).ready(function(){
+		$('#id_prcrecommend').on('change', function(){
+			var prcrecommend = $(this).val();
+			if(prcrecommend == 'Rejected'){
+				$("#id_div_prccomment").show();
+                $("#id_div_startdate").hide();
+                $("#id_div_enddate").hide();
+                $("#id_div_duration").hide();
+			}
+			else
+			{
+				$("#id_div_prccomment").hide();
+                $("#id_div_startdate").show();
+                $("#id_div_enddate").show();
+                $("#id_div_duration").show();
+			}
+            
+		});
+        $("#id_div_prccomment").hide();
+        $("#id_div_startdate").hide();
+        $("#id_div_enddate").hide();
+        $("#id_div_duration").hide();
+	});
+</script>
+
 <script>
     $(document).ready(function() {
         $('#id_projectpi').select2( {placeholder: 'Select project PI name',class:'form-control',tags: true,});
 
-    //    $('#edit_btn').click(function(){
-    //         $('#id_projectid').css('pointer-events','');
-    //         alert('done');
-    //     }); 
     
+     $('#id_projectid').css('pointer-events','none');
+     $('#id_project_type').css('pointer-events','none');
+     $('#id_title').css('pointer-events','none');
+     $('.selection').css('pointer-events','none');
+     $('#id_filenumber').css('pointer-events','none');
+     $('#id_eofficnumber').css('pointer-events','none');
+     $('#id_prc_date').css('pointer-events','none');
+     $('#id_prcrecommend').css('pointer-events','none');
+     $('#id_start_date').css('pointer-events','none');
+     $('#id_end_date').css('pointer-events','none');
 
+     $('#id_proposalfile').css('display','none');
+     $('#id_approvalfile').css('display','none');
+     
+    $("#id_start_date").datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true,yearRange: "1900:2030" });
+    $("#id_end_date").datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true, yearRange: "1900:2030"});
+    $("#id_prc_date").datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true,yearRange: "1900:2030"});
+    $("#id_dob").datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true,yearRange: "1900:2030"});
     });
     function myFunction() {
-        // Get the checkbox
+        
         var checkBox = document.getElementById("myCheck");
-        // Get the output text
-        // var text = document.getElementById("text");
-
-        // If the checkbox is checked, display the output text
+        
         if (checkBox.checked == true){
             // text.style.display = "block";
             $('#id_projectid').css('pointer-events','');
-            alert('check box checked')
+            $('#id_project_type').css('pointer-events','');
+            $('#id_title').css('pointer-events','');
+            $('.selection').css('pointer-events','');
+            $('#id_filenumber').css('pointer-events','');
+            $('#id_eofficnumber').css('pointer-events','');
+            $('#id_prc_date').css('pointer-events','');
+            $('#id_prcrecommend').css('pointer-events','');
+            $('#id_start_date').css('pointer-events','');
+            $('#id_end_date').css('pointer-events','');
+
+            $('#id_proposalfile').css('display','');
+            $('#id_approvalfile').css('display','');
+            // alert('check box checked')
         } else {
             // text.style.display = "none";
             $('#id_projectid').css('pointer-events','none');
-            alert('check box unchecked')
+            $('#id_project_type').css('pointer-events','none');
+            $('#id_title').css('pointer-events','none');
+            $('.selection').css('pointer-events','none');
+            $('#id_filenumber').css('pointer-events','none');
+            $('#id_eofficnumber').css('pointer-events','none');
+            $('#id_prc_date').css('pointer-events','none');
+            $('#id_prcrecommend').css('pointer-events','none');
+            $('#id_start_date').css('pointer-events','none');
+            $('#id_end_date').css('pointer-events','none');
+
+            $('#id_proposalfile').css('display','none');
+            $('#id_approvalfile').css('display','none');
+            // alert('check box unchecked')
             
         }
     }
 </script>
+<script>
+    function getMonthsDiffBetweenDates(date1, date2) {
+  
+    const startDate = date1 < date2 ? date1 : date2;
+    const endDate = date1 < date2 ? date2 : date1;
+
+    const yearDiff = endDate.getFullYear() - startDate.getFullYear();
+    const monthDiff = endDate.getMonth() - startDate.getMonth();
+
+    let totalMonths = yearDiff * 12 + monthDiff;
+
+    if (endDate.getDate() < startDate.getDate()) {
+        totalMonths--;
+    }
+
+    return totalMonths;
+    }
+
+    $('#id_end_date').change(function(){
+        var statdate1 = $('#id_start_date').val()
+        var enddate1 = $('#id_end_date').val()
+      
+        const startdate = new Date(statdate1);
+        const enddate = new Date(enddate1);
+
+        if (statdate1 && enddate1) {
+        if (startdate > enddate) {
+        swal("End date must be after to the start date.",{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});
+        $('#id_start_date').val('')
+        } else {
+        // alert("PRC date must ");
+        }
+      }
+
+        const monthsDifference = getMonthsDiffBetweenDates(startdate, enddate);
+        $('#id_duration').val(monthsDifference + 1)
+    })
+</script>
+ <script>
+    $('#id_start_date').change(function(){
+        var prc_date = $('#id_prc_date').val()
+        var start_date = $('#id_start_date').val()
+        
+        const prc = new Date(prc_date);
+        const start = new Date(start_date);
+        if (prc_date && start_date) {
+        if (prc > start) {
+        swal("Start date must be after or equal to the PRC date.",{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});
+        $('#id_start_date').val('')
+        } else {
+        // alert("PRC date must ");
+        }
+      }
+    })
+
+  </script> 
+  <script>
+    
+    $(document).ready(function() {
+        function validateForm() {
+            // debugger
+           let isValid = true;
+            var projectpi = $('#id_projectpi').val()
+            var projectid = $('#id_projectid').val()
+            var title = $('#id_title').val()
+            var filenumber = $('#id_filenumber').val()
+            var duration = $('#id_duration').val()
+            var prcrecommend = $('#id_prcrecommend').val()
+            var prccomment = $('#id_prccomment').val()
+            var startdate = $('#id_start_date').val()
+            var enddate = $('#id_end_date').val()
+            if (projectpi === "") {
+                $('#projectpi-error').text("Please select project PI.")
+                $('#projectpi-error').css("color","red")
+                isValid = false;
+            }
+            if (projectid === "") {
+                $('#projectid-error').text("Please enter project id.")
+                $('#projectid-error').css("color","red")
+                isValid = false;
+            }
+            if (title === "") {
+                $('#title-error').text("Please enter project title.")
+                $('#title-error').css("color","red")
+                isValid = false;
+            }
+            if (filenumber === "") {
+                $('#filenumber-error').text("Please enter project filenumber.")
+                $('#filenumber-error').css("color","red")
+                isValid = false;
+            }
+
+            if (prcrecommend === "") {
+                $('#prcrecommend-error').text("Please select PRC Recommendation.")
+                $('#prcrecommend-error').css("color","red")
+                isValid = false;
+            }
+            if (prcrecommend === "Rejected") {
+                if(prccomment === ""){
+                    $('#prccomment-error').text("Please enter PRC Rejection comment.")
+                    $('#prccomment-error').css("color","red")
+                    isValid = false;
+                }
+            }
+            else{
+                if(startdate === ""){
+                    $('#startdate-error').text("Please enter start date.")
+                    $('#startdate-error').css("color","red")
+                    isValid = false;
+                }
+
+                if(enddate === ""){
+                    $('#enddate-error').text("Please enter end date.")
+                    $('#enddate-error').css("color","red")
+                    isValid = false;
+                }
+            }
+            
+            return isValid
+        }
+
+
+        $('#id_projectdetail_form').on('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            var formData = new FormData(this); // Create FormData object from the form
+            console.log('formData',formData)
+            var baseUrl = (window.location).href; // You can also use document.URL
+            var url = baseUrl.substring(baseUrl.lastIndexOf('=') + 1);
+            console.log('getid',url)
+            var valid = validateForm()
+            if (valid){
+               
+                $('#projectpi-error').css("display","none");
+                $('#projectid-error').css("display","none")
+                $('#title-error').css("display","none")
+                $('#filenumber-error').css("display","none")
+                $('#prccomment-error').css("display","none")
+                $('#prcrecommend-error').css("display","none")
+                
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false, 
+                contentType: false, 
+                success: function(response) {
+                    // console.log(response.message)
+                    if(response.status === '200 OK'){
+                        var nextTab = new bootstrap.Tab($('#tab3-tab'));
+                        nextTab.show();
+                    $("#id_projectdetail_form").trigger('reset');
+                            // $('#id_project_detail_filter').append(
+                            //     $('<option>', {
+                            //         value: response.id,
+                            //         text: response.name
+                            //     })
+                            // );
+                            swal(response.message,{
+                            buttons: {
+                                confirm: {
+                                className: "btn btn-success",
+                                },
+                            },
+                        });
+                    }else{
+                            if(response.status === '403'){
+                                swal(response.message,{
+                                buttons: {
+                                    confirm: {
+                                    className: "btn btn-danger",
+                                    },
+                                },
+                            });
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $('#status').text('Error: ' + error);
+                    console.log(error)
+                }
+            });
+            }else{
+                swal("Please fill all the fields.",{
+                                buttons: {
+                                    confirm: {
+                                    className: "btn btn-danger",
+                                    },
+                                },
+                            });
+                console.log('Validation is failed.')}
+        });
+    });
+    
+</script>
+
+<script>
+  $(document).ready(function () {
+    $('.form-floating-custom').each(function () {
+      // Remove "Clear" checkbox
+      $(this).find('input[type="checkbox"]').remove();
+
+      // Remove "Clear" label
+      $(this).find('label[for*="-clear"]').remove();
+
+      // Remove the "Change:" text (usually a text node)
+      $(this).contents().filter(function () {
+        return this.nodeType === 3 && this.nodeValue.trim().startsWith('Change');
+      }).remove();
+    });
+  });
+</script>
+
 {% endblock%}

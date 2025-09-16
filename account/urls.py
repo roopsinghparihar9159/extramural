@@ -28,5 +28,6 @@ urlpatterns = [
     # project views urls
     path("projectview/",views.projectview,name="projectview"),
     path("project_detail_view/<int:pk>/",views.project_detail_view,name="project_detail_view"),
+    path("pi_detail_view/<int:pk>/",views.pi_detail_view,name="pi_detail_view"),
 ]
 
