@@ -11,12 +11,17 @@ class InstituteDetailForm(forms.ModelForm):
             }
 
 class ProjectPIDetailForm(forms.ModelForm):
+    # instance_id = forms.IntegerField(label="ID", required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
     class Meta:
         model = ProjectPIDetail
-        fields = ['name','dob','gender','qualification','qualification_other','designation','area_expertise','institute', 'contactno', 'emailid','address','state_pi','district_pi']
+        fields = ['id','name','dob','gender','qualification','qualification_other','designation','area_expertise','institute', 'contactno', 'emailid','address','state_pi','district_pi']
         widgets = {
                 'address': forms.Textarea(attrs={'rows': 5, 'cols': 40}),
             }
+    # def __init__(self, *args, **kwargs):
+    #         super().__init__(*args, **kwargs)
+    #         if self.instance and self.instance.pk:
+    #             self.fields['instance_id'].initial = self.instance.pk
 
 
 

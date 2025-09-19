@@ -60,7 +60,7 @@
             <div class="card-header d-flex justify-content-between">
                 <div class="card-title">Project Details</div>
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="myCheck" onclick="myFunction()" style="height: 22px;width: 38px;">
+                    <input class="form-check-input" type="checkbox" role="switch" id="myCheck" onclick="editModeFunction()" style="height: 22px;width: 38px;">
                     <label class="form-check-label" for="flexSwitchCheckDefault">Click for edit mode</label>
                 </div>
             </div>
@@ -68,7 +68,7 @@
                 <form action="POST" id="id_projectdetail_form" enctype="multipart/form-data">
                     {% csrf_token %}
                     
-                    
+                  <input type="hidden" value="{{projec_detail_id}}" id="projectdetail_id">  
                 <div class="row p-3">
                     <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
                         <div class=" my-2 d-md-flex flex-md-nowrap justify-content-around">
@@ -225,7 +225,7 @@
                     </div>
                 </div>
                 <div class="">
-                    <input type="submit" class="btn btn-warning" value="Update">
+                    <input type="submit" id="update_btn" class="btn btn-warning" value="Update">
                 </div>
                 </form>
             </div>
@@ -282,13 +282,14 @@
 
      $('#id_proposalfile').css('display','none');
      $('#id_approvalfile').css('display','none');
-     
+     $('#update_btn').hide();
+
     $("#id_start_date").datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true,yearRange: "1900:2030" });
     $("#id_end_date").datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true, yearRange: "1900:2030"});
     $("#id_prc_date").datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true,yearRange: "1900:2030"});
-    $("#id_dob").datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true,yearRange: "1900:2030"});
+    // $("#id_dob").datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true,yearRange: "1900:2030"});
     });
-    function myFunction() {
+    function editModeFunction() {
         
         var checkBox = document.getElementById("myCheck");
         
@@ -307,7 +308,7 @@
 
             $('#id_proposalfile').css('display','');
             $('#id_approvalfile').css('display','');
-            // alert('check box checked')
+            $('#update_btn').show();
         } else {
             // text.style.display = "none";
             $('#id_projectid').css('pointer-events','none');
@@ -323,7 +324,7 @@
 
             $('#id_proposalfile').css('display','none');
             $('#id_approvalfile').css('display','none');
-            // alert('check box unchecked')
+            $('#update_btn').hide();
             
         }
     }
@@ -399,7 +400,9 @@
     $(document).ready(function() {
         function validateForm() {
             // debugger
-           let isValid = true;
+           let isValid = true; 
+            var projecttype = $('#id_project_type').val()
+            var eofficeno = $('#id_eofficnumber').val()
             var projectpi = $('#id_projectpi').val()
             var projectid = $('#id_projectid').val()
             var title = $('#id_title').val()
@@ -407,8 +410,19 @@
             var duration = $('#id_duration').val()
             var prcrecommend = $('#id_prcrecommend').val()
             var prccomment = $('#id_prccomment').val()
+            var prcdate = $('#id_prc_date').val()
             var startdate = $('#id_start_date').val()
             var enddate = $('#id_end_date').val()
+            if (projecttype === "") {
+                $('#project_type-error').text("Please enter project type.")
+                $('#project_type-error').css("color","red")
+                isValid = false;
+            }
+            if (eofficeno === "") {
+                $('#eofficnumber-error').text("Please enter e-Office No.")
+                $('#eofficnumber-error').css("color","red")
+                isValid = false;
+            }
             if (projectpi === "") {
                 $('#projectpi-error').text("Please select project PI.")
                 $('#projectpi-error').css("color","red")
@@ -433,6 +447,11 @@
             if (prcrecommend === "") {
                 $('#prcrecommend-error').text("Please select PRC Recommendation.")
                 $('#prcrecommend-error').css("color","red")
+                isValid = false;
+            }
+            if (prcdate === "") {
+                $('#prcdate-error').text("Please enter PRC date.")
+                $('#prcdate-error').css("color","red")
                 isValid = false;
             }
             if (prcrecommend === "Rejected") {
@@ -463,10 +482,15 @@
         $('#id_projectdetail_form').on('submit', function(e) {
             e.preventDefault(); // Prevent default form submission
             var formData = new FormData(this); // Create FormData object from the form
-            console.log('formData',formData)
-            var baseUrl = (window.location).href; // You can also use document.URL
-            var url = baseUrl.substring(baseUrl.lastIndexOf('=') + 1);
-            console.log('getid',url)
+            // console.log('formData',formData)
+            // var baseUrl = (window.location).href; // You can also use document.URL
+            // var url = baseUrl.substring(baseUrl.lastIndexOf('=') + 1);
+            // console.log('getid',url) 
+            // debugger
+            var id = $('#projectdetail_id').val()
+            let base_url = "{% url 'project_detail_view' 0 %}";  // dummy ID to get URL structure
+            // Replace 0 with actual ID
+            let url = base_url.replace('0', id);
             var valid = validateForm()
             if (valid){
                
@@ -486,15 +510,7 @@
                 success: function(response) {
                     // console.log(response.message)
                     if(response.status === '200 OK'){
-                        var nextTab = new bootstrap.Tab($('#tab3-tab'));
-                        nextTab.show();
-                    $("#id_projectdetail_form").trigger('reset');
-                            // $('#id_project_detail_filter').append(
-                            //     $('<option>', {
-                            //         value: response.id,
-                            //         text: response.name
-                            //     })
-                            // );
+                    // $("#id_projectdetail_form").trigger('reset');
                             swal(response.message,{
                             buttons: {
                                 confirm: {
@@ -548,6 +564,21 @@
       }).remove();
     });
   });
+
+  $('#id_filenumber').keyup(function() {
+        $(this).val($(this).val().toUpperCase());
+    });
+
+    $('#id_title').keyup(function() {
+        debugger
+            $(this).val(toTitleCase($(this).val()));
+        });
+
+    function toTitleCase(str) {
+        return str.toLocaleLowerCase().replace(/\b\w/g, function(char) {
+            return char.toUpperCase();
+        });
+    }
 </script>
 
 {% endblock%}

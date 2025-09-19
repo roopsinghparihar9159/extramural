@@ -264,6 +264,7 @@
                                         <div class="form-group">
                                             <label for="area_expertise">Area expertise</label>
                                             {% render_field pi_form.area_expertise class="form-control" placeholder="Enter Area expertise" %}
+                                            
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-4">
@@ -283,7 +284,7 @@
                                     <div class="col-md-6 col-lg-4">
                                         <div class="form-group">
                                             <label for="contactno">Contact No</label>
-                                            {% render_field pi_form.contactno class="form-control" placeholder="Enter Contact No" maxlength="10" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" %}
+                                            {% render_field pi_form.contactno class="form-control" placeholder="Enter Contact No"  onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" %}
                                             <span id="id_pi_contactno-error" class="institute_type-message"></span>
                                         </div>
                                     </div>

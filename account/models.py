@@ -51,8 +51,8 @@ class ProjectPIDetail(models.Model):
     contactno       = models.CharField(max_length=100,null=True,blank=True)
     emailid         = models.EmailField(max_length=100,null=True,blank=True)
     address         = models.CharField(max_length=200,null=True,blank=True)
-    state_pi           = models.ForeignKey(State, null=True, on_delete=models.CASCADE)
-    district_pi        = models.ForeignKey(District, null=True, on_delete=models.CASCADE)
+    state_pi           = models.ForeignKey(State, null=True,blank=True, on_delete=models.CASCADE)
+    district_pi        = models.ForeignKey(District, null=True,blank=True, on_delete=models.CASCADE)
     created         = models.DateTimeField(auto_now_add=True)
     updated         = models.DateTimeField(auto_now=True)
 
