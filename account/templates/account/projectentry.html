@@ -93,7 +93,7 @@
         background-color: #42af9d !important;
         color: white !important;
     }
-    #mainTotal_sum td{
+    .mainTotal_sum td{
         background-color: #b081b6 !important;
         color:#f9f9f9 !important;
     }
@@ -221,14 +221,14 @@
                                     <div class="col-md-6 col-lg-4">
                                         <div class="form-group">
                                             <label for="name">Name</label>
-                                            {% render_field pi_form.name class="form-control pi_name" placeholder="Enter name" %}
+                                            {% render_field pi_form.name class="form-control pi_name" placeholder="Enter name" autocomplete="off" %}
                                             <span id="id_pi_name-error" class="institute_type-message"></span>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-4">
                                         <div class="form-group">
                                             <label for="name">Date of Birth</label>
-                                            {% render_field pi_form.dob class="form-control" placeholder="Enter date of birth" %}
+                                            {% render_field pi_form.dob class="form-control" placeholder="Enter date of birth" autocomplete="off" %}
                                             <span id="id_pi_dob-error" class="institute_type-message"></span>
                                         </div>
                                     </div>
@@ -242,28 +242,28 @@
                                     <div class="col-md-6 col-lg-4">
                                         <div class="form-group">
                                             <label for="qualification">Qualification</label>
-                                            {% render_field pi_form.qualification class="form-control" placeholder="Enter Qualification"%}
+                                            {% render_field pi_form.qualification class="form-control" placeholder="Enter Qualification" autocomplete="off"%}
                                             <span id="id_pi_qualification-error" class="institute_type-message"></span>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-4" id="div_id_qualification_other">
                                         <div class="form-group">
                                             <label for="qualification">Qualification Other</label>
-                                            {% render_field pi_form.qualification_other class="form-control" placeholder="Enter Qualification other"%}
+                                            {% render_field pi_form.qualification_other class="form-control" placeholder="Enter Qualification other" autocomplete="off"%}
                                             <span id="id_pi_qualification-error" class="institute_type-message"></span>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-4">
                                         <div class="form-group">
                                             <label for="qualification">Designation</label>
-                                            {% render_field pi_form.designation class="form-control" placeholder="Enter Designation" %}
+                                            {% render_field pi_form.designation class="form-control" placeholder="Enter Designation" autocomplete="off" %}
                                             <span id="id_pi_designation-error" class="institute_type-message"></span>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-4">
                                         <div class="form-group">
                                             <label for="area_expertise">Area expertise</label>
-                                            {% render_field pi_form.area_expertise class="form-control" placeholder="Enter Area expertise" %}
+                                            {% render_field pi_form.area_expertise class="form-control" placeholder="Enter Area expertise" autocomplete="off" %}
                                             
                                         </div>
                                     </div>
@@ -284,14 +284,14 @@
                                     <div class="col-md-6 col-lg-4">
                                         <div class="form-group">
                                             <label for="contactno">Contact No</label>
-                                            {% render_field pi_form.contactno class="form-control" placeholder="Enter Contact No"  onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" %}
+                                            {% render_field pi_form.contactno class="form-control" placeholder="Enter Contact No" maxlength="10"  onkeypress="if(isNaN( String.fromCharCode(event.keyCode) )) return false;" autocomplete="off" %}
                                             <span id="id_pi_contactno-error" class="institute_type-message"></span>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-4">
                                         <div class="form-group">
                                             <label for="Emailid">Email Id</label>
-                                            {% render_field pi_form.emailid class="form-control" placeholder="Enter Email Id" %}
+                                            {% render_field pi_form.emailid class="form-control" placeholder="Enter Email Id" autocomplete="off" %}
                                             <span id="id_pi_emailid-error" class="institute_type-message"></span>
                                         </div>
                                     </div>
@@ -1427,7 +1427,7 @@ let countInner = 0
 let count_outer = 0
 
  function AddNewrow() {
-    // debugger;
+    debugger;
     var newrow = outerRowCount
     // if(outerRowCount > 0){newrow = outerRowCount += 1}
     
@@ -3543,7 +3543,7 @@ function reloadTable() {
                 //   <td>pdf</td>
                 if (JSON.stringify(columnSums) != '{}') {
                     const mainRowTotal = `
-                    <tr id="mainTotal_sum" style="background-color:#234db5 !important;">
+                    <tr id="mainTotal" class="mainTotal_sum" style="background-color:#234db5 !important;">
                     <td></td>
                     <td><b>Total</b></td>
                     <td><b>${columnSums.salary}</b></td>
@@ -3561,7 +3561,7 @@ function reloadTable() {
                 $tbody.append(mainRowTotal);
                 }else{
                 const mainRowTotal = `
-                    <tr id="mainTotal_zero">
+                    <tr id="mainTotal" class="mainTotal_zero">
                     <td></td>
                     <td>Total</td>
                     <td>0</td>
@@ -3808,7 +3808,7 @@ $("#id_project_pi_select").change(function () {
         reloadTable()
         debugger;
         var url = "{% url 'financial_record' %}";
-        
+        count_outer = 0
         var project_id = $('#id_project_detail_filter').val();
         var projectpi_id = $('#id_project_pi_select').val();
         console.log('projectpi_id',projectpi_id)
@@ -3821,7 +3821,8 @@ $("#id_project_pi_select").change(function () {
             },
             success: function (data) {
                  debugger
-                console.log('data',data.data)
+                 
+                // console.log('data',data.data)
                 var jsonData = data.data
                 receivedData = data.newData
                 // processData()
