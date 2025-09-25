@@ -93,6 +93,11 @@
                   <ul class="nav nav-collapse">
                     {% if request.user|has_group:'admin' %}
                     <li>
+                      <a href="{% url 'home' %}">
+                        <span class="sub-item">Home</span>
+                      </a>
+                    </li>
+                    <li>
                       <a href="{% url 'projectentry' %}">
                         <span class="sub-item">New Project</span>
                       </a>
@@ -104,7 +109,7 @@
                     </li>
                     {% else %}
                       <li>
-                        <a href="../demo1/index.html">
+                        <a href="#">
                           <span class="sub-item">User</span>
                         </a>
                       </li>
