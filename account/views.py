@@ -193,6 +193,7 @@ def fetch_financial_record(request):
     qs = FinancialDetail.objects.filter(projectpi_id=projectpi_id,projectdetail_id=id_projectdetail).values().order_by('year')
     print('projectpi_id',projectpi_id)
     print('project_id',project_id)
+    print('id_projectdetail',id_projectdetail)
     
     qs_query = FinancialDetail.objects.filter(projectpi_id=projectpi_id,projectdetail_id=id_projectdetail).order_by('id')
     # print('qs_query',qs_query[0].id)
@@ -649,3 +650,123 @@ def pi_detail_view(request,pk):
     print(form.errors)
     context = {'form':form,'pi_id':project.id}
     return render(request,"account/pi_detail_view.html",context)
+
+def fund_details(request):
+    projectpi_id = request.GET.get('pi_id')
+    id_projectdetail = request.GET.get('project_id')
+    print('pi_id fund_details',projectpi_id)
+    print('project_id fund_details',id_projectdetail)
+    
+    qs_query = FinancialDetail.objects.filter(projectpi_id=projectpi_id,projectdetail_id=id_projectdetail).order_by('id')
+    qs_list = []
+    
+    qs_uc_list = []
+    for i in qs_query:
+        # print(i.id)
+        dict_finance = {}
+        dict_finance['id']=i.id
+        dict_finance['year']=i.year
+        dict_finance['salary']=i.salary
+        dict_finance['contingencies']=i.contingencies
+        dict_finance['non_contingencies']=i.non_contingencies
+        dict_finance['recurring']=i.recurring
+        dict_finance['travel']=i.travel
+        dict_finance['overhead_expens']=i.overhead_expens
+        dict_finance['file']='pdf'
+        dict_finance['total']=i.total
+        dict_finance['comment']=i.comment
+        dict_finance['subtotal']=i.subtotal
+        # print(dict_finance)
+        qs_release = ReleaseBuget.objects.filter(projectpi_id=projectpi_id,projectdetail_id=id_projectdetail,finance_id=i.id)
+        qs_uc = UsedBalance.objects.filter(projectpi_id=projectpi_id,projectdetail_id=id_projectdetail,finance_id=i.id)
+        qs_release_list = []
+        if qs_release:
+            for d in qs_release:
+                dict_release = {}
+                dict_release['id']=d.id
+                dict_release['year']=d.year
+                dict_release['release_no']=d.release_no
+                dict_release['salary']=d.salary
+                dict_release['contingencies']=d.contingencies
+                dict_release['non_contingencies']=d.non_contingencies
+                dict_release['recurring']=d.recurring
+                dict_release['travel']=d.travel
+                dict_release['overhead_expens']=d.overhead_expens
+                dict_release['file']='pdf'
+                dict_release['total']=d.total
+                dict_release['comment']=d.comment
+                dict_release['flag']='rel'
+                # print('dict_release',dict_release)
+                qs_release_list.append(dict_release)
+        if qs_uc:
+            for u in qs_uc:
+                dict_uc = {}
+                dict_uc['id']=u.id
+                dict_uc['year']=u.year
+                dict_uc['uc_no']=u.uc_no
+                dict_uc['salary']=u.salary
+                dict_uc['contingencies']=u.contingencies
+                dict_uc['non_contingencies']=u.non_contingencies
+                dict_uc['recurring']=u.recurring
+                dict_uc['travel']=u.travel
+                dict_uc['overhead_expens']=u.overhead_expens
+                dict_uc['file']='pdf'
+                dict_uc['total']=u.total
+                dict_uc['interest']=u.interest
+                dict_uc['comment']=u.comment
+                dict_uc['flag']='uc'
+                # print('dict_release',dict_uc)
+                qs_release_list.append(dict_uc)
+        dict_finance['release']=qs_release_list
+        
+        qs_list.append(dict_finance)
+
+    print("***********************************************************************")
+    # print('qs_list',qs_list)
+    return render(request,"account/fund_detail_view.html")
+
+def sansion_year_fetch(request):
+    projectpi_id = request.GET.get('projectpi_id')
+    project_id = request.GET.get('project_id')
+
+    # projectpi_id = request.GET.get('pi_id')
+    # id_projectdetail = request.GET.get('project_id')
+    # print('pi_id fund_details',projectpi_id)
+    # print('project_id fund_details',id_projectdetail)
+    qs = FinancialDetail.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id).values().order_by('year')
+    qs_query = FinancialDetail.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id).order_by('id')
+    qs_list = []
+    for i in qs_query:
+        # print(i.id)
+        dict_finance = {}
+        dict_finance['id']=i.id
+        dict_finance['year']=i.year
+        dict_finance['salary']=i.salary
+        dict_finance['contingencies']=i.contingencies
+        dict_finance['non_contingencies']=i.non_contingencies
+        dict_finance['recurring']=i.recurring
+        dict_finance['travel']=i.travel
+        dict_finance['overhead_expens']=i.overhead_expens
+        dict_finance['file']='pdf'
+        dict_finance['total']=i.total
+        dict_finance['comment']=i.comment
+        dict_finance['subtotal']=i.subtotal
+        qs_list.append(dict_finance)
+    print('qs_list',qs_list)            
+    return JsonResponse({'data':list(qs),'newData':qs_list}, safe=False)
+
+def get_releases(request):
+    projectpi_id = request.GET.get('projectpi_id')
+    project_id = request.GET.get('project_id')
+    financial_id = request.GET.get('financial_id')
+    qs_release = ReleaseBuget.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id,finance_id=financial_id).values()
+    print('qs_list',qs_release)            
+    return JsonResponse({'data':list(qs_release)}, safe=False)
+
+def get_uc(request):
+    projectpi_id = request.GET.get('projectpi_id')
+    project_id = request.GET.get('project_id')
+    financial_id = request.GET.get('financial_id')
+    qs_uc = UsedBalance.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id,finance_id=financial_id).values()
+    print('qs_list',qs_uc)            
+    return JsonResponse({'data':list(qs_uc)}, safe=False)

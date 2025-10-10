@@ -29,5 +29,9 @@ urlpatterns = [
     path("projectview/",views.projectview,name="projectview"),
     path("project_detail_view/<int:pk>/",views.project_detail_view,name="project_detail_view"),
     path("pi_detail_view/<int:pk>/",views.pi_detail_view,name="pi_detail_view"),
+    path("fund_details/",views.fund_details,name="fund_details"),
+    path("sansion_year_fetch/",views.sansion_year_fetch,name="sansion_year_fetch"),
+    path('get-releases/', views.get_releases, name='get_releases'),
+    path('get_uc/', views.get_uc, name='get_uc'),
 ]
 

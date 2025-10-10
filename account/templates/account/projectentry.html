@@ -101,12 +101,27 @@
     #main-table td{
         padding: 10px 8px !important;
     }
-
+    .banner {
+    background-color: #0047AB; /* A shade of blue */
+    color: #fff !important;
+    padding: 15px 25px;
+    position: relative;
+    /* Creates the diagonal cut */
+    clip-path: polygon(0 0, 20% 0, 100% 800%, 0% 100%);
+    }
+    .card-title{
+        color: #fff !important;
+    }
+    .card .card-header{
+        border-bottom: 2px solid #198754 !important;
+    }
     /* .select2-container--default.select2-container--focus .select2-selection--multiple {
     border: var(--bs-border-width) solid var(--bs-border-color) !important;
     outline: 0;
     } */
-
+    .table thead th {
+        padding:12px 12px !important;
+    }
     @media (min-width: 576px) {
       #id_projectpi{
         font-size: 1rem !important;
@@ -132,7 +147,18 @@
         width: 100% !important;
       }
     }
-    
+    hr{
+        color: #198754;
+        font-weight: 600;
+    }
+    .line {
+        /* width: 46%; */
+        height: 0;
+        border: 1px solid #8250bb;
+        margin: 3px;
+        display:inline-block;
+        align-items: center;
+    }
   </style>
 
   <!-- nested table styling start -->
@@ -182,7 +208,9 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <div class="card-title">Budget Details</div>
+                <div class="banner">
+                    <div class="card-title">Budget Details</div>
+                </div>
             </div>
             <div class="card-body ">
                 <div class=" mt-5">
@@ -204,6 +232,7 @@
                         <div class="tab-pane fade show active p-3" id="tab1" role="tabpanel">
                         <h4>PI Details</h4>
                         <hr>
+                        
                         <form method="post" id="id_piform">
                                 {% csrf_token %}
                                 <div class="row">
@@ -439,6 +468,7 @@
                         </div>
                         <div class="tab-pane fade p-3" id="tab3" role="tabpanel">
                         <h4>Budget Details</h4>
+                        <hr>
                          <div class="row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
@@ -451,9 +481,9 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label></label>
-                                        <h5><span id="projectTitle" class="text-success"></span></h4>
+                                    <div class="form-group border rounded center" style="margin-top: 25px;text-align: center;">
+                                        <!-- <label></label> -->
+                                        <h6><span id="projectTitle" class="text-warning"></span></h6>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -480,7 +510,7 @@
                                         <th class="th_width">Travel</th>
                                         <th class="th_width">Overhead expens</th>
                                         <th class="th_width">Total Amount</th>
-                                        <th class="th_width">Comment</th>
+                                        <th class="th_width">Remarks</th>
                                         <th class="th_width">Sub Total</th>
                                         <th class="th_width"><button type="button" id="addnewrow" class="btn btn-success btn-sm p-2" onclick="AddNewrow()">Add Year</button></th>
                                         </tr>

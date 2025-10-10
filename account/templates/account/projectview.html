@@ -8,6 +8,38 @@
     #basic-datatables td{
         padding: 10px 8px !important;
     }
+    .banner {
+    background-color: #0047AB; /* A shade of blue */
+    color: #fff !important;
+    padding: 15px 25px;
+    position: relative;
+    /* Creates the diagonal cut */
+    clip-path: polygon(0 0, 20% 0, 100% 700%, 0% 100%);
+}
+.card-title{
+    color: #fff !important;
+}
+.card .card-header{
+        border-bottom: 2px solid #198754 !important;
+    }
+
+.table>thead>tr{
+    /* border:2px solid green !important; */
+    
+}
+thead{
+    background: #446cda !important;
+}
+table.dataTable {
+    border-collapse: collapse !important;
+    
+}
+.table thead th {
+background-color: #7b8fe6 !important;
+color: #fff !important;
+padding:12px 12px !important;
+}
+
 </style>
 <!-- <div class="row">
     <div class="col-md-12">
@@ -26,25 +58,27 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">PI and Project Details</h4>
+                <div class="banner">
+                    <h4 class="card-title py-0">PI and Project Details</h4>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <div id="basic-datatables_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
                         <div class="row">
                             <div class="col-sm-12">
-                                <table id="basic-datatables" class="display table table-striped table-hover dataTable text-center display compact"
+                                <table id="basic-datatables" class="display table table-striped table-hover  text-center display compact"
                                     role="grid" aria-describedby="basic-datatables_info">
                                     <thead>
                                         <tr role="row">
                                             <th class="sorting" tabindex="0" aria-controls="basic-datatables"
                                                 rowspan="1" colspan="1"
                                                 aria-label="Salary: activate to sort column ascending"
-                                                style="width:7%;">Project ID</th>
+                                                style="width:8%;">Project ID</th>
                                             <th class="sorting" tabindex="0" aria-controls="basic-datatables"
                                                 rowspan="1" colspan="1"
                                                 aria-label="Salary: activate to sort column ascending"
-                                                style="width:7%;">e-Office No.</th>
+                                                style="width:9%;">e-Office No.</th>
                                             <th class="sorting" tabindex="0" aria-controls="basic-datatables"
                                                 rowspan="1" colspan="1"
                                                 aria-label="Name: activate to sort column ascending"
@@ -71,6 +105,9 @@
                                                 rowspan="1" colspan="1"
                                                 aria-label="Salary: activate to sort column ascending"
                                                 style="width: 5%;">PI View</th>
+                                            <th class="sorting" tabindex="0" aria-controls="basic-datatables"
+                                                rowspan="1" colspan="1"
+                                                style="width: 5%;">Fund View</th>
                                         </tr>
                                     </thead>
                                    
@@ -87,6 +124,11 @@
                                             <td>
                                                 <div class="text-center">
                                                     <a href="{% url 'pi_detail_view' project.piid %}" class="btn btn-warning text-black p-7 btn-sm"><i class="far fa-eye"></i></a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="text-center">
+                                                    <a href="{% url 'fund_details' %}?pi_id={{project.piid}}&project_id={{project.projectid}}" class="btn btn-success text-white p-7 btn-sm"><i class="fas fa-rupee-sign"></i></a>
                                                 </div>
                                             </td>
                                         </tr>

@@ -1,0 +1,531 @@
+{% extends 'account/main.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+<style>
+    .table thead th {
+        font-size: .80rem !important;
+        letter-spacing: 0px !important;
+        padding: 8px 10px !important;
+        background-color: #58a2d7 !important;
+        color:#fff !important;
+    }
+    /* .table>:not(caption)>*>* {
+        background-color: #58a2d7 !important;
+        color:#fff !important;
+    } */
+    /* #SansionTbody>tr>td {
+        background-color: #fff !important;
+        color:#111010 !important;
+    } */
+    #ReleaseTbody>tr>td {
+        background-color: #fff !important;
+        color:#111010 !important;
+    }
+    #UCTbody>tr>td {
+        background-color: #fff !important;
+        color:#111010 !important;
+    }
+    
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Sension Budget</div>
+            </div>
+            <div class="card-body ">
+                <div class="col-lg-12 table-responsive">
+                    <table id="sansion-table" class="table p-3">
+                        <thead class="text-dark main-head">
+                            <tr>
+                            <th class="th_width expand-icon"><i class="fa fa-plus"></i></th>
+                            <th class="th_width">Project Year</th>
+                            <th class="th_width">Salary</th>
+                            <th class="th_width">Contin gencies</th>
+                            <th class="th_width">Non-contin gencies</th>
+                            <th class="th_width">Recurring</th>
+                            <th class="th_width">Travel</th>
+                            <th class="th_width">Overhead expens</th>
+                            <th class="th_width">Total Amount</th>
+                            <th class="th_width">Remarks</th>
+                            <th class="th_width">Sub Total</th>
+                            <th class="th_width"><button type="button" id="addnewrow" class="btn btn-success btn-sm p-1" onclick="AddNewrow()">Add Year</button></th>
+                            </tr>
+                        </thead>
+                        <tbody id="SansionTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Release Budget</div>
+            </div>
+            <div class="card-body ">
+                <div class="col-lg-12 table-responsive">
+                    <table id="release-table" class="table">
+                        <thead class="text-dark main-head">
+                            <tr>
+                            <th class="th_width expand-icon"><i class="fa fa-plus"></i></th>
+                            <th class="th_width">Project Year</th>
+                            <th class="th_width">Salary</th>
+                            <th class="th_width">Contin gencies</th>
+                            <th class="th_width">Non-contin gencies</th>
+                            <th class="th_width">Recurring</th>
+                            <th class="th_width">Travel</th>
+                            <th class="th_width">Overhead expens</th>
+                            <th class="th_width">Total Amount</th>
+                            <th class="th_width">Remarks</th>
+                            <th class="th_width">Sub Total</th>
+                            <th class="th_width"><button type="button" id="addnewrow" class="btn btn-success btn-sm p-1" onclick="AddRelease()">Add Release</button></th>
+                            </tr>
+                        </thead>
+                        <tbody id="ReleaseTbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">UC Budget</div>
+            </div>
+            <div class="card-body ">
+                <div class="col-lg-12 table-responsive">
+                    <table id="uc-table" class="table p-3 text-center">
+                        <thead class="text-dark main-head">
+                            <tr>
+                            <th class="th_width expand-icon px-2"><i class="fa fa-plus"></i></th>
+                            <th class="th_width">Project Year</th>
+                            <th class="th_width">Salary</th>
+                            <th class="th_width">Contin gencies</th>
+                            <th class="th_width">Non-contin gencies</th>
+                            <th class="th_width">Recurring</th>
+                            <th class="th_width">Travel</th>
+                            <th class="th_width">Overhead expens</th>
+                            <th class="th_width">Total Amount</th>
+                            <th class="th_width">Remarks</th>
+                            <th class="th_width">Sub Total</th>
+                            <th class="th_width"><button type="button" id="addnewrow" class="btn btn-success btn-sm p-1" onclick="Adduc()">Add UC</button></th>
+                            </tr>
+                        </thead>
+                        <tbody id="UCTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script>
+function reloadTable() {
+    outerRowCount = 0
+    countInner = 0
+    $('#addnewrow').css('display','')
+    $('#sansion-table tbody').empty();
+    var financial_record_url = "{% url 'financial_record' %}";
+
+    // var project_id = $('#id_project_detail_filter').val();
+    // var projectpi_id = $('#id_project_pi_select').val();
+
+    const params_get = new URLSearchParams(document.location.search);
+    const pi_id = params_get.get("pi_id");
+    const projectid = params_get.get("project_id");
+
+    // console.log('pi_id',pi_id)
+    // console.log('projectid',projectid)
+
+    var project_id = projectid
+    var projectpi_id = pi_id
+    const baseURL = "http://10.1.18.138:8000/sansion_year_fetch/";
+    const params = {
+    projectpi_id: projectpi_id,
+    project_id: project_id,
+    };
+
+    const url = new URL(baseURL);
+    url.search = new URLSearchParams(params).toString();
+
+    console.log('projectpi_id reloadTable',projectpi_id)
+    console.log('project_id reloadTable',project_id)
+    
+    fetch(url.toString())
+        .then(response => {
+            // Check if the request was successful (e.g., status code 200)
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json(); // Parse the response as JSON
+        })
+        .then(data => {
+            // console.log(data); 
+           // console.log('financial_record_url',data); 
+             $('#sansion-table tbody').empty(); 
+            var firstcall = $('#sansion-table tbody tr').length - 1
+            //const jsonData = data
+            const $tbody = $('#sansion-table tbody');
+
+            // Render main table rows
+            //   <td class="outer-file">${person.file}</td> 
+            if (firstcall === 0){
+                AddNewrow();
+                //alert('function calling')
+            }else{$('#newrow').remove()}
+            data.newData.forEach((sension, index) => {
+                outerRowCount += 1
+                console.log('******************************* index',index)
+            if (index == '4'){$('#addnewrow').css('display','none')}
+            
+            const mainRow = `
+                <tr id="Trow-${index}" class="main-row" data-index="${index}" data-set-id="${sension.id}">
+                <td>
+                    <input type="radio" name="financial_select" value="${ sension.id }">
+                </td>
+                <td class="outer-year text-warning">${sension.year}</td>
+                <td class="outer-salary">${sension.salary}</td>
+                <td class="outer-contingencies">${sension.contingencies}</td>
+                <td class="outer-non_contingencies">${sension.non_contingencies}</td>
+                <td class="outer-recurring">${sension.recurring}</td>
+                <td class="outer-travel">${sension.travel}</td>
+                <td class="outer-overhead_expens">${sension.overhead_expens}</td>
+                <td class="outer-total text-success">${sension.total}</td>
+                <td class="outer-comment">${sension.comment}</td>
+                <td class="outer-comment text-danger">${sension.subtotal}</td>
+                <td class="outer-total"></td>
+                </tr>
+            `;
+            
+            $tbody.append(mainRow);
+            });
+            
+            const columnSums = {};
+
+                data.data.forEach(row => {
+                Object.keys(row).forEach(key => {
+                    if (typeof row[key] === 'number' && key !== 'id') {
+                    columnSums[key] = (columnSums[key] || 0) + row[key];
+                    }
+                });
+                });
+                
+                if (JSON.stringify(columnSums) != '{}') {
+                    const mainRowTotal = `
+                    <tr id="mainTotal" class="mainTotal_sum bg-secondary table-secondary text-success" style="background-color:#234db5 !important;">
+                    <td></td>
+                    <td>Total</td>
+                    <td>${columnSums.salary}</td>
+                    <td>${columnSums.contingencies}</td>
+                    <td>${columnSums.non_contingencies}</td>
+                    <td>${columnSums.recurring}</td>
+                    <td>${columnSums.travel}</td>
+                    <td>${columnSums.overhead_expens}</td>
+                    <td>${columnSums.total}</td>
+                    <td></td>
+                    <td>${columnSums.subtotal}</td>
+                    <td></td>
+                    </tr>
+                `;
+                $tbody.append(mainRowTotal);
+                }else{
+                const mainRowTotal = `
+                    <tr id="mainTotal" class="mainTotal_zero table-secondary">
+                    <td></td>
+                    <td>Total</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    </tr>
+                `;
+                $tbody.append(mainRowTotal);
+                }
+        // Toggle main row details  <td>pdf</td>
+           
+           
+            $('.edit-toggle').on('change', function(){
+            const row = $(this).closest('tr');
+            var isChecked = $(this).prop('checked');
+            row.find('.edit-input').prop('disabled', !isChecked);
+        });
+
+        
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+
+}
+$(document).ready(function(){
+    reloadTable()
+})
+
+$(document).ready(function() {
+    $(document).on("change","input[type=radio]",function(){
+        debugger
+        var financialId = $(this).val();
+        const params_get = new URLSearchParams(document.location.search);
+        const pi_id = params_get.get("pi_id");
+        const projectid = params_get.get("project_id");
+
+    console.log('pi_id',pi_id)
+    console.log('projectid',projectid)
+        $.ajax({
+            url: '/get-releases/',  // Django URL
+            data: {
+                'financial_id': financialId,
+                'projectpi_id': pi_id,
+                'project_id': projectid,
+            },
+            success: function(data) {
+                    $("#ReleaseTbody").empty()
+                    data.data.forEach((release, index) => {
+                    const html = `
+                    <tr id="Trow-${index}" class="main-row" data-index="${index}" data-set-id="${release.id}">
+                    <td>
+                        
+                    </td>
+                    <td class="outer-year text-warning">${release.year}</td>
+                    <td class="outer-salary">${release.salary}</td>
+                    <td class="outer-contingencies">${release.contingencies}</td>
+                    <td class="outer-non_contingencies">${release.non_contingencies}</td>
+                    <td class="outer-recurring">${release.recurring}</td>
+                    <td class="outer-travel">${release.travel}</td>
+                    <td class="outer-overhead_expens">${release.overhead_expens}</td>
+                    <td class="outer-total text-success">${release.total}</td>
+                    <td class="outer-comment">${release.comment}</td>
+                    <td class="outer-comment text-danger">${release.subtotal}</td>
+                    <td class="outer-total"></td>
+                    </tr>
+                `;
+                
+                $("#ReleaseTbody").append(html);
+                });
+            }
+        });
+
+
+        $.ajax({
+            url: '/get_uc/',  // Django URL
+            data: {
+                'financial_id': financialId,
+                'projectpi_id': pi_id,
+                'project_id': projectid,
+            },
+            success: function(data) {
+                    $("#UCTbody").empty()
+                    data.data.forEach((uc, index) => {
+                    const html = `
+                    <tr id="Trow-${index}" class="main-row" data-index="${index}" data-set-id="${uc.id}">
+                    <td>
+                        
+                    </td>
+                    <td class="outer-year text-warning">${uc.year}</td>
+                    <td class="outer-salary">${uc.salary}</td>
+                    <td class="outer-contingencies">${uc.contingencies}</td>
+                    <td class="outer-non_contingencies">${uc.non_contingencies}</td>
+                    <td class="outer-recurring">${uc.recurring}</td>
+                    <td class="outer-travel">${uc.travel}</td>
+                    <td class="outer-overhead_expens">${uc.overhead_expens}</td>
+                    <td class="outer-total text-success">${uc.total}</td>
+                    <td class="outer-comment">${uc.comment}</td>
+                    <td class="outer-comment text-danger">${uc.subtotal}</td>
+                    <td class="outer-total"></td>
+                    </tr>
+                `;
+                
+                $("#UCTbody").append(html);
+                });
+            }
+        });
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function AddNewrow() {
+    debugger;
+    var newrow = 0
+   
+    var yeararray = ["1st","2nd","3rd","4th","5th"]
+    var getRowIndex = $(`#sansion-table tbody tr`).length - 1
+    var nextYear = yeararray[newrow]
+    // var blankYear = yeararray[count_outer]   
+    let newRow = ''
+    if (newrow == 4){ $('#addnewrow').css('display','none')}
+
+    // if(count_outer === 0){
+    //     if (getRowIndex === -1 ){
+        newRow = `
+        <tr data-set-id="new" class="seq" id="newrow">
+            <td><button class="" onclick="delBtnOuter(this)" style="color:red;">X</button></td>
+            <td><input type="text" id="year" name="year" placeholder="Enter Year" value="${nextYear}" disabled></td>
+            <td><input type="number" id="salary" name="salary" placeholder="Enter salary" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="contingencies" name="contingencies" placeholder="Enter Contingencies" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="noncontingencies" name="noncontingencies" placeholder="Enter Noncontingencies" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="recurring"  name="recurring" placeholder="Enter Recurring" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="travel" name="travel" placeholder="Enter Travel" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="overheadexpens"  name="overheadexpens" placeholder="Enter Overhead expens" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="id_outertotal" name="total" disabled></td>
+            <td><input type="text" id="id_comment" placeholder="Enter Comment" value=""></td>
+            <td><button id="outerSave" onclick="newYearForm(this)">Save</td>
+        </tr>
+        `;
+        
+        $(`#SansionTbody`).append(newRow);
+    };
+        
+  // Optional: Handle delete row
+  function delBtnOuter(d) {
+    $(d).closest('tr').remove();
+    // reloadTable()
+  };
+
+  function AddRelease() {
+    debugger;
+    var newrow = 0
+   
+    var yeararray = ["1st","2nd","3rd","4th","5th"]
+    var getRowIndex = $(`#sansion-table tbody tr`).length - 1
+    var nextYear = yeararray[newrow]
+    // var blankYear = yeararray[count_outer]   
+    let newRow = ''
+    if (newrow == 4){ $('#addnewrow').css('display','none')}
+
+    // if(count_outer === 0){
+    //     if (getRowIndex === -1 ){
+        newRow = `
+        <tr data-set-id="new" class="seq" id="newrow">
+            <td><button class="" onclick="delBtnRelease(this)" style="color:red;">X</button></td>
+            <td><input type="text" id="year" name="year" placeholder="Enter Year" value="${nextYear}" disabled></td>
+            <td><input type="number" id="salary" name="salary" placeholder="Enter salary" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="contingencies" name="contingencies" placeholder="Enter Contingencies" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="noncontingencies" name="noncontingencies" placeholder="Enter Noncontingencies" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="recurring"  name="recurring" placeholder="Enter Recurring" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="travel" name="travel" placeholder="Enter Travel" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="overheadexpens"  name="overheadexpens" placeholder="Enter Overhead expens" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="id_outertotal" name="total" disabled></td>
+            <td><input type="text" id="id_comment" placeholder="Enter Comment" value=""></td>
+            <td><button id="outerSave" onclick="newYearForm(this)">Save</td>
+        </tr>
+        `;
+        
+        $(`#SansionTbody`).append(newRow);
+    };
+        
+  // Optional: Handle delete row
+  function delBtnRelease(d) {
+    $(d).closest('tr').remove();
+    // reloadTable()
+  };
+  function AddRelease() {
+    debugger;
+    var newrow = 0
+   
+    var yeararray = ["1st","2nd","3rd","4th","5th"]
+    var getRowIndex = $(`#sansion-table tbody tr`).length - 1
+    var nextYear = yeararray[newrow]
+    // var blankYear = yeararray[count_outer]   
+    let newRow = ''
+    if (newrow == 4){ $('#addnewrow').css('display','none')}
+
+    // if(count_outer === 0){
+    //     if (getRowIndex === -1 ){
+        newRow = `
+        <tr data-set-id="new" class="seq" id="newrow">
+            <td><button class="" onclick="delBtnRelease(this)" style="color:red;">X</button></td>
+            <td><input type="text" id="year" name="year" placeholder="Enter Year" value="${nextYear}" disabled></td>
+            <td><input type="number" id="salary" name="salary" placeholder="Enter salary" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="contingencies" name="contingencies" placeholder="Enter Contingencies" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="noncontingencies" name="noncontingencies" placeholder="Enter Noncontingencies" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="recurring"  name="recurring" placeholder="Enter Recurring" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="travel" name="travel" placeholder="Enter Travel" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="overheadexpens"  name="overheadexpens" placeholder="Enter Overhead expens" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="id_outertotal" name="total" disabled></td>
+            <td><input type="text" id="id_comment" placeholder="Enter Comment" value=""></td>
+            <td><button id="outerSave" onclick="newYearForm(this)">Save</td>
+        </tr>
+        `;
+        
+        $(`#ReleaseTbody`).append(newRow);
+    };
+        
+  // Optional: Handle delete row
+  function delBtnRelease(d) {
+    $(d).closest('tr').remove();
+    // reloadTable()
+  };
+  
+  function Adduc() {
+    debugger;
+    var newrow = 0
+   
+    var yeararray = ["1st","2nd","3rd","4th","5th"]
+    var getRowIndex = $(`#sansion-table tbody tr`).length - 1
+    var nextYear = yeararray[newrow]
+    // var blankYear = yeararray[count_outer]   
+    let newRow = ''
+    if (newrow == 4){ $('#addnewrow').css('display','none')}
+
+    // if(count_outer === 0){
+    //     if (getRowIndex === -1 ){
+        newRow = `
+        <tr data-set-id="new" class="seq" id="newrow">
+            <td><button class="" onclick="delBtnUc(this)" style="color:red;">X</button></td>
+            <td><input type="text" id="year" name="year" placeholder="Enter Year" value="${nextYear}" disabled></td>
+            <td><input type="number" id="salary" name="salary" placeholder="Enter salary" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="contingencies" name="contingencies" placeholder="Enter Contingencies" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="noncontingencies" name="noncontingencies" placeholder="Enter Noncontingencies" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="recurring"  name="recurring" placeholder="Enter Recurring" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="travel" name="travel" placeholder="Enter Travel" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="overheadexpens"  name="overheadexpens" placeholder="Enter Overhead expens" onchange="CalcTotal(this);"></td>
+            <td><input type="number" id="id_outertotal" name="total" disabled></td>
+            <td><input type="text" id="id_comment" placeholder="Enter Comment" value=""></td>
+            <td><button id="outerSave" onclick="newYearForm(this)">Save</td>
+        </tr>
+        `;
+        
+        $(`#UCTbody`).append(newRow);
+    };
+        
+  // Optional: Handle delete row
+  function delBtnUc(d) {
+    $(d).closest('tr').remove();
+    // reloadTable()
+  };
+</script>
+{% endblock%}
