@@ -277,21 +277,9 @@ def financial_save(request):
         print("*********************************************************************")
         print('return_data',return_data)
         print("*********************************************************************")
-        # files  = request.FILES
-        # print('files',files[0])
-        # print('json_data',len(json_data))
+        
         for row in return_data:
-            # print(row['id'])
-            # print(row['projectpi_id'])
-            # print(row['projects_id'])
-            # print(row['inputs']['year_row'])
-            # print(row['inputs']['salary_row'])
-            # print(row['inputs']['contingencies_row'])
-            # print(row['inputs']['noncontingencies_row'])
-            # print(row['inputs']['recurring_row'])
-            # print(row['inputs']['travel_row'])
-            # print(row['inputs']['overhead_row'])
-            # print(row['inputs']['amt'])
+            
             idexist = row['id']
             file_key = row['file_key']
             print('file_key',file_key)
@@ -331,51 +319,6 @@ def financial_save(request):
                 )
                 print('Record is not exist going to create mode')
                
-        # for i in range(0,len(return_data)):
-        #     print(i)
-        #     idexist = return_data[i]['id']
-            # print(return_data[i])
-            # print('id',return_data[i]['id'])
-            # print(return_data[i]['inputs']['year_row'])
-            # print(return_data[i]['inputs']['salary_row'])
-            # print('projectpi_id',return_data[i]['projectpi_id'])
-            # print('projects_id',return_data[i]['projects_id'])
-            # print(return_data[i]['inputs']["file[]"])
-            # print(request.FILES.get(return_data[i]['inputs']["file[]"]))
-            
-            # FinancialDetail.objects.create(user=request.user,
-            # projectpi_id = json_data[i]['projectpi_id'],
-            # projectdetail_id = json_data[i]['projects_id'],
-            # year = json_data[i]['year'],
-            # salary = json_data[i]['salary'],
-            # contingencies = json_data[i]['contingencies'],
-            # non_contingencies = json_data[i]['noncontingencies'],
-            # recurring = json_data[i]['recurring'],
-            # travel = json_data[i]['travel'],
-            # overhead_expens = json_data[i]['overhead'],
-            # total = 100,
-            # fileupload = files[i],
-            # )
-            # if idexist != '000':
-            #     print(" Record already exists going for update mode")
-            # else:
-                # FinancialDetail.objects.create(user=request.user,
-                # projectpi_id = return_data[i]['projectpi_id'],
-                # projectdetail_id = return_data[i]['projects_id'],
-                # year = return_data[i]['inputs']['year_row'],
-                # salary = return_data[i]['inputs']['salary_row'],
-                # contingencies = return_data[i]['inputs']['contingencies_row'],
-                # non_contingencies = return_data[i]['inputs']['noncontingencies_row'],
-                # recurring = return_data[i]['inputs']['recurring_row'],
-                # travel = return_data[i]['inputs']['travel_row'],
-                # overhead_expens = return_data[i]['inputs']['overhead_row'],
-                # total = return_data[i]['inputs']['amt'],
-                # fileupload = return_data[i]['inputs']['file'],
-                # )
-                # print(return_data[i]['inputs']['year_row'])
-                # print('Record is not exist going to create mode')    
-
-        
     return JsonResponse({'message':'Form submit successfully!!','status':'200 OK'})
 
 
@@ -770,3 +713,47 @@ def get_uc(request):
     qs_uc = UsedBalance.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id,finance_id=financial_id).values()
     print('qs_list',qs_uc)            
     return JsonResponse({'data':list(qs_uc)}, safe=False)
+
+
+@login_required(login_url="login")
+def senssion_submit(request):
+    if request.method == 'POST':
+        print('data',request.POST)
+        FinancialDetail.objects.create(user=request.user,
+                projectpi_id = request.POST['projectpi'],
+                projectdetail_id = request.POST['projects'],
+                year = request.POST['year'],
+                salary = request.POST['salary'],
+                contingencies = request.POST['contingencies'],
+                non_contingencies = request.POST['noncontingencies'],
+                recurring = request.POST['recurring'],
+                travel = request.POST['travel'],
+                overhead_expens = request.POST['overheadexpens'],
+                comment = request.POST['comment'],
+                )
+        return JsonResponse({'message':'Form submit successfully!!','status':'200 OK'})
+    return JsonResponse({'message':'Form not submitted!!','status':'400 BAD_REQUEST'}) 
+
+@login_required(login_url="login")
+def release_submit(request):
+    if request.method == 'POST':
+        files = request.FILES.get('uploadfile',None) 
+        print('data',request.POST)
+        ReleaseBuget.objects.create(user=request.user,
+        finance_id = request.POST['finance_id'],
+        projectpi_id = request.POST['projectpi'],
+        projectdetail_id = request.POST['projects'],
+        year = request.POST['year'],
+        salary = request.POST['salary'],
+        contingencies = request.POST['contingencies'],
+        non_contingencies = request.POST['noncontingencies'],
+        recurring = request.POST['recurring'],
+        travel = request.POST['travel'],
+        overhead_expens = request.POST['overheadexpens'],
+        total = request.POST['total'],
+        comment = request.POST['comment'],
+        fileupload = files,
+        )
+        return JsonResponse({'message':'Form submit successfully!!','status':'200 OK'})
+    return JsonResponse({'message':'Form not submitted!!','status':'400 BAD_REQUEST'}) 
+    

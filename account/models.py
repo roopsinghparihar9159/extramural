@@ -169,7 +169,7 @@ class ReleaseBuget(models.Model):
     
     def generate_series_number(self):
         # self.finance
-        fin_obj = FinancialDetail.objects.filter(id=self.finance.id,projectpi_id=self.projectpi,projectdetail_id=self.projectdetail).first()
+        fin_obj = FinancialDetail.objects.filter(id=self.finance_id,projectpi_id=self.projectpi,projectdetail_id=self.projectdetail).first()
         last = ReleaseBuget.objects.filter(
                 projectpi_id=self.projectpi,
                 projectdetail_id=self.projectdetail,
