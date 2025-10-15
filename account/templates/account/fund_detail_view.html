@@ -1,0 +1,1007 @@
+{% extends 'account/main.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+<style>
+    .table thead th {
+        font-size: .80rem !important;
+        letter-spacing: 0px !important;
+        padding: 8px 10px !important;
+        background-color: #58a2d7 !important;
+        color:#fff !important;
+    }
+    /* .table>:not(caption)>*>* {
+        background-color: #58a2d7 !important;
+        color:#fff !important;
+    } */
+    /* #SansionTbody>tr>td {
+        background-color: #fff !important;
+        color:#111010 !important;
+    } */
+    /* #ReleaseTbody>tr>td {
+        background-color: #fff !important;
+        color:#111010 !important;
+    } */
+    #UCTbody>tr>td {
+        background-color: #fff !important;
+        /* color:#111010 !important; */
+    }
+    input{
+        width: 100%;
+    }
+    .table>tbody>tr>td{
+        padding: 16px 5px !important;
+    }
+    .comment{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+        display: inline-block;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Sanction Budget</div>
+            </div>
+            <div class="card-body ">
+                <div class="col-lg-12 table-responsive">
+                    <table id="sansion-table" class="table p-3 text-center">
+                        <thead class="text-dark main-head">
+                            <tr>
+                            <th class="th_width expand-icon"><i class="fa fa-plus"></i></th>
+                            <th class="th_width">Project Year</th>
+                            <th class="th_width">Salary</th>
+                            <th class="th_width">Contin gencies</th>
+                            <th class="th_width">Non-contin gencies</th>
+                            <th class="th_width">Recurring</th>
+                            <th class="th_width">Travel</th>
+                            <th class="th_width">Overhead expens</th>
+                            <th class="th_width">Total Amount</th>
+                            <th class="th_width">Remarks</th>
+                            <th class="th_width">Sub Total</th>
+                            <th class="th_width"><button type="button" id="addnewrow" class="btn btn-success btn-sm p-1" onclick="AddNewrow()">Add Year</button></th>
+                            </tr>
+                        </thead>
+                        <tbody id="SansionTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Release Budget</div>
+            </div>
+            <div class="card-body ">
+                <div class="alert alert-danger text-center" role="alert" id="id_selectYearMsgRelease"></div>
+                <div class="col-lg-12 table-responsive">
+                    
+                    <table id="release-table" class="table text-center">
+                        <thead class="text-dark main-head">
+                            <tr>
+                            <th class="th_width expand-icon"><i class="fa fa-plus"></i></th>
+                            <th class="th_width">Project Year</th>
+                            <th class="th_width">Salary</th>
+                            <th class="th_width">Contin gencies</th>
+                            <th class="th_width">Non-contin gencies</th>
+                            <th class="th_width">Recurring</th>
+                            <th class="th_width">Travel</th>
+                            <th class="th_width">Overhead expens</th>
+                            <th class="th_width">Total Amount</th>
+                            <th class="th_width">Remarks</th>
+                            <th class="th_width">PDF</th>
+                            <th class="th_width"><button type="button" id="addRelease" class="btn btn-success btn-sm p-1" onclick="AddRelease()">Add Release</button></th>
+                            </tr>
+                        </thead>
+                        <tbody id="ReleaseTbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">UC Budget</div>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger text-center" role="alert" id="id_selectYearMsguc"></div>
+                <div class="col-lg-12 table-responsive">
+                    <table id="uc-table" class="table p-3 text-center">
+                        <thead class="text-dark main-head">
+                            <tr>
+                            <th class="th_width expand-icon"><i class="fa fa-plus"></i></th>
+                            <th class="th_width">Project Year</th>
+                            <th class="th_width">Salary</th>
+                            <th class="th_width">Contin gencies</th>
+                            <th class="th_width">Non-contin gencies</th>
+                            <th class="th_width">Recurring</th>
+                            <th class="th_width">Travel</th>
+                            <th class="th_width">Overhead expens</th>
+                            <th class="th_width">Total Amount</th>
+                            <th class="th_width">Interest</th>
+                            <th class="th_width">Remarks</th>
+                            <th class="th_width">PDF</th>
+                            <th class="th_width"><button type="button" id="addnewrow" class="btn btn-success btn-sm p-1" onclick="Adduc()">Add UC</button></th>
+                            </tr>
+                        </thead>
+                        <tbody id="UCTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script>
+function reloadTable() {
+    outerRowCount = 0
+    countInner = 0
+    $('#addnewrow').css('display','')
+    $('#sansion-table tbody').empty();
+    var financial_record_url = "{% url 'financial_record' %}";
+
+    // var project_id = $('#id_project_detail_filter').val();
+    // var projectpi_id = $('#id_project_pi_select').val();
+
+    const params_get = new URLSearchParams(document.location.search);
+    const pi_id = params_get.get("pi_id");
+    const projectid = params_get.get("project_id");
+
+    // console.log('pi_id',pi_id)
+    // console.log('projectid',projectid)
+
+    var project_id = projectid
+    var projectpi_id = pi_id
+    const baseURL = "http://10.1.18.138:8000/sansion_year_fetch/";
+    const params = {
+    projectpi_id: projectpi_id,
+    project_id: project_id,
+    };
+
+    const url = new URL(baseURL);
+    url.search = new URLSearchParams(params).toString();
+
+    // console.log('projectpi_id reloadTable',projectpi_id)
+    // console.log('project_id reloadTable',project_id)
+    
+    fetch(url.toString())
+        .then(response => {
+            // Check if the request was successful (e.g., status code 200)
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json(); // Parse the response as JSON
+        })
+        .then(data => {
+            // console.log(data); 
+           // console.log('financial_record_url',data); 
+             $('#sansion-table tbody').empty(); 
+            // var firstcall = $('#sansion-table tbody tr').length - 1
+            //const jsonData = data
+            const $tbody = $('#sansion-table tbody');
+
+            // Render main table rows
+            //   <td class="outer-file">${person.file}</td> 
+            // if (firstcall === 0){
+            //     AddNewrow();
+                
+            // }else{$('#newrow').remove()}
+            data.newData.forEach((sension, index) => {
+                // outerRowCount += 1
+                // console.log('******************************* index',index)
+            // if (index == '4'){$('#addnewrow').css('display','none')}
+            
+            const mainRow = `
+                <tr id="Trow-${index}" class="main-row" data-index="${index}" data-set-id="${sension.id}">
+                <td>
+                    <input type="radio" name="financial_select" value="${ sension.id }">
+                </td>
+                <td class="outer-year text-warning">${sension.year}</td>
+                <td class="outer-salary text-muted">${sension.salary}</td>
+                <td class="outer-contingencies text-muted">${sension.contingencies}</td>
+                <td class="outer-non_contingencies text-muted">${sension.non_contingencies}</td>
+                <td class="outer-recurring text-muted">${sension.recurring}</td>
+                <td class="outer-travel text-muted">${sension.travel}</td>
+                <td class="outer-overhead_expens text-muted">${sension.overhead_expens}</td>
+                <td class="outer-total text-success">${sension.total}</td>
+                <td class="outer-comment text-muted">${sension.comment}</td>
+                <td class="outer-comment text-danger">${sension.subtotal}</td>
+                <td class=""><a href="#" class="text-warning"><i class="far fa-edit"></i></a></td>
+                </tr>
+            `;
+            
+            $tbody.append(mainRow);
+            });
+            
+            const columnSums = {};
+
+                data.data.forEach(row => {
+                Object.keys(row).forEach(key => {
+                    if (typeof row[key] === 'number' && key !== 'id') {
+                    columnSums[key] = (columnSums[key] || 0) + row[key];
+                    }
+                });
+                });
+                
+                if (JSON.stringify(columnSums) != '{}') {
+                    const mainRowTotal = `
+                    <tr id="mainTotal" class="mainTotal_sum bg-secondary table-secondary text-success" style="background-color:#234db5 !important;">
+                    <td></td>
+                    <td>Total</td>
+                    <td>${columnSums.salary}</td>
+                    <td>${columnSums.contingencies}</td>
+                    <td>${columnSums.non_contingencies}</td>
+                    <td>${columnSums.recurring}</td>
+                    <td>${columnSums.travel}</td>
+                    <td>${columnSums.overhead_expens}</td>
+                    <td>${columnSums.total}</td>
+                    <td></td>
+                    <td>${columnSums.subtotal}</td>
+                    <td></td>
+                    </tr>
+                `;
+                $tbody.append(mainRowTotal);
+                }else{
+                const mainRowTotal = `
+                    <tr id="mainTotal" class="mainTotal_zero table-secondary">
+                    <td></td>
+                    <td>Total</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    </tr>
+                `;
+                $tbody.append(mainRowTotal);
+                }
+       
+            $('.edit-toggle').on('change', function(){
+            const row = $(this).closest('tr');
+            var isChecked = $(this).prop('checked');
+            row.find('.edit-input').prop('disabled', !isChecked);
+        });
+
+        
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+
+}
+$(document).ready(function(){
+    reloadTable()
+})
+
+$(document).ready(function() {
+    $(document).on("change","input[type=radio]",function(){
+        debugger
+        var financialId = $(this).val();
+        const params_get = new URLSearchParams(document.location.search);
+        const pi_id = params_get.get("pi_id");
+        const projectid = params_get.get("project_id");
+
+    // console.log('pi_id',pi_id)
+    // console.log('projectid',projectid)
+        $.ajax({
+            url: '/get-releases/',  // Django URL
+            data: {
+                'financial_id': financialId,
+                'projectpi_id': pi_id,
+                'project_id': projectid,
+            },
+            success: function(data) {
+                    $("#ReleaseTbody").empty()
+                    data.data.forEach((release, index) => {
+                    const html = `
+                    <tr id="Trow-${index}" class="main-row" data-index="${index}" data-set-id="${release.id}">
+                    <td></td>
+                    <td class="text-warning">${release.release_no}</td>
+                    <td class="text-muted">${release.salary}</td>
+                    <td class="text-muted">${release.contingencies}</td>
+                    <td class="text-muted">${release.non_contingencies}</td>
+                    <td class="text-muted">${release.recurring}</td>
+                    <td class="text-muted">${release.travel}</td>
+                    <td class="text-muted">${release.overhead_expens}</td>
+                    <td class="text-success">${release.total}</td>
+                    <td class="text-muted comment" data-bs-toggle="tooltip" data-bs-placement="top" title="${release.comment}">${release.comment}</td>
+                    <td class=""><a href="{{MEDIA_URL}}${release.fileupload}" target="_blank">View</a></td>
+                    <td class=""><a href="#" class="text-warning"><i class="far fa-edit"></i></a></td>
+                    </tr>
+                `;
+                
+                $("#ReleaseTbody").append(html);
+                });
+                const releaseSums = {};
+
+                data.data.forEach(row => {
+                Object.keys(row).forEach(key => {
+                    if (typeof row[key] === 'number' && key !== 'id') {
+                    releaseSums[key] = (releaseSums[key] || 0) + row[key];
+                    }
+                });
+                });
+                
+                if (JSON.stringify(releaseSums) != '{}') {
+                    const mainRowTotal = `
+                    <tr id="releaseTotal" class="mainTotal_sum bg-secondary table-secondary text-success" style="background-color:#234db5 !important;">
+                    <td></td>
+                    <td>Total</td>
+                    <td>${releaseSums.salary}</td>
+                    <td>${releaseSums.contingencies}</td>
+                    <td>${releaseSums.non_contingencies}</td>
+                    <td>${releaseSums.recurring}</td>
+                    <td>${releaseSums.travel}</td>
+                    <td>${releaseSums.overhead_expens}</td>
+                    <td>${releaseSums.total}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    </tr>
+                `;
+                $("#ReleaseTbody").append(mainRowTotal);
+                }else{
+                const mainRowTotal = `
+                    <tr id="releaseTotal" class="mainTotal_zero table-secondary">
+                    <td></td>
+                    <td>Total</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    </tr>
+                `;
+               $("#ReleaseTbody").append(mainRowTotal);
+                }
+            }
+        });
+
+
+        $.ajax({
+            url: '/get_uc/',  // Django URL
+            data: {
+                'financial_id': financialId,
+                'projectpi_id': pi_id,
+                'project_id': projectid,
+            },
+            success: function(data) {
+                    $("#UCTbody").empty()
+                    data.data.forEach((uc, index) => {
+                    const html = `
+                    <tr id="Trow-${index}" class="main-row" data-index="${index}" data-set-id="${uc.id}">
+                    <td></td>
+                    <td class="outer-year text-warning">${uc.year}</td>
+                    <td class="text-muted">${uc.salary}</td>
+                    <td class="text-muted">${uc.contingencies}</td>
+                    <td class="text-muted">${uc.non_contingencies}</td>
+                    <td class="text-muted">${uc.recurring}</td>
+                    <td class="text-muted">${uc.travel}</td>
+                    <td class="text-muted">${uc.overhead_expens}</td>
+                    <td class="text-muted text-success">${uc.total}</td>
+                    <td class="text-muted text-success">${uc.interest}</td>
+                    <td class="text-muted comment" data-bs-toggle="tooltip" data-bs-placement="top" title="${uc.comment}">${uc.comment}</td>
+                    <td class="text-muted"><a href="{{MEDIA_URL}}${uc.fileupload}" target="_blank">View</a></td>
+                    <td class=""><a href="#" class="text-warning"><i class="far fa-edit"></i></a></td>
+                    </tr>
+                `;
+                
+                $("#UCTbody").append(html);
+                });
+            }
+        });
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    var rowlock = 0
+    function AddNewrow() {
+    debugger;
+    var rowCount = $('#sansion-table tr').length;
+    console.log('rowCount',rowCount)
+    var newrow = 0
+   
+    var yeararray = ["1st","2nd","3rd","4th","5th"]
+    var newrow = $(`#sansion-table tbody tr`).length - 1
+    var nextYear = yeararray[newrow]
+      
+    let newRow = ''
+    if (newrow >= 4){ $('#addnewrow').css('display','none')}
+
+    if(rowlock === 0){
+    
+        newRow = `
+        <tr data-set-id="new" class="seq" id="newrow">
+            <td><button class="" onclick="delBtnOuter(this)" style="color:red;">X</button></td>
+            <td><input type="text" id="year" name="year" placeholder="Enter Year" value="${nextYear}" disabled></td>
+            <td><input type="number" id="salary" name="salary" placeholder="Enter salary" ></td>
+            <td><input type="number" id="contingencies" name="contingencies" placeholder="Enter Contingencies" ></td>
+            <td><input type="number" id="noncontingencies" name="noncontingencies" placeholder="Enter Noncontingencies" ></td>
+            <td><input type="number" id="recurring"  name="recurring" placeholder="Enter Recurring" ></td>
+            <td><input type="number" id="travel" name="travel" placeholder="Enter Travel" ></td>
+            <td><input type="number" id="overheadexpens"  name="overheadexpens" placeholder="Enter Overhead expens"></td>
+            <td><input type="number" id="id_outertotal" name="total" disabled></td>
+            <td><input type="text" id="id_comment" placeholder="Enter Comment" value=""></td>
+            <td><button id="sensionSave" onclick="senssionFormSubmit(this)">Save</td>
+        </tr>
+        `;
+        
+        $(`#mainTotal`).before(newRow);
+        rowlock +=1
+    }
+    };
+        
+  // Optional: Handle delete row
+  function delBtnOuter(d) {
+    $(d).closest('tr').remove();
+    rowlock=0
+    reloadTable()
+  };
+
+
+  var releasRowLock = 0  
+  function AddRelease() {
+    var selectedVal = $('input[name="financial_select"]:checked').val();
+    if(selectedVal){
+        if(releasRowLock === 0){
+            newRow = `
+                <tr data-set-id="new" class="seq" id="newrow">
+                    <td><button class="" onclick="delBtnRelease(this)" style="color:red;">X</button></td>
+                    <td><input type="text" id="release_year" name="year" placeholder="Enter Year" disabled></td>
+                    <td><input type="number" id="release_salary" name="salary" placeholder="Enter salary" onchange="releaseCalculate(this);" required></td>
+                    <td><input type="number" id="release_contingencies" name="contingencies" placeholder="Enter Contingencies" onchange="releaseCalculate(this);" required></td>
+                    <td><input type="number" id="release_noncontingencies" name="noncontingencies" placeholder="Enter Noncontingencies" onchange="releaseCalculate(this);" required></td>
+                    <td><input type="number" id="release_recurring"  name="recurring" placeholder="Enter Recurring" onchange="releaseCalculate(this);" required></td>
+                    <td><input type="number" id="release_travel" name="travel" placeholder="Enter Travel" onchange="releaseCalculate(this);" required></td>
+                    <td><input type="number" id="release_overheadexpens"  name="overheadexpens" placeholder="Enter Overhead expens" onchange="releaseCalculate(this);" required></td>
+                    <td><input type="number" id="id_releasetotal" name="total" disabled></td>
+                    <td><input type="text" id="release_comment" placeholder="Enter Comment" value=""></td>
+                    <td><input type="file" id="release_fileupload" placeholder="Enter fileupload" name="fileupload" required></td>
+                    <td><button id="releaseFormSave" onclick="releaseFormSubmit(this)">Save</td>
+                </tr>
+            `;
+            
+            $(`#releaseTotal`).before(newRow);
+            releasRowLock += 1
+            }
+        }else{
+            swal("Please first select finance year!!",{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-success",
+                    },
+                },});
+        }
+    };
+        
+  // Optional: Handle delete row
+  function delBtnRelease(d) {
+    $(d).closest('tr').remove();
+    releasRowLock = 0
+  };
+  
+  var ucRowLock = 0
+  function Adduc() {
+    
+    if(ucRowLock === 0){
+        newRow = `
+            <tr data-set-id="new" class="seq" id="newrow">
+                <td><button class="" onclick="delBtnUc(this)" style="color:red;">X</button></td>
+                <td><input type="text" id="uc_year" name="year" placeholder="Enter Year" value="" disabled></td>
+                <td><input type="number" id="uc_salary" name="salary" placeholder="Enter salary" onchange="ucCalcTotal(this);"></td>
+                <td><input type="number" id="uc_contingencies" name="contingencies" placeholder="Enter Contingencies" onchange="ucCalcTotal(this);"></td>
+                <td><input type="number" id="uc_noncontingencies" name="noncontingencies" placeholder="Enter Noncontingencies" onchange="ucCalcTotal(this);"></td>
+                <td><input type="number" id="uc_recurring"  name="recurring" placeholder="Enter Recurring" onchange="ucCalcTotal(this);"></td>
+                <td><input type="number" id="uc_travel" name="travel" placeholder="Enter Travel" onchange="ucCalcTotal(this);"></td>
+                <td><input type="number" id="uc_overheadexpens"  name="overheadexpens" placeholder="Enter Overhead expens" onchange="ucCalcTotal(this);"></td>
+                <td><input type="number" id="uc_total" name="total" disabled></td>
+                <td><input type="number" id="uc_interest" name="interest" disabled></td>
+                <td><input type="file" id="uc_fileupload" placeholder="Enter fileupload" name="fileupload"></td>
+                <td><button id="ucFormSave" onclick="uc_FormSubmit(this)">Save</td>
+            </tr>
+        `;
+        
+        $(`#UCTbody`).append(newRow);
+        ucRowLock += 1
+        }
+    };
+        
+  // Optional: Handle delete row
+  function delBtnUc(d) {
+    $(d).closest('tr').remove();
+    ucRowLock = 0
+  };
+
+// senssion data submit 
+
+function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+function validateYearForm(){
+    let isValid = true;
+    var year = $('#year').val()
+    var salary = $('#salary').val()
+    var contingencies = $('#contingencies').val()
+    var noncontingencies = $('#noncontingencies').val()
+    var recurring = $('#recurring').val()
+    var travel = $('#travel').val()
+    var overheadexpens = $('#overheadexpens').val()
+
+   
+    if (year === "") {
+        $('#year').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (salary === "") {
+        $('#salary').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (contingencies === "") {
+        $('#contingencies').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (noncontingencies === "") {
+        $('#noncontingencies').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (recurring === "") {
+        $('#recurring').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (travel === "") {
+        $('#travel').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (overheadexpens === "") {
+        $('#overheadexpens').css("border-color","red")
+        isValid = false;
+    }
+    return isValid
+}
+
+function senssionFormSubmit(v){
+   debugger;
+    var id = v.parentElement.parentElement.dataset.setId
+    const params_get = new URLSearchParams(document.location.search);
+    const pi_id = params_get.get("pi_id");
+    const projectid = params_get.get("project_id");
+    var formData = new FormData()
+    
+    var projectpi = pi_id
+    var projects = projectid
+    
+    
+    var year = $('#year').val()
+    var salary = $('#salary').val()
+    var contingencies = $('#contingencies').val()
+    var noncontingencies = $('#noncontingencies').val()
+    var recurring = $('#recurring').val()
+    var travel = $('#travel').val()
+    var overheadexpens = $('#overheadexpens').val()
+    var total = $('#id_outertotal').val()
+    var comment = $('#id_comment').val()
+    
+    formData.append('projectpi',projectpi);
+    formData.append('projects',projects);
+    formData.append('year',year);
+    formData.append('salary',salary);
+    formData.append('contingencies',contingencies);
+    formData.append('noncontingencies',noncontingencies);
+    formData.append('recurring',recurring);
+    formData.append('travel',travel);
+    formData.append('overheadexpens',overheadexpens);
+    // formData.append('uploadfile',uploadfile);
+    formData.append('total',total);
+    formData.append('comment',comment);
+    var valid = validateYearForm()    
+    // valid = false
+    if(valid){
+    $.ajax({
+        url: "{% url 'senssion_submit' %}",      // Your Django URL for upload
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },  // CSRF token included
+        success: function(response) {
+            // reloadTable()
+            swal(response.message,{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-success",
+                    },
+                },});
+            
+        },
+        error: function(xhr, status, error) {
+            swal(response.message,{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});
+            
+        }
+        });
+    }else{
+        console.error(error);
+        swal("Please fill complete form.",{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});}
+
+    
+        
+
+}
+
+
+
+$("#id_selectYearMsgRelease").hide()
+$("#id_selectYearMsguc").hide()
+
+var senssion_salary=0
+var senssion_contingencies=0
+var senssion_nonContingencies=0
+var senssion_recurring=0
+var senssion_travel=0
+var senssion_overheadexpens=0
+
+$(document).ready(function() {
+   $(document).on("change","input[type=radio]",function(){
+    var financialId = $(this).val();
+    var row = $(this).closest('tr');
+
+    // Extract the values from the row cells
+    var year = row.find('td').eq(1).text();
+    senssion_salary = row.find('td').eq(2).text();
+    senssion_contingencies = row.find('td').eq(3).text();
+    senssion_nonContingencies = row.find('td').eq(4).text();
+    senssion_recurring = row.find('td').eq(5).text();
+    senssion_travel = row.find('td').eq(6).text();
+    senssion_overheadexpens = row.find('td').eq(7).text();
+    
+
+    // Optional: Compare with existing release rows or show differences
+    
+    $("#id_selectYearMsgRelease").text(`You have selected ${year} year`)
+    $("#id_selectYearMsgRelease").css("background-color","#f1d1d1")
+    $("#id_selectYearMsgRelease").show()
+
+    // Add the new row to release table
+    var newRow = '<tr>' +
+      '<td>' + senssion_salary + '</td>' +
+      '<td>' + senssion_contingencies + '</td>' +
+      '<td>' + senssion_nonContingencies + '</td>' +
+      '<td>' + senssion_recurring + '</td>' +
+      '<td>' + senssion_travel + '</td>' +
+      '<td>' + senssion_overheadexpens + '</td>' +
+      '</tr>';
+
+    console.log(newRow)
+
+
+  });
+});
+
+function releaseCalculate(v)
+{
+   debugger
+	var salary = $('#release_salary').val()
+    if(Number(salary) > Number(senssion_salary)){
+        $('#release_salary').css("border-color","red")
+        swal("Please Check, Senssion salary should be greater than release Salary",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+    }else{$('#release_salary').css("border-color","")}
+	var contingencies = $("#release_contingencies").val()
+    if(Number(contingencies)>Number(senssion_contingencies)){
+        $('#release_contingencies').css("border-color","red")
+        swal("Please Check, Senssion contingencies should be greater than release contingencies",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+    }else{$('#release_contingencies').css("border-color","")}
+	var noncontingencies = $("#release_noncontingencies").val()
+    if(Number(noncontingencies)>Number(senssion_nonContingencies)){
+        $('#release_noncontingencies').css("border-color","red")
+        swal("Please Check, Senssion Non contingencies should be greater than release Non contingencies",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+    }else{$('#release_noncontingencies').css("border-color","")}
+	var recurring = $("#release_recurring").val()
+    if(Number(recurring)>Number(senssion_recurring)){
+        $('#release_recurring').css("border-color","red")
+        swal("Please Check, Senssion Non contingencies should be greater than release Non contingencies",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+    }else{$('#release_recurring').css("border-color","")}
+	var travel = $("#release_travel").val()
+    if(Number(travel)>Number(senssion_travel)){
+        $('#release_travel').css("border-color","red")
+        swal("Please Check, Senssion travel should be greater than release travel",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+    }else{$('#release_travel').css("border-color","")}
+	var overhead = $("#release_overheadexpens").val()
+    if(Number(overhead)>Number(senssion_overheadexpens)){
+        $('#release_overheadexpens').css("border-color","red")
+        swal("Please Check, Senssion overhead should be greater than release overhead",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+    }else{$('#release_overheadexpens').css("border-color","")}
+    
+     
+    var amt = +(salary)+  +(contingencies)+  +(noncontingencies)+  +(recurring)+  +(travel)+  +(overhead)
+	$("#id_releasetotal").val(amt)
+    console.log('Total Amount:',amt)
+   
+}
+
+
+
+function validateReleaseForm(){
+    let isValid = true;
+    var year = $('#release_year').val()
+    var salary = $('#release_salary').val()
+    var contingencies = $('#release_contingencies').val()
+    var noncontingencies = $('#release_noncontingencies').val()
+    var recurring = $('#release_recurring').val()
+    var travel = $('#release_travel').val()
+    var overheadexpens = $('#release_overheadexpens').val()
+    var fileInput = $('#release_fileupload')[0];
+    
+
+    // if (year === "") {
+    //     $('#year').css("border-color","red")
+    //     isValid = false;
+    // }
+    
+    if (salary === "") {
+        $('#release_salary').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (contingencies === "") {
+        $('#release_contingencies').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (noncontingencies === "") {
+        $('#release_noncontingencies').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (recurring === "") {
+        $('#release_recurring').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (travel === "") {
+        $('#release_travel').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (overheadexpens === "") {
+        $('#release_overheadexpens').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (fileInput.files.length === 0) {
+      $('#release_fileupload').css("border-color","red")
+      isValid = false;
+    }
+    if (fileInput.files.length !== 0) {
+        var file = fileInput.files[0];
+        var fileType = file.type;
+        if (fileType !== 'application/pdf') {
+        swal("Upload only PDF File.",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    isValid = false;
+        }
+    }
+    if(Number(salary)>Number(senssion_salary)){
+        isValid = false;
+    }
+    if(Number(contingencies)>Number(senssion_contingencies)){
+        isValid = false;
+    }
+    if(Number(noncontingencies)>Number(senssion_nonContingencies)){
+        isValid = false;
+    }
+    if(Number(recurring)>Number(senssion_recurring)){
+        isValid = false;
+    }
+    if(Number(travel)>Number(senssion_travel)){
+        isValid = false;
+    }
+    if(Number(overheadexpens)>Number(senssion_overheadexpens)){
+        isValid = false;
+    }    
+    return isValid
+}
+
+
+function releaseFormSubmit(v){
+
+    const params_get = new URLSearchParams(document.location.search);
+    const pi_id = params_get.get("pi_id");
+    const projectid = params_get.get("project_id");
+    
+    var formData = new FormData()
+    
+    var projectpi = pi_id
+    var projects = projectid
+    
+   
+    var year = $('#release_year').val()
+    var salary = $("#release_salary").val()
+    var contingencies = $("#release_contingencies").val()
+    var noncontingencies = $("#release_noncontingencies").val()
+    var recurring = $("#release_recurring").val()
+    var travel = $("#release_travel").val()
+    var overheadexpens = $("#release_overheadexpens").val()
+    var uploadfile = $("#release_fileupload")[0]
+    var total = $("#id_releasetotal").val()
+    var comment = $("#release_comment").val()
+    var selectedFinanceYear = $('input[name="financial_select"]:checked').val();
+
+    formData.append('finance_id',selectedFinanceYear);
+    formData.append('projectpi',projectpi);
+    formData.append('projects',projects);
+    formData.append('year',year);
+    formData.append('salary',salary);
+    formData.append('contingencies',contingencies);
+    formData.append('noncontingencies',noncontingencies);
+    formData.append('recurring',recurring);
+    formData.append('travel',travel);
+    formData.append('overheadexpens',overheadexpens);
+    formData.append('uploadfile',uploadfile);
+    formData.append('total',total);
+    if (uploadfile.files.length > 0) {
+        formData.append('uploadfile', uploadfile.files[0]);
+    } else {
+        formData.append('uploadfile', '');
+    }
+    // formData.append('total',total);
+    formData.append('comment',comment);
+    var valid = validateReleaseForm()
+    if(valid){
+        $.ajax({
+        url: "{% url 'release_submit' %}",      // Your Django URL for upload
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },  // CSRF token included
+        success: function(response) {
+            if(response.status == '400 BAD_REQUEST'){
+                swal(response.message,{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});
+            }
+            if(response.status == '200 OK'){
+                reloadTable();
+            swal(response.message,{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-success",
+                    },
+                },});
+                // location.reload();
+            }
+            
+        },
+        error: function(xhr, status, error) {
+            alert('Upload failed');
+            console.error(error);
+        }
+        });
+        
+    }else{
+        swal("Please fill complete form.",{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});}
+    
+}
+
+
+// uc form submit
+
+
+
+</script>
+{% endblock %}
