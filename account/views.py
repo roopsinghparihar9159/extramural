@@ -788,4 +788,4 @@ def uc_submit(request):
             return JsonResponse({'message':'Form submit successfully!!','status':'200 OK'})
         else:
             return JsonResponse({'message':'Please first release fund.','status':'400 BAD_REQUEST'})
-    return JsonResponse({'message':'Form not submitted!!','status':'400 BAD_REQUEST'})
+    return JsonResponse({'message':'Form not submitted!!','status':'400 BAD_REQUEST'})  

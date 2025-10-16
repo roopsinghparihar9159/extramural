@@ -112,7 +112,7 @@ class FinancialDetail(models.Model):
     def calculate_subtotal(self):
         return (
             float(self.total) +
-            float(self.interest) +
+            # float(self.interest) +
             float(self.carry_forward_amount)
         )
 
@@ -222,7 +222,7 @@ class UsedBalance(models.Model):
         # FinancialDetail.objects.filter(id=self.finance.id,projectpi_id=self.projectpi,projectdetail_id=self.projectdetail).first()
         print('self',self)
         
-        year_obj = FinancialDetail.objects.filter(id=self.finance.id).first()
+        year_obj = FinancialDetail.objects.filter(id=self.finance_id).first()
         current_year = year_obj.year
         current_interest = self.interest
         current_remain_amount = year_obj.remainamount
@@ -253,7 +253,7 @@ class UsedBalance(models.Model):
 
     def generate_series_number_uc(self):
         # self.finance
-        fin_obj = FinancialDetail.objects.filter(id=self.finance.id,projectpi_id=self.projectpi,projectdetail_id=self.projectdetail).first()
+        fin_obj = FinancialDetail.objects.filter(id=self.finance_id,projectpi_id=self.projectpi,projectdetail_id=self.projectdetail).first()
         last = UsedBalance.objects.filter(
                 projectpi_id=self.projectpi,
                 projectdetail_id=self.projectdetail,
@@ -270,7 +270,7 @@ class UsedBalance(models.Model):
         return f'{fin_obj.year}-uc-{1}'
 
     def save(self, *args, **kwargs):
-        total_released = ReleaseBuget.objects.filter(projectpi_id=self.projectpi,projectdetail_id=self.projectdetail,finance_id=self.finance).aggregate(
+        total_released = ReleaseBuget.objects.filter(projectpi_id=self.projectpi,projectdetail_id=self.projectdetail,finance_id=self.finance_id).aggregate(
                 total=models.Sum('total')
             )['total'] or 0    
         print('total_released',total_released)

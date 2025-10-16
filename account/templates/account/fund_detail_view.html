@@ -39,6 +39,18 @@
         max-width: 200px;
         display: inline-block;
     }
+    .input_modal{
+        padding-top: 4px !important;
+        padding-bottom: 4px !important;
+    }
+    .modal-header {
+        padding: 8px 14px !important;
+        background-color: #a097f0 !important;
+        color: #fff !important;
+    }
+    .modal-footer{
+        padding: 6px 10px !important;
+    }
 </style>
 <div class="row">
     <div class="col-md-12">
@@ -143,6 +155,167 @@
         </div>
     </div>
 </div>
+
+<!-- update modal for finance year -->
+ <!-- Button trigger modal -->
+<!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sanctionModal">
+  Launch demo modal
+</button> -->
+
+<!-- Modal -->
+<div class="modal fade" id="sanctionModal" tabindex="-1" aria-labelledby="sanctionModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="sanctionModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="">
+            <label for="sanction-year" class="col-form-label">Year:</label>
+            <input type="text" class="form-control input_modal" id="id_sanctionYear">
+          </div>
+          <div class="">
+            <label for="sanction-salary" class="col-form-label">Salary:</label>
+            <input type="text" class="form-control input_modal" id="id_sanctionSalary">
+          </div>
+           <div class="">
+            <label for="sanction-year" class="col-form-label">Contingencies:</label>
+            <input type="text" class="form-control input_modal" id="id_sanctionContin">
+          </div>
+          <div class="">
+            <label for="sanction-salary" class="col-form-label">Noncontingencies:</label>
+            <input type="text" class="form-control input_modal" id="id_sanctionNonContin">
+          </div>
+           <div class="">
+            <label for="sanction-year" class="col-form-label">Recurring:</label>
+            <input type="text" class="form-control input_modal" id="id_sanctionRecurring">
+          </div>
+          <div class="">
+            <label for="sanction-salary" class="col-form-label">Overhead expense:</label>
+            <input type="text" class="form-control input_modal" id="id_sanctionOverhead">
+          </div>
+          <div class="">
+            <label for="release-salary" class="col-form-label">Remarks:</label>
+            <input type="text" class="form-control input_modal" id="id_sanctionRemarks">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary btn-sm">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- update modal for release budget -->
+
+<!-- Modal -->
+<div class="modal fade" id="releaseModal" tabindex="-1" aria-labelledby="releaseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="releaseModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="">
+            <label for="release-year" class="col-form-label">Year:</label>
+            <input type="text" class="form-control input_modal" id="id_releaseYear">
+          </div>
+          <div class="">
+            <label for="release-salary" class="col-form-label">Salary:</label>
+            <input type="text" class="form-control input_modal" id="id_releaseYear">
+          </div>
+           <div class="">
+            <label for="release-year" class="col-form-label">Contingencies:</label>
+            <input type="text" class="form-control input_modal" id="id_releaseYear">
+          </div>
+          <div class="">
+            <label for="release-salary" class="col-form-label">Noncontingencies:</label>
+            <input type="text" class="form-control input_modal" id="id_releaseYear">
+          </div>
+           <div class="">
+            <label for="release-year" class="col-form-label">Recurring:</label>
+            <input type="text" class="form-control input_modal" id="id_releaseYear">
+          </div>
+          <div class="">
+            <label for="release-salary" class="col-form-label">Overhead expense:</label>
+            <input type="text" class="form-control input_modal" id="id_releaseYear">
+          </div>
+           <div class="">
+            <label for="release-salary" class="col-form-label">Remarks:</label>
+            <input type="text" class="form-control input_modal" id="id_releaseRemarks">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- update modal for uc budget -->
+
+<!-- Modal -->
+<div class="modal fade" id="ucModal" tabindex="-1" aria-labelledby="ucModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="ucModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <form>
+          <div class="">
+            <label for="uc-year" class="col-form-label">Year:</label>
+            <input type="text" class="form-control input_modal" id="id_ucYear">
+          </div>
+          <div class="">
+            <label for="uc-salary" class="col-form-label">Salary:</label>
+            <input type="text" class="form-control input_modal" id="id_ucSalary">
+          </div>
+           <div class="">
+            <label for="uc-contingencies" class="col-form-label">Contingencies:</label>
+            <input type="text" class="form-control input_modal" id="id_ucContin">
+          </div>
+          <div class="">
+            <label for="uc-noncontingencies" class="col-form-label">Noncontingencies:</label>
+            <input type="text" class="form-control input_modal" id="id_ucNonContin">
+          </div>
+           <div class="">
+            <label for="uc-recurring" class="col-form-label">Recurring:</label>
+            <input type="text" class="form-control input_modal" id="id_ucRecurring">
+          </div>
+          <div class="">
+            <label for="uc-overhead" class="col-form-label">Overhead expense:</label>
+            <input type="text" class="form-control input_modal" id="id_ucOverheadExpense">
+          </div>
+          <div class="">
+            <label for="uc-interest" class="col-form-label">Interest:</label>
+            <input type="text" class="form-control input_modal" id="id_ucInterest">
+          </div>
+          <div class="">
+            <label for="uc-remarks" class="col-form-label">Remarks:</label>
+            <input type="text" class="form-control input_modal" id="id_ucRemarks">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary btn-sm">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script>
 function reloadTable() {
@@ -218,7 +391,7 @@ function reloadTable() {
                 <td class="outer-total text-success">${sension.total}</td>
                 <td class="outer-comment text-muted">${sension.comment}</td>
                 <td class="outer-comment text-danger">${sension.subtotal}</td>
-                <td class=""><a href="#" class="text-warning"><i class="far fa-edit"></i></a></td>
+                <td class=""><a href="#" class="text-warning" data-bs-toggle="modal" data-bs-target="#sanctionModal"><i class="far fa-edit"></i></a></td>
                 </tr>
             `;
             
@@ -323,7 +496,7 @@ $(document).ready(function() {
                     <td class="text-success">${release.total}</td>
                     <td class="text-muted comment" data-bs-toggle="tooltip" data-bs-placement="top" title="${release.comment}">${release.comment}</td>
                     <td class=""><a href="{{MEDIA_URL}}${release.fileupload}" target="_blank">View</a></td>
-                    <td class=""><a href="#" class="text-warning"><i class="far fa-edit"></i></a></td>
+                    <td class=""><a href="#" class="text-warning" data-bs-toggle="modal" data-bs-target="#releaseModal"><i class="far fa-edit"></i></a></td>
                     </tr>
                 `;
                 
@@ -404,7 +577,7 @@ $(document).ready(function() {
                     <td class="text-muted text-success">${uc.interest}</td>
                     <td class="text-muted comment" data-bs-toggle="tooltip" data-bs-placement="top" title="${uc.comment}">${uc.comment}</td>
                     <td class="text-muted"><a href="{{MEDIA_URL}}${uc.fileupload}" target="_blank">View</a></td>
-                    <td class=""><a href="#" class="text-warning"><i class="far fa-edit"></i></a></td>
+                    <td class=""><a href="#" class="text-warning" data-bs-toggle="modal" data-bs-target="#ucModal"><i class="far fa-edit"></i></a></td>
                     </tr>
                 `;
                 
@@ -536,6 +709,7 @@ $(document).ready(function() {
                 <td><input type="number" id="uc_overheadexpens"  name="overheadexpens" placeholder="Enter Overhead expens" onchange="ucCalcTotal(this);"></td>
                 <td><input type="number" id="uc_total" name="total" disabled></td>
                 <td><input type="number" id="uc_interest" name="interest"></td>
+                <td><input type="text" id="uc_comment" name="comment"></td>
                 <td><input type="file" id="uc_fileupload" placeholder="Enter fileupload" name="fileupload"></td>
                 <td><button id="ucFormSave" onclick="uc_FormSubmit(this)">Save</td>
             </tr>
@@ -662,7 +836,8 @@ function senssionFormSubmit(v){
         processData: false,
         headers: { 'X-CSRFToken': getCookie('csrftoken') },  // CSRF token included
         success: function(response) {
-            // reloadTable()
+            rowlock = 0
+            reloadTable()
             swal(response.message,{
                 buttons: {
                     confirm: {
@@ -699,7 +874,7 @@ function senssionFormSubmit(v){
 
 $("#id_selectYearMsgRelease").hide()
 $("#id_selectYearMsguc").hide()
-
+var senssion_year=''
 var senssion_salary=0
 var senssion_contingencies=0
 var senssion_nonContingencies=0
@@ -713,7 +888,7 @@ $(document).ready(function() {
     var row = $(this).closest('tr');
 
     // Extract the values from the row cells
-    var year = row.find('td').eq(1).text();
+    senssion_year= row.find('td').eq(1).text();
     senssion_salary = row.find('td').eq(2).text();
     senssion_contingencies = row.find('td').eq(3).text();
     senssion_nonContingencies = row.find('td').eq(4).text();
@@ -724,7 +899,7 @@ $(document).ready(function() {
 
     // Optional: Compare with existing release rows or show differences
     
-    $("#id_selectYearMsgRelease").text(`You have selected ${year} year`)
+    $("#id_selectYearMsgRelease").text(`You have selected ${senssion_year} year`)
     $("#id_selectYearMsgRelease").css("background-color","#f1d1d1")
     $("#id_selectYearMsgRelease").show()
 
@@ -921,7 +1096,7 @@ function releaseFormSubmit(v){
     var projects = projectid
     
    
-    var year = $('#release_year').val()
+    var year = senssion_year
     var salary = $("#release_salary").val()
     var contingencies = $("#release_contingencies").val()
     var noncontingencies = $("#release_noncontingencies").val()
@@ -1182,7 +1357,7 @@ function uc_FormSubmit(v){
     var projects = projectid
     
    
-    var year = $('#uc_year').val()
+    var year = senssion_year
     var salary = $("#uc_salary").val()
     var contingencies = $("#uc_contingencies").val()
     var noncontingencies = $("#uc_noncontingencies").val()
