@@ -51,22 +51,13 @@ class ProjectPIDetail(models.Model):
     contactno       = models.CharField(max_length=100,null=True,blank=True)
     emailid         = models.EmailField(max_length=100,null=True,blank=True)
     address         = models.CharField(max_length=200,null=True,blank=True)
-<<<<<<< HEAD
-    state_pi           = models.ForeignKey(State, null=True,blank=True, on_delete=models.CASCADE)
-    district_pi        = models.ForeignKey(District, null=True,blank=True, on_delete=models.CASCADE)
-=======
     state_pi        = models.ForeignKey(State, null=True,blank=True, on_delete=models.CASCADE)
     district_pi     = models.ForeignKey(District, null=True,blank=True, on_delete=models.CASCADE)
->>>>>>> 2f11528a9d97166c45548b0862fc2c6d73d01a86
     created         = models.DateTimeField(auto_now_add=True)
     updated         = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-<<<<<<< HEAD
-        return f'{self.name}'
-=======
         return f"{self.name}-({self.state_pi.name})"
->>>>>>> 2f11528a9d97166c45548b0862fc2c6d73d01a86
 
 class ProjectDetail(models.Model):
     user                = models.ForeignKey(User, null=True, blank=True, related_name='user_project_detail', on_delete=models.CASCADE, )
@@ -178,11 +169,7 @@ class ReleaseBuget(models.Model):
     
     def generate_series_number(self):
         # self.finance
-<<<<<<< HEAD
-        fin_obj = FinancialDetail.objects.filter(id=self.finance.id,projectpi_id=self.projectpi,projectdetail_id=self.projectdetail).first()
-=======
         fin_obj = FinancialDetail.objects.filter(id=self.finance_id,projectpi_id=self.projectpi,projectdetail_id=self.projectdetail).first()
->>>>>>> 2f11528a9d97166c45548b0862fc2c6d73d01a86
         last = ReleaseBuget.objects.filter(
                 projectpi_id=self.projectpi,
                 projectdetail_id=self.projectdetail,

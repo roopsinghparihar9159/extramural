@@ -29,8 +29,6 @@ urlpatterns = [
     path("projectview/",views.projectview,name="projectview"),
     path("project_detail_view/<int:pk>/",views.project_detail_view,name="project_detail_view"),
     path("pi_detail_view/<int:pk>/",views.pi_detail_view,name="pi_detail_view"),
-<<<<<<< HEAD
-=======
     path("fund_details/",views.fund_details,name="fund_details"),
     path("sansion_year_fetch/",views.sansion_year_fetch,name="sansion_year_fetch"),
     path('get-releases/', views.get_releases, name='get_releases'),
@@ -38,6 +36,5 @@ urlpatterns = [
 
     path('senssion_submit/',views.senssion_submit,name="senssion_submit"),
     path('release_submit/',views.release_submit,name="release_submit"),
->>>>>>> 2f11528a9d97166c45548b0862fc2c6d73d01a86
 ]
 

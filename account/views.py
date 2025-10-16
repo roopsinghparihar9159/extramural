@@ -193,10 +193,7 @@ def fetch_financial_record(request):
     qs = FinancialDetail.objects.filter(projectpi_id=projectpi_id,projectdetail_id=id_projectdetail).values().order_by('year')
     print('projectpi_id',projectpi_id)
     print('project_id',project_id)
-<<<<<<< HEAD
-=======
     print('id_projectdetail',id_projectdetail)
->>>>>>> 2f11528a9d97166c45548b0862fc2c6d73d01a86
     
     qs_query = FinancialDetail.objects.filter(projectpi_id=projectpi_id,projectdetail_id=id_projectdetail).order_by('id')
     # print('qs_query',qs_query[0].id)
@@ -280,27 +277,9 @@ def financial_save(request):
         print("*********************************************************************")
         print('return_data',return_data)
         print("*********************************************************************")
-<<<<<<< HEAD
-        # files  = request.FILES
-        # print('files',files[0])
-        # print('json_data',len(json_data))
-        for row in return_data:
-            # print(row['id'])
-            # print(row['projectpi_id'])
-            # print(row['projects_id'])
-            # print(row['inputs']['year_row'])
-            # print(row['inputs']['salary_row'])
-            # print(row['inputs']['contingencies_row'])
-            # print(row['inputs']['noncontingencies_row'])
-            # print(row['inputs']['recurring_row'])
-            # print(row['inputs']['travel_row'])
-            # print(row['inputs']['overhead_row'])
-            # print(row['inputs']['amt'])
-=======
         
         for row in return_data:
             
->>>>>>> 2f11528a9d97166c45548b0862fc2c6d73d01a86
             idexist = row['id']
             file_key = row['file_key']
             print('file_key',file_key)
@@ -340,54 +319,6 @@ def financial_save(request):
                 )
                 print('Record is not exist going to create mode')
                
-<<<<<<< HEAD
-        # for i in range(0,len(return_data)):
-        #     print(i)
-        #     idexist = return_data[i]['id']
-            # print(return_data[i])
-            # print('id',return_data[i]['id'])
-            # print(return_data[i]['inputs']['year_row'])
-            # print(return_data[i]['inputs']['salary_row'])
-            # print('projectpi_id',return_data[i]['projectpi_id'])
-            # print('projects_id',return_data[i]['projects_id'])
-            # print(return_data[i]['inputs']["file[]"])
-            # print(request.FILES.get(return_data[i]['inputs']["file[]"]))
-            
-            # FinancialDetail.objects.create(user=request.user,
-            # projectpi_id = json_data[i]['projectpi_id'],
-            # projectdetail_id = json_data[i]['projects_id'],
-            # year = json_data[i]['year'],
-            # salary = json_data[i]['salary'],
-            # contingencies = json_data[i]['contingencies'],
-            # non_contingencies = json_data[i]['noncontingencies'],
-            # recurring = json_data[i]['recurring'],
-            # travel = json_data[i]['travel'],
-            # overhead_expens = json_data[i]['overhead'],
-            # total = 100,
-            # fileupload = files[i],
-            # )
-            # if idexist != '000':
-            #     print(" Record already exists going for update mode")
-            # else:
-                # FinancialDetail.objects.create(user=request.user,
-                # projectpi_id = return_data[i]['projectpi_id'],
-                # projectdetail_id = return_data[i]['projects_id'],
-                # year = return_data[i]['inputs']['year_row'],
-                # salary = return_data[i]['inputs']['salary_row'],
-                # contingencies = return_data[i]['inputs']['contingencies_row'],
-                # non_contingencies = return_data[i]['inputs']['noncontingencies_row'],
-                # recurring = return_data[i]['inputs']['recurring_row'],
-                # travel = return_data[i]['inputs']['travel_row'],
-                # overhead_expens = return_data[i]['inputs']['overhead_row'],
-                # total = return_data[i]['inputs']['amt'],
-                # fileupload = return_data[i]['inputs']['file'],
-                # )
-                # print(return_data[i]['inputs']['year_row'])
-                # print('Record is not exist going to create mode')    
-
-        
-=======
->>>>>>> 2f11528a9d97166c45548b0862fc2c6d73d01a86
     return JsonResponse({'message':'Form submit successfully!!','status':'200 OK'})
 
 
@@ -661,9 +592,6 @@ def pi_detail_view(request,pk):
         #     return JsonResponse({'message':"Please check it. Something went wrong.",'status':'403'})  
     print(form.errors)
     context = {'form':form,'pi_id':project.id}
-<<<<<<< HEAD
-    return render(request,"account/pi_detail_view.html",context)
-=======
     return render(request,"account/pi_detail_view.html",context)
 
 def fund_details(request):
@@ -829,4 +757,3 @@ def release_submit(request):
         return JsonResponse({'message':'Form submit successfully!!','status':'200 OK'})
     return JsonResponse({'message':'Form not submitted!!','status':'400 BAD_REQUEST'}) 
     
->>>>>>> 2f11528a9d97166c45548b0862fc2c6d73d01a86
