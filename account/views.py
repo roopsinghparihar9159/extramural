@@ -757,3 +757,35 @@ def release_submit(request):
         return JsonResponse({'message':'Form submit successfully!!','status':'200 OK'})
     return JsonResponse({'message':'Form not submitted!!','status':'400 BAD_REQUEST'}) 
     
+@login_required(login_url="login")
+def uc_submit(request):
+    if request.method == 'POST':
+        finance_id = request.POST['finance_id'],
+        projectpi_id = request.POST['projectpi'],
+        projectdetail_id = request.POST['projects'],
+        files = request.FILES.get('uploadfile',None) 
+        print('uc data',request.POST)
+        releas_exist=ReleaseBuget.objects.filter(projectpi_id=projectpi_id,projectdetail_id=projectdetail_id,finance_id=finance_id).count()
+        print('releas_exist',releas_exist)
+        if releas_exist > 0:
+            UsedBalance.objects.create(user=request.user,
+                finance_id = request.POST['finance_id'],
+                projectpi_id = request.POST['projectpi'],
+                projectdetail_id = request.POST['projects'],
+                year = request.POST['year'],
+                salary = request.POST['salary'],
+                contingencies = request.POST['contingencies'],
+                non_contingencies = request.POST['noncontingencies'],
+                recurring = request.POST['recurring'],
+                travel = request.POST['travel'],
+                overhead_expens = request.POST['overheadexpens'],
+                interest = request.POST['interest'],
+                total = request.POST['total'],
+                comment = request.POST['comment'],
+                fileupload = files,
+            )
+            print('data created successfully.')
+            return JsonResponse({'message':'Form submit successfully!!','status':'200 OK'})
+        else:
+            return JsonResponse({'message':'Please first release fund.','status':'400 BAD_REQUEST'})
+    return JsonResponse({'message':'Form not submitted!!','status':'400 BAD_REQUEST'})

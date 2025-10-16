@@ -393,7 +393,7 @@ $(document).ready(function() {
                     const html = `
                     <tr id="Trow-${index}" class="main-row" data-index="${index}" data-set-id="${uc.id}">
                     <td></td>
-                    <td class="outer-year text-warning">${uc.year}</td>
+                    <td class="outer-year text-warning">${uc.uc_no}</td>
                     <td class="text-muted">${uc.salary}</td>
                     <td class="text-muted">${uc.contingencies}</td>
                     <td class="text-muted">${uc.non_contingencies}</td>
@@ -535,7 +535,7 @@ $(document).ready(function() {
                 <td><input type="number" id="uc_travel" name="travel" placeholder="Enter Travel" onchange="ucCalcTotal(this);"></td>
                 <td><input type="number" id="uc_overheadexpens"  name="overheadexpens" placeholder="Enter Overhead expens" onchange="ucCalcTotal(this);"></td>
                 <td><input type="number" id="uc_total" name="total" disabled></td>
-                <td><input type="number" id="uc_interest" name="interest" disabled></td>
+                <td><input type="number" id="uc_interest" name="interest"></td>
                 <td><input type="file" id="uc_fileupload" placeholder="Enter fileupload" name="fileupload"></td>
                 <td><button id="ucFormSave" onclick="uc_FormSubmit(this)">Save</td>
             </tr>
@@ -971,7 +971,7 @@ function releaseFormSubmit(v){
                 },});
             }
             if(response.status == '200 OK'){
-                reloadTable();
+                $("input[type=radio][name=financial_select]:checked").trigger("change");
             swal(response.message,{
                 buttons: {
                     confirm: {
@@ -1002,6 +1002,264 @@ function releaseFormSubmit(v){
 // uc form submit
 
 
+function ucCalcTotal(v)
+{
+   debugger
+	var salary = $('#uc_salary').val()
+    if(Number(salary) > Number(senssion_salary)){
+        $('#uc_salary').css("border-color","red")
+        swal("Please Check, Senssion salary should be greater than release Salary",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+    }else{$('#uc_salary').css("border-color","")}
+	var contingencies = $("#uc_contingencies").val()
+    if(Number(contingencies)>Number(senssion_contingencies)){
+        $('#uc_contingencies').css("border-color","red")
+        swal("Please Check, Senssion contingencies should be greater than release contingencies",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+    }else{$('#uc_contingencies').css("border-color","")}
+
+	var noncontingencies = $("#uc_noncontingencies").val()
+    if(Number(noncontingencies)>Number(senssion_nonContingencies)){
+        $('#uc_noncontingencies').css("border-color","red")
+        swal("Please Check, Senssion Non contingencies should be greater than release Non contingencies",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+    }else{$('#uc_noncontingencies').css("border-color","")}
+
+	var recurring = $("#uc_recurring").val()
+    if(Number(recurring)>Number(senssion_recurring)){
+        $('#uc_recurring').css("border-color","red")
+        swal("Please Check, Senssion Non contingencies should be greater than release Non contingencies",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+    }else{$('#uc_recurring').css("border-color","")}
+
+	var travel = $("#uc_travel").val()
+    if(Number(travel)>Number(senssion_travel)){
+        $('#uc_travel').css("border-color","red")
+        swal("Please Check, Senssion travel should be greater than release travel",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+    }else{$('#uc_travel').css("border-color","")}
+
+	var overhead = $("#uc_overheadexpens").val()
+    if(Number(overhead)>Number(senssion_overheadexpens)){
+        $('#uc_overheadexpens').css("border-color","red")
+        swal("Please Check, Senssion overhead should be greater than release overhead",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+    }else{$('#uc_overheadexpens').css("border-color","")}
+    
+     
+    var amt = +(salary)+  +(contingencies)+  +(noncontingencies)+  +(recurring)+  +(travel)+  +(overhead)
+	$("#uc_total").val(amt)
+    console.log('Total Amount:',amt)
+   
+}
+
+function validateUcForm(){
+    let isValid = true;
+    var year = $('#uc_year').val()
+    var salary = $('#uc_salary').val()
+    var contingencies = $('#uc_contingencies').val()
+    var noncontingencies = $('#uc_noncontingencies').val()
+    var recurring = $('#uc_recurring').val()
+    var travel = $('#uc_travel').val()
+    var overheadexpens = $('#uc_overheadexpens').val()
+    var fileInput = $('#uc_fileupload')[0];
+    
+
+    // if (year === "") {
+    //     $('#year').css("border-color","red")
+    //     isValid = false;
+    // }
+    
+    if (salary === "") {
+        $('#uc_salary').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (contingencies === "") {
+        $('#uc_contingencies').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (noncontingencies === "") {
+        $('#uc_noncontingencies').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (recurring === "") {
+        $('#uc_recurring').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (travel === "") {
+        $('#uc_travel').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (overheadexpens === "") {
+        $('#uc_overheadexpens').css("border-color","red")
+        isValid = false;
+    }
+    
+    if (fileInput.files.length === 0) {
+      $('#uc_fileupload').css("border-color","red")
+      isValid = false;
+    }
+    if (fileInput.files.length !== 0) {
+        var file = fileInput.files[0];
+        var fileType = file.type;
+        if (fileType !== 'application/pdf') {
+        swal("Upload only PDF File.",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    isValid = false;
+        }
+    }
+    if(Number(salary)>Number(senssion_salary)){
+        isValid = false;
+    }
+    if(Number(contingencies)>Number(senssion_contingencies)){
+        isValid = false;
+    }
+    if(Number(noncontingencies)>Number(senssion_nonContingencies)){
+        isValid = false;
+    }
+    if(Number(recurring)>Number(senssion_recurring)){
+        isValid = false;
+    }
+    if(Number(travel)>Number(senssion_travel)){
+        isValid = false;
+    }
+    if(Number(overheadexpens)>Number(senssion_overheadexpens)){
+        isValid = false;
+    }    
+    return isValid
+}
+
+
+
+function uc_FormSubmit(v){
+
+    const params_get = new URLSearchParams(document.location.search);
+    const pi_id = params_get.get("pi_id");
+    const projectid = params_get.get("project_id");
+    
+    var formData = new FormData()
+    
+    var projectpi = pi_id
+    var projects = projectid
+    
+   
+    var year = $('#uc_year').val()
+    var salary = $("#uc_salary").val()
+    var contingencies = $("#uc_contingencies").val()
+    var noncontingencies = $("#uc_noncontingencies").val()
+    var recurring = $("#uc_recurring").val()
+    var travel = $("#uc_travel").val()
+    var overheadexpens = $("#uc_overheadexpens").val()
+    var uploadfile = $("#uc_fileupload")[0]
+    var total = $("#uc_total").val()
+    var interest = $("#uc_interest").val()
+    var comment = $("#uc_comment").val()
+    var selectedFinanceYear = $('input[name="financial_select"]:checked').val();
+
+    formData.append('finance_id',selectedFinanceYear);
+    formData.append('projectpi',projectpi);
+    formData.append('projects',projects);
+    formData.append('year',year);
+    formData.append('salary',salary);
+    formData.append('contingencies',contingencies);
+    formData.append('noncontingencies',noncontingencies);
+    formData.append('recurring',recurring);
+    formData.append('travel',travel);
+    formData.append('overheadexpens',overheadexpens);
+    formData.append('uploadfile',uploadfile);
+    formData.append('total',total);
+    formData.append('interest',interest);
+    if (uploadfile.files.length > 0) {
+        formData.append('uploadfile', uploadfile.files[0]);
+    } else {
+        formData.append('uploadfile', '');
+    }
+    // formData.append('total',total);
+    formData.append('comment',comment);
+    var valid = validateUcForm()
+    if(valid){
+        $.ajax({
+        url: "{% url 'uc_submit' %}",      // Your Django URL for upload
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },  // CSRF token included
+        success: function(response) {
+            if(response.status == '400 BAD_REQUEST'){
+                swal(response.message,{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});
+            }
+            if(response.status == '200 OK'){
+                $("input[type=radio][name=financial_select]:checked").trigger("change");
+            swal(response.message,{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-success",
+                    },
+                },});
+                // location.reload();
+            }
+            
+        },
+        error: function(xhr, status, error) {
+            alert('Upload failed');
+            console.error(error);
+        }
+        });
+        
+    }else{
+        swal("Please fill complete form.",{
+                buttons: {
+                    confirm: {
+                    className: "btn btn-danger",
+                    },
+                },});}
+    
+}
 
 </script>
 {% endblock %}

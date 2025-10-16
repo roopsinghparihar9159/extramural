@@ -36,5 +36,6 @@ urlpatterns = [
 
     path('senssion_submit/',views.senssion_submit,name="senssion_submit"),
     path('release_submit/',views.release_submit,name="release_submit"),
+    path('uc_submit/',views.uc_submit,name="uc_submit"),
 ]
 
