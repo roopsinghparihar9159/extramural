@@ -72,7 +72,6 @@
                             <th class="th_width">Travel</th>
                             <th class="th_width">Overhead expens</th>
                             <th class="th_width">Total Amount</th>
-                            <th class="th_width">Remarks</th>
                             <th class="th_width">Sub Total</th>
                             <th class="th_width"><button type="button" id="addnewrow" class="btn btn-success btn-sm p-1" onclick="AddNewrow()">Add Year</button></th>
                             </tr>
@@ -196,10 +195,7 @@
             <label for="sanction-salary" class="col-form-label">Overhead expense:</label>
             <input type="text" class="form-control input_modal" id="id_sanctionOverhead">
           </div>
-          <div class="">
-            <label for="release-salary" class="col-form-label">Remarks:</label>
-            <input type="text" class="form-control input_modal" id="id_sanctionRemarks">
-          </div>
+          
         </form>
       </div>
       <div class="modal-footer">
@@ -389,7 +385,6 @@ function reloadTable() {
                 <td class="outer-travel text-muted">${sension.travel}</td>
                 <td class="outer-overhead_expens text-muted">${sension.overhead_expens}</td>
                 <td class="outer-total text-success">${sension.total}</td>
-                <td class="outer-comment text-muted">${sension.comment}</td>
                 <td class="outer-comment text-danger">${sension.subtotal}</td>
                 <td class=""><a href="#" class="text-warning" data-bs-toggle="modal" data-bs-target="#sanctionModal"><i class="far fa-edit"></i></a></td>
                 </tr>
@@ -420,7 +415,6 @@ function reloadTable() {
                     <td>${columnSums.travel}</td>
                     <td>${columnSums.overhead_expens}</td>
                     <td>${columnSums.total}</td>
-                    <td></td>
                     <td>${columnSums.subtotal}</td>
                     <td></td>
                     </tr>
@@ -438,7 +432,6 @@ function reloadTable() {
                     <td>0</td>
                     <td>0</td>
                     <td>0</td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     </tr>
@@ -634,7 +627,6 @@ $(document).ready(function() {
             <td><input type="number" id="travel" name="travel" placeholder="Enter Travel" ></td>
             <td><input type="number" id="overheadexpens"  name="overheadexpens" placeholder="Enter Overhead expens"></td>
             <td><input type="number" id="id_outertotal" name="total" disabled></td>
-            <td><input type="text" id="id_comment" placeholder="Enter Comment" value=""></td>
             <td><button id="sensionSave" onclick="senssionFormSubmit(this)">Save</td>
         </tr>
         `;
@@ -824,7 +816,7 @@ function senssionFormSubmit(v){
     formData.append('overheadexpens',overheadexpens);
     // formData.append('uploadfile',uploadfile);
     formData.append('total',total);
-    formData.append('comment',comment);
+    
     var valid = validateYearForm()    
     // valid = false
     if(valid){

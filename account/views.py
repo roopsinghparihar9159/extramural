@@ -729,7 +729,6 @@ def senssion_submit(request):
                 recurring = request.POST['recurring'],
                 travel = request.POST['travel'],
                 overhead_expens = request.POST['overheadexpens'],
-                comment = request.POST['comment'],
                 )
         return JsonResponse({'message':'Form submit successfully!!','status':'200 OK'})
     return JsonResponse({'message':'Form not submitted!!','status':'400 BAD_REQUEST'}) 
