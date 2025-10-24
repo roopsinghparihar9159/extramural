@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from account.models import  ProjectPIDetail, ProjectDetail,FinancialDetail,InstituteDetail,District,State,ReleaseBuget,UsedBalance
+from account.models import  ProjectPIDetail, ProjectDetail,FinancialDetail,InstituteDetail,District,State,ReleaseBuget,UsedBalance,BalanceSheet
 from account.forms import ProjectPIDetailForm, ProjectDetailForm, FinancialDetailForm,InstituteDetailForm
 import os
 import json
@@ -713,6 +713,29 @@ def get_uc(request):
     qs_uc = UsedBalance.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id,finance_id=financial_id).values()
     print('qs_list',qs_uc)            
     return JsonResponse({'data':list(qs_uc)}, safe=False)
+
+def get_balancesheet(request):
+    projectpi_id = request.GET.get('projectpi_id')
+    project_id = request.GET.get('project_id')
+    financial_id = request.GET.get('financial_id')
+    qs_balance = BalanceSheet.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id,finance_id=financial_id).values()
+    # print('qs_balance',qs_balance)            
+    return JsonResponse({'data':list(qs_balance)}, safe=False)
+
+def get_unpend_balance(request):
+    projectpi_id = request.GET.get('projectpi_id')
+    project_id = request.GET.get('project_id')
+    financial_year = request.GET.get('year')
+    finance_id = request.GET.get('finance_id')
+    qs_query = FinancialDetail.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id,year=financial_year).order_by('id')
+    print('finance id',qs_query[0].id)
+    qs_release = ReleaseBuget.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id,finance_id=finance_id).count()
+    print('qs_release count',qs_release)
+    qs_balance={}
+    if qs_release < 1:
+        qs_balance = BalanceSheet.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id,finance_id=qs_query[0].id).values()
+        print('qs_balance',qs_balance)            
+    return JsonResponse({'data':list(qs_balance),'status':'200 OK'}, safe=False)
 
 
 @login_required(login_url="login")

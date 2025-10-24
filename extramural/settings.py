@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ['*']
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://10.1.18.138:8000'
+    'http://10.1.19.176:8000'
 ]
 # Application definition
 

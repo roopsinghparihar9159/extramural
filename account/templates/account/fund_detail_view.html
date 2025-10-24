@@ -155,6 +155,40 @@
     </div>
 </div>
 
+
+<!-- Balance Sheet table -->
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Balance Sheet</div>
+            </div>
+            <div class="card-body">
+                <div class="col-lg-12 table-responsive">
+                    <table id="balance-table" class="table p-3 text-center">
+                        <thead class="text-dark main-head">
+                            <tr>
+                            <th class="th_width expand-icon"><i class="fa fa-plus"></i></th>
+                            <th class="th_width">Project Year</th>
+                            <th class="th_width">Salary</th>
+                            <th class="th_width">Contin gencies</th>
+                            <th class="th_width">Non-contin gencies</th>
+                            <th class="th_width">Recurring</th>
+                            <th class="th_width">Travel</th>
+                            <th class="th_width">Overhead expens</th>
+                            <th class="th_width">Interest</th>
+                            <th class="th_width">Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="balanceTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- update modal for finance year -->
  <!-- Button trigger modal -->
 <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sanctionModal">
@@ -333,7 +367,7 @@ function reloadTable() {
 
     var project_id = projectid
     var projectpi_id = pi_id
-    const baseURL = "http://10.1.18.138:8000/sansion_year_fetch/";
+    const baseURL = "http://10.1.19.176:8000/sansion_year_fetch/";
     const params = {
     projectpi_id: projectpi_id,
     project_id: project_id,
@@ -575,6 +609,36 @@ $(document).ready(function() {
                 `;
                 
                 $("#UCTbody").append(html);
+                });
+            }
+        });
+
+        $.ajax({
+            url: '/get_balance/',  // Django URL
+            data: {
+                'financial_id': financialId,
+                'projectpi_id': pi_id,
+                'project_id': projectid,
+            },
+            success: function(data) {
+                    $("#balanceTbody").empty()
+                    data.data.forEach((balance, index) => {
+                    const html = `
+                    <tr id="Trow-${index}" class="main-row" data-index="${index}" data-set-id="${balance.id}">
+                    <td></td>
+                    <td class="text-muted">${balance.year}</td>
+                    <td class="text-muted">${balance.salary}</td>
+                    <td class="text-muted">${balance.contingencies}</td>
+                    <td class="text-muted">${balance.non_contingencies}</td>
+                    <td class="text-muted">${balance.recurring}</td>
+                    <td class="text-muted">${balance.travel}</td>
+                    <td class="text-muted">${balance.overhead_expens}</td>
+                    <td class="text-muted text-success"></td>
+                    <td class="text-muted text-success">${balance.total}</td>
+                    </tr>
+                `;
+                
+                $("#balanceTbody").append(html);
                 });
             }
         });
@@ -913,8 +977,11 @@ $(document).ready(function() {
 
 function releaseCalculate(v)
 {
-   debugger
+//    debugger
+   
 	var salary = $('#release_salary').val()
+
+    // $('#release_salary').val(Number(salary)+1000)
     if(Number(salary) > Number(senssion_salary)){
         $('#release_salary').css("border-color","red")
         swal("Please Check, Senssion salary should be greater than release Salary",{
@@ -1077,7 +1144,7 @@ function validateReleaseForm(){
 
 
 function releaseFormSubmit(v){
-
+    debugger
     const params_get = new URLSearchParams(document.location.search);
     const pi_id = params_get.get("pi_id");
     const projectid = params_get.get("project_id");
@@ -1086,8 +1153,128 @@ function releaseFormSubmit(v){
     
     var projectpi = pi_id
     var projects = projectid
-    
+    var selectedFinanceYear = $('input[name="financial_select"]:checked').val();
    
+    var year_index = ["","1st","2nd","3rd","4th","5th"]
+   if (senssion_year !== '1st'){
+        var spl_year = Number(senssion_year.toString()[0])-1
+        var getyear = year_index[spl_year]
+        console.log('spl_year',spl_year)
+        console.log('getyear',getyear)
+        $.ajax({
+            url: '/get_unpend_balance/',  // Django URL
+            data: {
+                'year': getyear,
+                'projectpi_id': pi_id,
+                'project_id': projectid,
+                'finance_id':selectedFinanceYear,
+            },
+            success: function(data) {
+                debugger
+                    if (data.data.length !== 0){
+                        console.log("get response",data)
+                        console.log("get response salary",data.data[0].salary)
+                        let salary1 = $("#release_salary").val()
+                        let contingencies1 = $("#release_contingencies").val()
+                        let noncontingencies1 = $("#release_noncontingencies").val()
+                        let recurring1 = $("#release_recurring").val()
+                        let travel1 = $("#release_travel").val()
+                        let overheadexpens1 = $("#release_overheadexpens").val()
+
+                        $("#release_salary").val(parseFloat(salary1)+data.data[0].salary)
+                        $("#release_contingencies").val(parseFloat(contingencies1)+data.data[0].contingencies)
+                        $("#release_noncontingencies").val(parseFloat(noncontingencies1)+data.data[0].non_contingencies)
+                        $("#release_recurring").val(parseFloat(recurring1)+data.data[0].recurring)
+                        $("#release_travel").val(parseFloat(travel1)+data.data[0].travel)
+                        $("#release_overheadexpens").val(parseFloat(overheadexpens1)+data.data[0].overhead_expens)
+                        releaseCalculate()
+                        
+
+                        var valid = validateReleaseForm()
+                        if(valid){
+                            debugger
+                            var year = senssion_year
+                            var salary = $("#release_salary").val()
+                            var contingencies = $("#release_contingencies").val()
+                            var noncontingencies = $("#release_noncontingencies").val()
+                            var recurring = $("#release_recurring").val()
+                            var travel = $("#release_travel").val()
+                            var overheadexpens = $("#release_overheadexpens").val()
+                            var uploadfile = $("#release_fileupload")[0]
+                            var total = $("#id_releasetotal").val()
+                            var comment = $("#release_comment").val()
+                            var selectedFinanceYear = $('input[name="financial_select"]:checked').val();
+
+                            formData.append('finance_id',selectedFinanceYear);
+                            formData.append('projectpi',projectpi);
+                            formData.append('projects',projects);
+                            formData.append('year',year);
+                            formData.append('salary',salary);
+                            formData.append('contingencies',contingencies);
+                            formData.append('noncontingencies',noncontingencies);
+                            formData.append('recurring',recurring);
+                            formData.append('travel',travel);
+                            formData.append('overheadexpens',overheadexpens);
+                            formData.append('uploadfile',uploadfile);
+                            formData.append('total',total);
+                            if (uploadfile.files.length > 0) {
+                                formData.append('uploadfile', uploadfile.files[0]);
+                            } else {
+                                formData.append('uploadfile', '');
+                            }
+                            formData.append('comment',comment);
+                            $.ajax({
+                                url: "{% url 'release_submit' %}",      // Your Django URL for upload
+                                type: 'POST',
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                headers: { 'X-CSRFToken': getCookie('csrftoken') },  // CSRF token included
+                                success: function(response) {
+                                    if(response.status == '400 BAD_REQUEST'){
+                                        swal(response.message,{
+                                        buttons: {
+                                            confirm: {
+                                            className: "btn btn-danger",
+                                            },
+                                        },});
+                                    }
+                                    if(response.status == '200 OK'){
+                                        $("input[type=radio][name=financial_select]:checked").trigger("change");
+                                    swal(response.message,{
+                                        buttons: {
+                                            confirm: {
+                                            className: "btn btn-success",
+                                            },
+                                        },});
+                                        // location.reload();
+                                    }
+                                    
+                                },
+                                error: function(xhr, status, error) {
+                                    alert('Upload failed');
+                                    console.error(error);
+                                }
+                            });
+                            
+                        }else{
+                            swal("Please fill complete form.",{
+                                    buttons: {
+                                        confirm: {
+                                        className: "btn btn-danger",
+                                        },
+                                    },});}
+                                        alert("Unspent balance added!!!") 
+                    }
+                } 
+        });                  
+                                
+            
+                            
+
+                                
+    }else{
+                               
     var year = senssion_year
     var salary = $("#release_salary").val()
     var contingencies = $("#release_contingencies").val()
@@ -1098,7 +1285,7 @@ function releaseFormSubmit(v){
     var uploadfile = $("#release_fileupload")[0]
     var total = $("#id_releasetotal").val()
     var comment = $("#release_comment").val()
-    var selectedFinanceYear = $('input[name="financial_select"]:checked').val();
+    
 
     formData.append('finance_id',selectedFinanceYear);
     formData.append('projectpi',projectpi);
@@ -1117,10 +1304,40 @@ function releaseFormSubmit(v){
     } else {
         formData.append('uploadfile', '');
     }
-    // formData.append('total',total);
     formData.append('comment',comment);
     var valid = validateReleaseForm()
     if(valid){
+        debugger
+        var year = senssion_year
+        var salary = $("#release_salary").val()
+        var contingencies = $("#release_contingencies").val()
+        var noncontingencies = $("#release_noncontingencies").val()
+        var recurring = $("#release_recurring").val()
+        var travel = $("#release_travel").val()
+        var overheadexpens = $("#release_overheadexpens").val()
+        var uploadfile = $("#release_fileupload")[0]
+        var total = $("#id_releasetotal").val()
+        var comment = $("#release_comment").val()
+        var selectedFinanceYear = $('input[name="financial_select"]:checked').val();
+
+        formData.append('finance_id',selectedFinanceYear);
+        formData.append('projectpi',projectpi);
+        formData.append('projects',projects);
+        formData.append('year',year);
+        formData.append('salary',salary);
+        formData.append('contingencies',contingencies);
+        formData.append('noncontingencies',noncontingencies);
+        formData.append('recurring',recurring);
+        formData.append('travel',travel);
+        formData.append('overheadexpens',overheadexpens);
+        formData.append('uploadfile',uploadfile);
+        formData.append('total',total);
+        if (uploadfile.files.length > 0) {
+            formData.append('uploadfile', uploadfile.files[0]);
+        } else {
+            formData.append('uploadfile', '');
+        }
+        formData.append('comment',comment);
         $.ajax({
         url: "{% url 'release_submit' %}",      // Your Django URL for upload
         type: 'POST',
@@ -1153,7 +1370,7 @@ function releaseFormSubmit(v){
             alert('Upload failed');
             console.error(error);
         }
-        });
+    });
         
     }else{
         swal("Please fill complete form.",{
@@ -1162,6 +1379,8 @@ function releaseFormSubmit(v){
                     className: "btn btn-danger",
                     },
                 },});}
+
+   }             
     
 }
 
@@ -1249,6 +1468,7 @@ function ucCalcTotal(v)
     console.log('Total Amount:',amt)
    
 }
+
 
 function validateUcForm(){
     let isValid = true;

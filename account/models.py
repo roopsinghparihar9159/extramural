@@ -287,3 +287,58 @@ class UsedBalance(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+
+class BalanceSheet(models.Model):
+    user                = models.ForeignKey(User, null=True, blank=True, related_name='user_balance_detail', on_delete=models.CASCADE, )
+    projectpi           = models.ForeignKey(ProjectPIDetail, null=True, blank=True, related_name='projectpi_balance_detail', on_delete=models.CASCADE, )
+    projectdetail       = models.ForeignKey(ProjectDetail, null=True, blank=True, related_name='projectdetail_balance_detail', on_delete=models.CASCADE, )
+    finance             = models.ForeignKey(FinancialDetail, null=True, blank=True, related_name='financial_balance_detail', on_delete=models.CASCADE, )
+    release             = models.ForeignKey(ReleaseBuget, null=True, blank=True, related_name='release_balance_detail', on_delete=models.CASCADE, )
+    usebalance          = models.ForeignKey(UsedBalance, null=True, blank=True, related_name='uc_balance_detail', on_delete=models.CASCADE, )
+    year                = models.CharField(max_length=200,null=True,blank=True)
+    salary              = models.FloatField(default=0.00)
+    contingencies       = models.FloatField(default=0.00)
+    non_contingencies   = models.FloatField(default=0.00)
+    recurring           = models.FloatField(default=0.00)
+    travel              = models.FloatField(default=0.00)
+    overhead_expens     = models.FloatField(default=0.00)
+    total               = models.FloatField(default=0.00)
+
+    # def calculate_total(balance):
+    #     return (
+    #         float(balance.salary) +
+    #         float(balance.contingencies) +
+    #         float(balance.non_contingencies) +
+    #         float(balance.recurring) +
+    #         float(balance.travel) +
+    #         float(balance.overhead_expens)
+    #     )
+
+    # def save(self, *args, **kwargs):
+    #     balance.total = self.calculate_total()
+    #     super().save(*args, **kwargs)
+
+    def __str__(self):
+        return str(self.id)
+
+def update_balance_sheet(user,projectpi_id,projectdetail_id,finance_id,year):
+    try:
+        release = ReleaseBuget.objects.get(projectpi_id=projectpi_id,projectdetail_id=projectdetail_id,finance_id=finance_id)
+        uc = UsedBalance.objects.get(projectpi_id=projectpi_id,projectdetail_id=projectdetail_id,finance_id=finance_id)
+    except (Release.DoesNotExist, UC.DoesNotExist):
+        return None  # Handle error as needed
+
+    balance, created = BalanceSheet.objects.update_or_create(
+        user=user,projectpi_id=projectpi_id,projectdetail_id=projectdetail_id,finance_id=finance_id,year=year,release_id=release.id,usebalance_id=uc.id,
+        defaults={
+            'salary': release.salary - uc.salary,
+            'contingencies': release.contingencies - uc.contingencies,
+            'non_contingencies': release.non_contingencies - uc.non_contingencies,
+            'recurring': release.recurring - uc.recurring,
+            'travel': release.travel - uc.travel,
+            'overhead_expens': release.overhead_expens - uc.overhead_expens,
+            'total':release.salary - uc.salary + release.contingencies - uc.contingencies + release.non_contingencies - uc.non_contingencies + release.recurring - uc.recurring + release.travel - uc.travel + release.overhead_expens - uc.overhead_expens
+        }
+    )
+    return balance
