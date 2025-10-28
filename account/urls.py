@@ -35,10 +35,11 @@ urlpatterns = [
     path('get_uc/', views.get_uc, name='get_uc'),
     path('get_balance/',views.get_balancesheet,name="get_balance"),
     path('get_unpend_balance/',views.get_unpend_balance,name="get_unpend_balance"),
+    path('get_balance_sheet/',views.get_balance_sheet,name="get_balance_sheet"),
 
     path('senssion_submit/',views.senssion_submit,name="senssion_submit"),
+    path('check_release_limit/',views.check_release_limit,name="check_release_limit"),
     path('release_submit/',views.release_submit,name="release_submit"),
     path('uc_submit/',views.uc_submit,name="uc_submit"),
     
 ]
-

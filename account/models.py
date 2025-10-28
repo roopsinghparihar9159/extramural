@@ -164,8 +164,27 @@ class ReleaseBuget(models.Model):
     fileupload          = models.FileField(upload_to='pdfs/',null=True,blank=True)
     created             = models.DateTimeField(auto_now_add=True)
     updated             = models.DateTimeField(auto_now=True)
+
+    # def full_clean(self):
+    #     # 1️⃣ Max 4 releases allowed
+    #     print("release clean function calling")
+    #     print(self.finance.financial_release_detail.count())
+    #     if self.finance.financial_release_detail.count() >= 4 and not self.pk:
+    #         raise ValidationError("Maximum of 4 releases allowed for this sanction.")
+
+    #     # 2️⃣ Prevent exceeding sanctioned amount
+    #     fields = ['salary', 'contingencies', 'non_contingencies', 'recurring', 'travel', 'overhead_expens']
+    #     for field in fields:
+    #         total_released = sum(getattr(r, field) for r in self.finance.financial_release_detail.all())
+    #         new_total = total_released + getattr(self, field)
+    #         if new_total > getattr(self.finance, field):
+    #             raise ValidationError(
+    #                 f"{field.replace('_', ' ').title()} exceeds sanctioned amount!"
+    #             )
     class Meta:
         unique_together = ('projectpi', 'projectdetail', 'finance', 'release_no')
+
+    
     
     def generate_series_number(self):
         # self.finance
@@ -303,6 +322,7 @@ class BalanceSheet(models.Model):
     recurring           = models.FloatField(default=0.00)
     travel              = models.FloatField(default=0.00)
     overhead_expens     = models.FloatField(default=0.00)
+    interest            = models.FloatField(default=0.00)
     total               = models.FloatField(default=0.00)
 
     # def calculate_total(balance):
@@ -338,7 +358,8 @@ def update_balance_sheet(user,projectpi_id,projectdetail_id,finance_id,year):
             'recurring': release.recurring - uc.recurring,
             'travel': release.travel - uc.travel,
             'overhead_expens': release.overhead_expens - uc.overhead_expens,
-            'total':release.salary - uc.salary + release.contingencies - uc.contingencies + release.non_contingencies - uc.non_contingencies + release.recurring - uc.recurring + release.travel - uc.travel + release.overhead_expens - uc.overhead_expens
+            'interest':uc.interest,
+            'total':release.salary - uc.salary + release.contingencies - uc.contingencies + release.non_contingencies - uc.non_contingencies + release.recurring - uc.recurring + release.travel - uc.travel + release.overhead_expens - uc.overhead_expens + interest
         }
     )
     return balance

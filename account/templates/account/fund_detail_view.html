@@ -156,13 +156,13 @@
 </div>
 
 
-<!-- Balance Sheet table -->
+<!-- Balance table -->
 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <div class="card-title">Balance Sheet</div>
+                <div class="card-title">Balance</div>
             </div>
             <div class="card-body">
                 <div class="col-lg-12 table-responsive">
@@ -182,6 +182,31 @@
                             </tr>
                         </thead>
                         <tbody id="balanceTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Balance Sheet table -->
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Balance Sheet</div>
+            </div>
+            <div class="card-body">
+                <div class="col-lg-12 table-responsive">
+                    <table id="balancesheet-table" class="table p-3 text-center">
+                        <thead class="text-dark main-head">
+                            <tr id="headerRow">
+                            <th class="">Heads</th>
+                            
+                            </tr>
+                        </thead>
+                        <tbody id="balanceSheetTbody"></tbody>
                     </table>
                 </div>
             </div>
@@ -488,12 +513,67 @@ function reloadTable() {
 }
 $(document).ready(function(){
     reloadTable()
-})
+    const params_get = new URLSearchParams(document.location.search);
+        const pi_id = params_get.get("pi_id");
+        const projectid = params_get.get("project_id");
+    $.ajax({
+            url: '/get_balance_sheet/',  // Django URL 
+            data: {
+                'projectpi_id': pi_id,
+                'project_id': projectid,
+            },
+            success: function(response) {
+                if (response.status === "200 OK") {
+                    console.log('Balance Sheet:',response)
+                    const newData = response.data;
 
+                    // $("#balanceSheetTbody").empty()
+
+                    // for (const key in response.keys) {
+                    //     // $(`#${key}`).append(`<td>${newData[key]}</td>`);
+                    //     console.log('keys',key)
+                    //     console.log(newData[key])
+                    // }
+                    
+                        
+                    // for(i=0;i<newData.length;i++){
+                    //     console.log(newData[i])
+                    
+                    // }
+
+                    const keys = Object.keys(newData[0]);
+                    if ($('#balanceSheetTbody').is(':empty')) {
+                        keys.forEach(key => {
+                        $('#balanceSheetTbody').append(`<tr data-field="${key}"><td>${key}</td></tr>`);
+                        });
+                    }
+                    const colIndex = ["Sanction","Release","UC","Uspend"].length; // count columns
+  
+                    // if(i<colIndex){
+                    for (j=0;j<colIndex;j++){
+                    const col_name = ["Sanction","Release","UC","Unspend"]
+                    $('#headerRow').append(`<th> ${col_name[j]}</th>`);
+                        
+                    console.log("data length",newData[j])
+                    if(newData[j]) {
+                    // Append column data (vertical)
+                    keys.forEach(key => {
+                        $(`#balanceSheetTbody tr[data-field='${key}']`).append(`<td>${newData[j][key]}</td>`);
+                    });
+                    }
+                    i +=1
+                    }
+                    
+                }
+            }
+        });
+})
+var financialId = 0
+var i = 0
 $(document).ready(function() {
     $(document).on("change","input[type=radio]",function(){
         debugger
-        var financialId = $(this).val();
+        financialId = $(this).val();
         const params_get = new URLSearchParams(document.location.search);
         const pi_id = params_get.get("pi_id");
         const projectid = params_get.get("project_id");
@@ -544,12 +624,12 @@ $(document).ready(function() {
                     <tr id="releaseTotal" class="mainTotal_sum bg-secondary table-secondary text-success" style="background-color:#234db5 !important;">
                     <td></td>
                     <td>Total</td>
-                    <td>${releaseSums.salary}</td>
-                    <td>${releaseSums.contingencies}</td>
-                    <td>${releaseSums.non_contingencies}</td>
-                    <td>${releaseSums.recurring}</td>
-                    <td>${releaseSums.travel}</td>
-                    <td>${releaseSums.overhead_expens}</td>
+                    <td id="total_releasesalary">${releaseSums.salary}</td>
+                    <td id="total_releasecontingencies">${releaseSums.contingencies}</td>
+                    <td id="total_releasenon_contingencies">${releaseSums.non_contingencies}</td>
+                    <td id="total_releaserecurring">${releaseSums.recurring}</td>
+                    <td id="total_releasetravel">${releaseSums.travel}</td>
+                    <td id="total_releaseoverhead_expens">${releaseSums.overhead_expens}</td>
                     <td>${releaseSums.total}</td>
                     <td></td>
                     <td></td>
@@ -633,7 +713,7 @@ $(document).ready(function() {
                     <td class="text-muted">${balance.recurring}</td>
                     <td class="text-muted">${balance.travel}</td>
                     <td class="text-muted">${balance.overhead_expens}</td>
-                    <td class="text-muted text-success"></td>
+                    <td class="text-muted text-success">${balance.interest}</td>
                     <td class="text-muted text-success">${balance.total}</td>
                     </tr>
                 `;
@@ -642,6 +722,8 @@ $(document).ready(function() {
                 });
             }
         });
+
+        
     });
 });
 
@@ -1052,7 +1134,97 @@ function releaseCalculate(v)
     var amt = +(salary)+  +(contingencies)+  +(noncontingencies)+  +(recurring)+  +(travel)+  +(overhead)
 	$("#id_releasetotal").val(amt)
     console.log('Total Amount:',amt)
-   
+    
+    var salary_total = $("#total_releasesalary").text();
+    var contingencies_total = $("#total_releasecontingencies").text();
+    var non_contingencies_total = $("#total_releasenon_contingencies").text();
+    var recurring_total = $("#total_releaserecurring").text();
+    var travel_total = $("#total_releasetravel").text();
+    var overhead_expens_total = $("#total_releaseoverhead_expens").text();
+
+    var tot_salary_sanction = parseFloat(salary_total)+parseFloat(salary)
+    var tot_contingencies_sanction = parseFloat(contingencies_total)+parseFloat(contingencies)
+    var tot_noncontingencies_sanction = parseFloat(non_contingencies_total)+parseFloat(noncontingencies)
+    var tot_recurring_sanction = parseFloat(recurring_total)+parseFloat(recurring)
+    var tot_travel_sanction = parseFloat(travel_total)+parseFloat(travel)
+    var tot_overhead_sanction = parseFloat(overhead_expens_total)+parseFloat(overhead)
+    debugger;
+    $.ajax({
+        url: '/check_release_limit/',  // Django URL
+        data: {
+            'finance_id': financialId
+        },
+        success: function(response) {
+                console.log('release each field total before submit check')
+                console.log("**************************************************")
+                console.log(response)
+                console.log(response.data)
+                console.log(response.finance_row)
+                console.log(response.finance_row[0].salary)
+                console.log("**************************************************")
+                if(tot_salary_sanction > response.finance_row[0].salary){
+                    $('input[name=salary]').val("")
+                    swal("Please Check, Salary is not allowed greater than Sanction salary!!",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+                }
+                if(tot_contingencies_sanction > response.finance_row[0].contingencies){
+                    $('input[name=contingencies]').val("")
+                    swal("Please Check, Contingencies is not allowed greater than Sanction contingencies!!",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+                }
+                if(tot_noncontingencies_sanction > response.finance_row[0].non_contingencies){
+                    $('input[name=noncontingencies]').val("")
+                    swal("Please Check,Non-Contingencies is not allowed greater than Sanction Non-contingencies!!",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+                }
+                if(tot_recurring_sanction > response.finance_row[0].recurring){
+                    $('input[name=recurring]').val("")
+                    swal("Please Check,Recurring is not allowed greater than Sanction recurring!!",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+                }
+                if(tot_travel_sanction > response.finance_row[0].travel){
+                    $('input[name=travel]').val("")
+                    swal("Please Check,Travel is not allowed greater than Sanction travel!!",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+                }
+                if(tot_overhead_sanction > response.finance_row[0].overhead_expens){
+                    $('input[name=overheadexpens]').val("")
+                    swal("Please Check,Overheadexpens is not allowed greater than Sanction Overheadexpens!!",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+                    
+                }
+
+        }
+    });
 }
 
 
@@ -1172,8 +1344,8 @@ function releaseFormSubmit(v){
             success: function(data) {
                 debugger
                     if (data.data.length !== 0){
-                        console.log("get response",data)
-                        console.log("get response salary",data.data[0].salary)
+                        // console.log("get response",data)
+                        // console.log("get response salary",data.data[0].salary)
                         let salary1 = $("#release_salary").val()
                         let contingencies1 = $("#release_contingencies").val()
                         let noncontingencies1 = $("#release_noncontingencies").val()
@@ -1241,6 +1413,7 @@ function releaseFormSubmit(v){
                                     }
                                     if(response.status == '200 OK'){
                                         $("input[type=radio][name=financial_select]:checked").trigger("change");
+                                        releasRowLock = 0
                                     swal(response.message,{
                                         buttons: {
                                             confirm: {
@@ -1355,6 +1528,7 @@ function releaseFormSubmit(v){
                 },});
             }
             if(response.status == '200 OK'){
+                releasRowLock = 0
                 $("input[type=radio][name=financial_select]:checked").trigger("change");
             swal(response.message,{
                 buttons: {

@@ -8,6 +8,7 @@ import os
 import json
 import datetime
 from datetime import datetime
+from django.db.models import Sum
 # Create your views here.
 @login_required(login_url="login")
 def home(request):
@@ -738,6 +739,25 @@ def get_unpend_balance(request):
     return JsonResponse({'data':list(qs_balance),'status':'200 OK'}, safe=False)
 
 
+
+def get_balance_sheet(request):
+    projectpi_id = request.GET.get('projectpi_id')
+    project_id = request.GET.get('project_id')
+    dict_list = []
+    fields = ['salary', 'contingencies', 'non_contingencies','recurring', 'travel', 'overhead_expens']
+    sanction_totals = FinancialDetail.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id).aggregate(**{f: Sum(f) for f in fields})
+    dict_list.append(sanction_totals)
+    release_total = ReleaseBuget.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id).aggregate(**{f: Sum(f) for f in fields})
+    dict_list.append(release_total)
+    uc_total = UsedBalance.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id).aggregate(**{f: Sum(f) for f in fields})
+    dict_list.append(uc_total)
+    unspend = {f: (release_total[f] or 0) - (uc_total[f] or 0) for f in fields}
+    dict_list.append(unspend)
+    combined = {f: (sanction_totals[f] or 0) + (release_total[f] or 0) + (uc_total[f] or 0) for f in fields}
+    keys = list(dict_list[0].keys())            
+    return JsonResponse({'data':list(dict_list),"keys": list(keys),'status':'200 OK'}, safe=False)
+
+
 @login_required(login_url="login")
 def senssion_submit(request):
     if request.method == 'POST':
@@ -755,6 +775,19 @@ def senssion_submit(request):
                 )
         return JsonResponse({'message':'Form submit successfully!!','status':'200 OK'})
     return JsonResponse({'message':'Form not submitted!!','status':'400 BAD_REQUEST'}) 
+
+def check_release_limit(request):
+    
+    finance_id = request.GET.get('finance_id')
+    print(finance_id,type(finance_id))
+    sanction = FinancialDetail.objects.get(id=finance_id)
+    finance_row = FinancialDetail.objects.filter(id=finance_id).values()
+    print('finance_row',finance_row)
+    total_release = sanction.financial_release_detail.count()
+    fields = ['salary', 'contingencies', 'non_contingencies', 'recurring', 'travel', 'overhead_expens']
+    released_sums = {field: sum(getattr(r, field) for r in sanction.financial_release_detail.all()) for field in fields}
+    print('released_sums',released_sums)
+    return JsonResponse({'data':released_sums,'finance_row':list(finance_row),'limit_count':total_release,'status':'200 OK'}, safe=False)
 
 @login_required(login_url="login")
 def release_submit(request):
