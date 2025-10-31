@@ -779,21 +779,17 @@ def senssion_submit(request):
 def check_release_limit(request):
     
     finance_id = request.GET.get('finance_id')
-    print(finance_id,type(finance_id))
     sanction = FinancialDetail.objects.get(id=finance_id)
     finance_row = FinancialDetail.objects.filter(id=finance_id).values()
-    print('finance_row',finance_row)
     total_release = sanction.financial_release_detail.count()
     fields = ['salary', 'contingencies', 'non_contingencies', 'recurring', 'travel', 'overhead_expens']
     released_sums = {field: sum(getattr(r, field) for r in sanction.financial_release_detail.all()) for field in fields}
-    print('released_sums',released_sums)
     return JsonResponse({'data':released_sums,'finance_row':list(finance_row),'limit_count':total_release,'status':'200 OK'}, safe=False)
 
 @login_required(login_url="login")
 def release_submit(request):
     if request.method == 'POST':
         files = request.FILES.get('uploadfile',None) 
-        print('data',request.POST)
         ReleaseBuget.objects.create(user=request.user,
         finance_id = request.POST['finance_id'],
         projectpi_id = request.POST['projectpi'],
@@ -819,28 +815,32 @@ def uc_submit(request):
         projectpi_id = request.POST['projectpi'],
         projectdetail_id = request.POST['projects'],
         files = request.FILES.get('uploadfile',None) 
-        print('uc data',request.POST)
+        # print('uc data',request.POST)
         releas_exist=ReleaseBuget.objects.filter(projectpi_id=projectpi_id,projectdetail_id=projectdetail_id,finance_id=finance_id).count()
-        print('releas_exist',releas_exist)
+        uc_exist=UsedBalance.objects.filter(projectpi_id=projectpi_id,projectdetail_id=projectdetail_id,finance_id=finance_id).count()
+        # print('releas_exist',releas_exist)
         if releas_exist > 0:
-            UsedBalance.objects.create(user=request.user,
-                finance_id = request.POST['finance_id'],
-                projectpi_id = request.POST['projectpi'],
-                projectdetail_id = request.POST['projects'],
-                year = request.POST['year'],
-                salary = request.POST['salary'],
-                contingencies = request.POST['contingencies'],
-                non_contingencies = request.POST['noncontingencies'],
-                recurring = request.POST['recurring'],
-                travel = request.POST['travel'],
-                overhead_expens = request.POST['overheadexpens'],
-                interest = request.POST['interest'],
-                total = request.POST['total'],
-                comment = request.POST['comment'],
-                fileupload = files,
-            )
-            print('data created successfully.')
-            return JsonResponse({'message':'Form submit successfully!!','status':'200 OK'})
+            if uc_exist <= 0:
+                UsedBalance.objects.create(user=request.user,
+                    finance_id = request.POST['finance_id'],
+                    projectpi_id = request.POST['projectpi'],
+                    projectdetail_id = request.POST['projects'],
+                    year = request.POST['year'],
+                    salary = request.POST['salary'],
+                    contingencies = request.POST['contingencies'],
+                    non_contingencies = request.POST['noncontingencies'],
+                    recurring = request.POST['recurring'],
+                    travel = request.POST['travel'],
+                    overhead_expens = request.POST['overheadexpens'],
+                    interest = request.POST['interest'],
+                    total = request.POST['total'],
+                    comment = request.POST['comment'],
+                    fileupload = files,
+                )
+                # print('data created successfully.')
+                return JsonResponse({'message':'Form submit successfully!!','status':'200 OK'})
+            else:
+                return JsonResponse({'message':'UC can submit only one time!!','status':'400 BAD_REQUEST'})
         else:
             return JsonResponse({'message':'Please first release fund.','status':'400 BAD_REQUEST'})
     return JsonResponse({'message':'Form not submitted!!','status':'400 BAD_REQUEST'})  

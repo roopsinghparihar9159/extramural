@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Sum
 # Create your models here.
 
 class State(models.Model):
@@ -111,7 +112,7 @@ class FinancialDetail(models.Model):
 
     def calculate_subtotal(self):
         return (
-            float(self.total) +
+            # float(self.total) -
             # float(self.interest) +
             float(self.carry_forward_amount)
         )
@@ -344,22 +345,25 @@ class BalanceSheet(models.Model):
 
 def update_balance_sheet(user,projectpi_id,projectdetail_id,finance_id,year):
     try:
-        release = ReleaseBuget.objects.get(projectpi_id=projectpi_id,projectdetail_id=projectdetail_id,finance_id=finance_id)
+        # release = ReleaseBuget.objects.get(projectpi_id=projectpi_id,projectdetail_id=projectdetail_id,finance_id=finance_id)
         uc = UsedBalance.objects.get(projectpi_id=projectpi_id,projectdetail_id=projectdetail_id,finance_id=finance_id)
-    except (Release.DoesNotExist, UC.DoesNotExist):
+    except (UsedBalance.DoesNotExist):
         return None  # Handle error as needed
 
+    fields = ['salary', 'contingencies', 'non_contingencies','recurring', 'travel', 'overhead_expens']
+    release_total = ReleaseBuget.objects.filter(projectpi_id=projectpi_id,projectdetail_id=projectdetail_id,finance_id=finance_id).aggregate(**{f: Sum(f) for f in fields})
+    print('release_total',release_total)
     balance, created = BalanceSheet.objects.update_or_create(
-        user=user,projectpi_id=projectpi_id,projectdetail_id=projectdetail_id,finance_id=finance_id,year=year,release_id=release.id,usebalance_id=uc.id,
+        user=user,projectpi_id=projectpi_id,projectdetail_id=projectdetail_id,finance_id=finance_id,year=year,usebalance_id=uc.id,
         defaults={
-            'salary': release.salary - uc.salary,
-            'contingencies': release.contingencies - uc.contingencies,
-            'non_contingencies': release.non_contingencies - uc.non_contingencies,
-            'recurring': release.recurring - uc.recurring,
-            'travel': release.travel - uc.travel,
-            'overhead_expens': release.overhead_expens - uc.overhead_expens,
+            'salary': release_total['salary'] - uc.salary,
+            'contingencies': release_total['contingencies'] - uc.contingencies,
+            'non_contingencies': release_total['non_contingencies'] - uc.non_contingencies,
+            'recurring': release_total['recurring'] - uc.recurring,
+            'travel': release_total['travel'] - uc.travel,
+            'overhead_expens': release_total['overhead_expens'] - uc.overhead_expens,
             'interest':uc.interest,
-            'total':release.salary - uc.salary + release.contingencies - uc.contingencies + release.non_contingencies - uc.non_contingencies + release.recurring - uc.recurring + release.travel - uc.travel + release.overhead_expens - uc.overhead_expens + interest
+            'total':release_total['salary'] - uc.salary + release_total['contingencies'] - uc.contingencies + release_total['non_contingencies'] - uc.non_contingencies + release_total['recurring'] - uc.recurring + release_total['travel'] - uc.travel + release_total['overhead_expens'] - uc.overhead_expens + uc.interest
         }
     )
     return balance

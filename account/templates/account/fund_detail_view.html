@@ -558,7 +558,7 @@ $(document).ready(function(){
                     if(newData[j]) {
                     // Append column data (vertical)
                     keys.forEach(key => {
-                        $(`#balanceSheetTbody tr[data-field='${key}']`).append(`<td>${newData[j][key]}</td>`);
+                        $(`#balanceSheetTbody tr[data-field='${key}']`).append(`<td>${newData[j][key]||0}</td>`);
                     });
                     }
                     i +=1
@@ -1162,6 +1162,7 @@ function releaseCalculate(v)
                 console.log(response.finance_row)
                 console.log(response.finance_row[0].salary)
                 console.log("**************************************************")
+                if (response.limit_count < 4){
                 if(tot_salary_sanction > response.finance_row[0].salary){
                     $('input[name=salary]').val("")
                     swal("Please Check, Salary is not allowed greater than Sanction salary!!",{
@@ -1222,6 +1223,15 @@ function releaseCalculate(v)
                     },});
                     
                 }
+            }else{
+                $("#releaseFormSave").hide()
+                swal("You can submit only 4 releases.!!",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+            }
 
         }
     });
