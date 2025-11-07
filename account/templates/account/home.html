@@ -1,4 +1,332 @@
 {% extends 'account/main.html' %}
 {% load static %}
 {% block content %}
+<div class="page-inner">
+            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+              <div class="" >
+                <h3 class="fw-bold mb-3">Dashboard</h3>
+              </div>
+              <div class="ms-md-auto py-2 py-md-0">
+                <!-- <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
+                <a href="#" class="btn btn-primary btn-round">Add Customer</a> -->
+              </div>
+            </div>
+            <div class="row shadow mb-5 py-2 rounded bg-white">
+                <div class="col-sm-6 col-md-3 col-lg-2 py-2">
+                   <fieldset class="border rounded p-1">
+                        <div class="form-group">
+                            <label for="forpiname">PI Name:</label>
+                            <select class="form-select" id="id_pi_name">
+                                <option value="">Select PI name</option>
+                                {% for pi in pi_name_obj %}
+                                
+                                <option value="{{pi.name}}">{{pi.name}}</option>
+                                
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </fieldset>     
+                </div>
+
+                <div class="col-sm-6 col-md-3 col-lg-2 py-2">
+                    <fieldset class="border rounded p-1">
+                        <div class="form-group">
+                            <label for="porjecttype">Project Type:</label>
+                            <select class="form-select" id="id_project_type">
+                                <option value="">Select Project type</option>
+                                <option value="adhoc">Adhoc</option>
+                                <option value="center_adv_research">Center for Advanced Research(CAR)</option>
+                                <option value="fellowship">Fellowship</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="NHRP">NHRP</option>
+                                <option value="small_grant">Small Grant</option>
+                                <option value="taskforce">Taskforce</option>
+                            </select>
+                        </div>
+                    </fieldset>    
+                </div>
+
+                <div class="col-sm-6 col-md-3 col-lg-2 py-2">
+                    <fieldset class="border rounded p-1">
+                        <div class="form-group">
+                            <label for="prcRecommendType">PRC Recommend Type:</label>
+                            <select class="form-select" id="id_prc_recommed">
+                                <option value="">Select PRC ....</option>
+                                <option class="Approved">Approved</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </fieldset>        
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-2 py-2">
+                    <fieldset class="border rounded p-1">
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Institute Type:</label>
+                            <select class="form-select" id="id_institute">
+                                <option value="">Select Institute....</option>
+                                {% for insti in institute_name_obj %}
+                                    <option value="{{insti.id}}">{{insti.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </fieldset>       
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-2 py-2">
+                    <fieldset class="border rounded p-1">
+                        <div class="form-group">
+                            <label for="statetype">State Type:</label>
+                            
+                            <select id="state_id" name="state" class="form-select">
+                                <option value="">Select State</option>
+                            </select>
+                        </div>
+                    </fieldset>       
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-2 py-2">
+                    <fieldset class="border rounded p-1">
+                        <div class="form-group">
+                            <label for="districttype">District Type:</label>
+                            <select id="district_id" name="district" class="form-select">
+                                <option value="">Select District</option>
+                            </select>
+                        </div> 
+                    </fieldset>  
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 py-2">
+                    <fieldset class="border rounded p-2">
+                        <div class="d-flex justify-content-around">
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Start Date:</label>
+                                <input type="date" class="form-select" id="start_date_id">
+                            </div>  
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">End Date:</label>
+                                <input type="date" class="form-select" id="end_date_id">
+                            </div>  
+                        </div>
+                    </fieldset>    
+                </div>
+                
+            </div>
+            <div class="row shadow rounded">
+              <div class="col-sm-6 col-md-3 py-2">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div class="icon-big text-center icon-primary bubble-shadow-small">
+                          <i class="fas fa-users"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">Project Investigator</p>
+                          <h4 class="card-title">1,294</h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-3 py-2">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div class="icon-big text-center icon-info bubble-shadow-small">
+                          <i class="fab fa-product-hunt"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">Projects</p>
+                          <h4 class="card-title">1303</h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-3 py-2">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div class="icon-big text-center icon-success bubble-shadow-small">
+                          <i class="fas fa-school"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">Institute</p>
+                          <h4 class="card-title">$ 1,345</h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-3 py-2">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                          <i class="far fa-check-circle"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">State</p>
+                          <h4 class="card-title">576</h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>          
+<script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+$(document).ready(function(){
+    $.ajax({
+        url: '/ajax/states/', 
+        
+        success: function(response) {
+            response.forEach((uc, index) => {
+            const html = `<option value="${uc.id}">${uc.name}</option>`;
+            $("#state_id").append(html);
+            });
+        }
+    });
+
+   $('#state_id').on('change',function(){
+    var state_id = $('#state_id').val()
+    console.log('state_id',state_id) 
+    $.ajax({
+        url: '/ajax/districts/',  
+        data:{'state_id':state_id},
+        success: function(response) {
+            response.forEach((uc, index) => {
+            const html = `<option value="${uc.id}">${uc.name}</option>`;
+            $("#district_id").append(html);
+            });
+        }
+    });
+   }); 
+
+$('#id_pi_name').on('change',function(){
+    console.log("function calling pi name ....")
+    response_data()
+})
+
+$('#id_project_type').on('change',function(){
+    console.log("function calling project type ....")
+    response_data()
+})
+
+$('#id_prc_recommed').on('change',function(){
+    console.log("function calling id_prc_recommed ....")
+    response_data()
+})
+
+$('#id_institute').on('change',function(){
+    console.log("function calling id_institute ....")
+    response_data()
+})
+
+$('#state_id').on('change',function(){
+    console.log("function calling state_id ....")
+    response_data()
+})
+
+$('#district_id').on('change',function(){
+    console.log("function calling district_id ....")
+    response_data()
+})
+
+$('#end_date_id').on('change',function(){
+    var start_date = $('#start_date_id').val()
+    var end_date = $('#end_date_id').val()
+    if (start_date && end_date){
+        response_data()
+    }else{
+        swal("Please select both start and end date",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+    }
+    
+})
+
+$('#start_date_id').on('change',function(){
+    var start_date = $('#start_date_id').val()
+    var end_date = $('#end_date_id').val()
+    if (start_date && end_date){
+        response_data()
+    }else{
+        swal("Please select both start and end date",{
+                    buttons: {
+                        confirm: {
+                        className: "btn btn-danger",
+                        },
+                    },});
+    }
+    
+})
+
+
+function response_data(){
+    var pi_name = $('#id_pi_name').val()
+    var project_type = $('#id_project_type').val()
+    var prc_recommed = $('#id_prc_recommed').val()
+    var institute = $('#id_institute').val()
+    var state = $('#state_id').val()
+    var district = $('#district_id').val()
+    var start_date = $('#start_date_id').val()
+    var end_date = $('#end_date_id').val()
+
+    console.log("function calling....",pi_name)
+    console.log("function calling....",project_type)
+    console.log("function calling....",prc_recommed)
+    console.log("function calling....",institute)
+    console.log("function calling....",state)
+    console.log("function calling....",district)
+    console.log("function calling....",start_date)
+    console.log("function calling....",end_date)
+
+    $.ajax({
+        url: '/dashboard_data/',  
+        data:{'pi_name':pi_name,'project_type':project_type,'prc_recommed':prc_recommed,'institute':institute,'state':state,'district':district,'start_date':start_date,'end_date':end_date},
+        success: function(response) {
+            console.log(response)
+            // response.forEach((uc, index) => {
+            // const html = `<option value="${uc.id}">${uc.name}</option>`;
+            // $("#district_id").append(html);
+            // });
+        }
+    });
+
+}
+
+});
+</script>
 {% endblock content %}

@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('home/', views.home, name="home"),
+    path('dashboard_data/', views.dashboard_data, name="dashboard_data"),
     path('', views.loginpage, name="login"),
     path('logout/', views.logoutview, name="logout"),
     path("loginview/",views.loginview,name="loginview"),
@@ -19,9 +20,11 @@ urlpatterns = [
     path('uc_save/', views.uc_save_record, name='uc_save'),
     path('filter_projectdetail/', views.filter_projectdetail, name='filter_projectdetail'),
     path('filter_pi_project/', views.filter_pi_project, name='filter_pi_project'),
-
+    
     path('ajax/get-states/', views.get_states, name='get_states'),
     path('ajax/get-districts/', views.get_districts, name='get_districts'),
+    path('ajax/states/', views.states, name='states'),
+    path('ajax/districts/', views.districts, name='districts'),
     path('autocomplete_area_experties/', views.autocomplete_area_experties, name='autocomplete_area_experties'),
     path('autocomplete_designation/', views.autocomplete_designation, name='autocomplete_designation'),
 

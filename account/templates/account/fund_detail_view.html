@@ -72,7 +72,7 @@
                             <th class="th_width">Travel</th>
                             <th class="th_width">Overhead expens</th>
                             <th class="th_width">Total Amount</th>
-                            <th class="th_width">Sub Total</th>
+                            <th class="th_width">Unspend</th>
                             <th class="th_width"><button type="button" id="addnewrow" class="btn btn-success btn-sm p-1" onclick="AddNewrow()">Add Year</button></th>
                             </tr>
                         </thead>
@@ -546,9 +546,10 @@ $(document).ready(function(){
                         keys.forEach(key => {
                         $('#balanceSheetTbody').append(`<tr data-field="${key}"><td>${key}</td></tr>`);
                         });
+                        $('#balanceSheetTbody').append(`<tr data-field="total" class="mainTotal_sum bg-secondary table-secondary text-success"><td>Total</td></tr>`);
                     }
                     const colIndex = ["Sanction","Release","UC","Uspend"].length; // count columns
-  
+                    let store_total = []
                     // if(i<colIndex){
                     for (j=0;j<colIndex;j++){
                     const col_name = ["Sanction","Release","UC","Unspend"]
@@ -557,13 +558,19 @@ $(document).ready(function(){
                     console.log("data length",newData[j])
                     if(newData[j]) {
                     // Append column data (vertical)
+                    var total_val=0
+                    
                     keys.forEach(key => {
                         $(`#balanceSheetTbody tr[data-field='${key}']`).append(`<td>${newData[j][key]||0}</td>`);
+                        total_val += newData[j][key]
                     });
+                    console.log('total_val',total_val)
+                    store_total.push(total_val)
+                    console.log('store_total',store_total)
                     }
                     i +=1
                     }
-                    
+                    $(`#balanceSheetTbody tr[data-field='total']`).append(`<td>${store_total[0]||0}</td><td>${store_total[1]||0}</td><td>${store_total[2]||0}</td><td>${store_total[3]||0}</td>`);
                 }
             }
         });
@@ -630,7 +637,7 @@ $(document).ready(function() {
                     <td id="total_releaserecurring">${releaseSums.recurring}</td>
                     <td id="total_releasetravel">${releaseSums.travel}</td>
                     <td id="total_releaseoverhead_expens">${releaseSums.overhead_expens}</td>
-                    <td>${releaseSums.total}</td>
+                    <td id="total_releaseOverallSum">${releaseSums.total}</td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -642,13 +649,13 @@ $(document).ready(function() {
                     <tr id="releaseTotal" class="mainTotal_zero table-secondary">
                     <td></td>
                     <td>Total</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
+                    <td id="total_releasesalary">0</td>
+                    <td id="total_releasecontingencies">0</td>
+                    <td id="total_releasenon_contingencies">0</td>
+                    <td id="total_releaserecurring">0</td>
+                    <td id="total_releasetravel">0</td>
+                    <td id="total_releaseoverhead_expens">0</td>
+                    <td id="total_releaseOverallSum">0</td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -799,12 +806,12 @@ $(document).ready(function() {
                 <tr data-set-id="new" class="seq" id="newrow">
                     <td><button class="" onclick="delBtnRelease(this)" style="color:red;">X</button></td>
                     <td><input type="text" id="release_year" name="year" placeholder="Enter Year" disabled></td>
-                    <td><input type="number" id="release_salary" name="salary" placeholder="Enter salary" onchange="releaseCalculate(this);" required></td>
-                    <td><input type="number" id="release_contingencies" name="contingencies" placeholder="Enter Contingencies" onchange="releaseCalculate(this);" required></td>
-                    <td><input type="number" id="release_noncontingencies" name="noncontingencies" placeholder="Enter Noncontingencies" onchange="releaseCalculate(this);" required></td>
-                    <td><input type="number" id="release_recurring"  name="recurring" placeholder="Enter Recurring" onchange="releaseCalculate(this);" required></td>
-                    <td><input type="number" id="release_travel" name="travel" placeholder="Enter Travel" onchange="releaseCalculate(this);" required></td>
-                    <td><input type="number" id="release_overheadexpens"  name="overheadexpens" placeholder="Enter Overhead expens" onchange="releaseCalculate(this);" required></td>
+                    <td><input type="number" id="release_salary" value="0" name="salary" placeholder="Enter salary" onchange="releaseCalculate(this);" required></td>
+                    <td><input type="number" id="release_contingencies" value="0" name="contingencies" placeholder="Enter Contingencies" onchange="releaseCalculate(this);" required></td>
+                    <td><input type="number" id="release_noncontingencies" value="0" name="noncontingencies" placeholder="Enter Noncontingencies" onchange="releaseCalculate(this);" required></td>
+                    <td><input type="number" id="release_recurring" value="0"  name="recurring" placeholder="Enter Recurring" onchange="releaseCalculate(this);" required></td>
+                    <td><input type="number" id="release_travel" name="travel" value="0" placeholder="Enter Travel" onchange="releaseCalculate(this);" required></td>
+                    <td><input type="number" id="release_overheadexpens"  name="overheadexpens" value="0" placeholder="Enter Overhead expens" onchange="releaseCalculate(this);" required></td>
                     <td><input type="number" id="id_releasetotal" name="total" disabled></td>
                     <td><input type="text" id="release_comment" placeholder="Enter Comment" value=""></td>
                     <td><input type="file" id="release_fileupload" placeholder="Enter fileupload" name="fileupload" required></td>
@@ -1019,6 +1026,7 @@ var senssion_nonContingencies=0
 var senssion_recurring=0
 var senssion_travel=0
 var senssion_overheadexpens=0
+var senssion_total=0
 
 $(document).ready(function() {
    $(document).on("change","input[type=radio]",function(){
@@ -1033,7 +1041,7 @@ $(document).ready(function() {
     senssion_recurring = row.find('td').eq(5).text();
     senssion_travel = row.find('td').eq(6).text();
     senssion_overheadexpens = row.find('td').eq(7).text();
-    
+    senssion_total = row.find('td').eq(8).text();
 
     // Optional: Compare with existing release rows or show differences
     
@@ -1064,74 +1072,74 @@ function releaseCalculate(v)
 	var salary = $('#release_salary').val()
 
     // $('#release_salary').val(Number(salary)+1000)
-    if(Number(salary) > Number(senssion_salary)){
-        $('#release_salary').css("border-color","red")
-        swal("Please Check, Senssion salary should be greater than release Salary",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+    // if(Number(salary) > Number(senssion_salary)){
+    //     $('#release_salary').css("border-color","red")
+    //     swal("Please Check, Senssion salary should be greater than release Salary",{
+    //                 buttons: {
+    //                     confirm: {
+    //                     className: "btn btn-danger",
+    //                     },
+    //                 },});
                     
-    }else{$('#release_salary').css("border-color","")}
+    // }else{$('#release_salary').css("border-color","")}
 	var contingencies = $("#release_contingencies").val()
-    if(Number(contingencies)>Number(senssion_contingencies)){
-        $('#release_contingencies').css("border-color","red")
-        swal("Please Check, Senssion contingencies should be greater than release contingencies",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+    // if(Number(contingencies)>Number(senssion_contingencies)){
+    //     $('#release_contingencies').css("border-color","red")
+    //     swal("Please Check, Senssion contingencies should be greater than release contingencies",{
+    //                 buttons: {
+    //                     confirm: {
+    //                     className: "btn btn-danger",
+    //                     },
+    //                 },});
                     
-    }else{$('#release_contingencies').css("border-color","")}
+    // }else{$('#release_contingencies').css("border-color","")}
 	var noncontingencies = $("#release_noncontingencies").val()
-    if(Number(noncontingencies)>Number(senssion_nonContingencies)){
-        $('#release_noncontingencies').css("border-color","red")
-        swal("Please Check, Senssion Non contingencies should be greater than release Non contingencies",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+    // if(Number(noncontingencies)>Number(senssion_nonContingencies)){
+    //     $('#release_noncontingencies').css("border-color","red")
+    //     swal("Please Check, Senssion Non contingencies should be greater than release Non contingencies",{
+    //                 buttons: {
+    //                     confirm: {
+    //                     className: "btn btn-danger",
+    //                     },
+    //                 },});
                     
-    }else{$('#release_noncontingencies').css("border-color","")}
+    // }else{$('#release_noncontingencies').css("border-color","")}
 	var recurring = $("#release_recurring").val()
-    if(Number(recurring)>Number(senssion_recurring)){
-        $('#release_recurring').css("border-color","red")
-        swal("Please Check, Senssion Non contingencies should be greater than release Non contingencies",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+    // if(Number(recurring)>Number(senssion_recurring)){
+    //     $('#release_recurring').css("border-color","red")
+    //     swal("Please Check, Senssion Non contingencies should be greater than release Non contingencies",{
+    //                 buttons: {
+    //                     confirm: {
+    //                     className: "btn btn-danger",
+    //                     },
+    //                 },});
                     
-    }else{$('#release_recurring').css("border-color","")}
+    // }else{$('#release_recurring').css("border-color","")}
 	var travel = $("#release_travel").val()
-    if(Number(travel)>Number(senssion_travel)){
-        $('#release_travel').css("border-color","red")
-        swal("Please Check, Senssion travel should be greater than release travel",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+    // if(Number(travel)>Number(senssion_travel)){
+    //     $('#release_travel').css("border-color","red")
+    //     swal("Please Check, Senssion travel should be greater than release travel",{
+    //                 buttons: {
+    //                     confirm: {
+    //                     className: "btn btn-danger",
+    //                     },
+    //                 },});
                     
-    }else{$('#release_travel').css("border-color","")}
+    // }else{$('#release_travel').css("border-color","")}
 	var overhead = $("#release_overheadexpens").val()
-    if(Number(overhead)>Number(senssion_overheadexpens)){
-        $('#release_overheadexpens').css("border-color","red")
-        swal("Please Check, Senssion overhead should be greater than release overhead",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+    // if(Number(overhead)>Number(senssion_overheadexpens)){
+    //     $('#release_overheadexpens').css("border-color","red")
+    //     swal("Please Check, Senssion overhead should be greater than release overhead",{
+    //                 buttons: {
+    //                     confirm: {
+    //                     className: "btn btn-danger",
+    //                     },
+    //                 },});
                     
-    }else{$('#release_overheadexpens').css("border-color","")}
+    // }else{$('#release_overheadexpens').css("border-color","")}
     
-     
-    var amt = +(salary)+  +(contingencies)+  +(noncontingencies)+  +(recurring)+  +(travel)+  +(overhead)
+    var amount = parseFloat( +(salary)+ + (contingencies)+ + (noncontingencies)+ + (recurring)+ + (travel)+ + (overhead))
+    var amt =+ amount
 	$("#id_releasetotal").val(amt)
     console.log('Total Amount:',amt)
     
@@ -1142,12 +1150,16 @@ function releaseCalculate(v)
     var travel_total = $("#total_releasetravel").text();
     var overhead_expens_total = $("#total_releaseoverhead_expens").text();
 
+    
+
     var tot_salary_sanction = parseFloat(salary_total)+parseFloat(salary)
     var tot_contingencies_sanction = parseFloat(contingencies_total)+parseFloat(contingencies)
     var tot_noncontingencies_sanction = parseFloat(non_contingencies_total)+parseFloat(noncontingencies)
     var tot_recurring_sanction = parseFloat(recurring_total)+parseFloat(recurring)
     var tot_travel_sanction = parseFloat(travel_total)+parseFloat(travel)
     var tot_overhead_sanction = parseFloat(overhead_expens_total)+parseFloat(overhead)
+    var all_totalSum = tot_salary_sanction + tot_contingencies_sanction + tot_noncontingencies_sanction + tot_recurring_sanction + tot_travel_sanction + tot_overhead_sanction
+    var releaseOverallSum = $("#total_releaseOverallSum").text();
     debugger;
     $.ajax({
         url: '/check_release_limit/',  // Django URL
@@ -1163,66 +1175,97 @@ function releaseCalculate(v)
                 console.log(response.finance_row[0].salary)
                 console.log("**************************************************")
                 if (response.limit_count < 4){
-                if(tot_salary_sanction > response.finance_row[0].salary){
-                    $('input[name=salary]').val("")
-                    swal("Please Check, Salary is not allowed greater than Sanction salary!!",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+                // if(tot_salary_sanction > response.finance_row[0].salary){
+                //     $('input[name=salary]').val("")
+                //     swal("Please Check, Salary is not allowed greater than Sanction salary!!",{
+                //     buttons: {
+                //         confirm: {
+                //         className: "btn btn-danger",
+                //         },
+                //     },});
                     
-                }
-                if(tot_contingencies_sanction > response.finance_row[0].contingencies){
-                    $('input[name=contingencies]').val("")
-                    swal("Please Check, Contingencies is not allowed greater than Sanction contingencies!!",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+                // }
+                // if(tot_contingencies_sanction > response.finance_row[0].contingencies){
+                //     $('input[name=contingencies]').val("")
+                //     swal("Please Check, Contingencies is not allowed greater than Sanction contingencies!!",{
+                //     buttons: {
+                //         confirm: {
+                //         className: "btn btn-danger",
+                //         },
+                //     },});
                     
-                }
-                if(tot_noncontingencies_sanction > response.finance_row[0].non_contingencies){
-                    $('input[name=noncontingencies]').val("")
-                    swal("Please Check,Non-Contingencies is not allowed greater than Sanction Non-contingencies!!",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+                // }
+                // if(tot_noncontingencies_sanction > response.finance_row[0].non_contingencies){
+                //     $('input[name=noncontingencies]').val("")
+                //     swal("Please Check,Non-Contingencies is not allowed greater than Sanction Non-contingencies!!",{
+                //     buttons: {
+                //         confirm: {
+                //         className: "btn btn-danger",
+                //         },
+                //     },});
                     
-                }
-                if(tot_recurring_sanction > response.finance_row[0].recurring){
-                    $('input[name=recurring]').val("")
-                    swal("Please Check,Recurring is not allowed greater than Sanction recurring!!",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+                // }
+                // if(tot_recurring_sanction > response.finance_row[0].recurring){
+                //     $('input[name=recurring]').val("")
+                //     swal("Please Check,Recurring is not allowed greater than Sanction recurring!!",{
+                //     buttons: {
+                //         confirm: {
+                //         className: "btn btn-danger",
+                //         },
+                //     },});
                     
-                }
-                if(tot_travel_sanction > response.finance_row[0].travel){
-                    $('input[name=travel]').val("")
-                    swal("Please Check,Travel is not allowed greater than Sanction travel!!",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+                // }
+                // if(tot_travel_sanction > response.finance_row[0].travel){
+                //     $('input[name=travel]').val("")
+                //     swal("Please Check,Travel is not allowed greater than Sanction travel!!",{
+                //     buttons: {
+                //         confirm: {
+                //         className: "btn btn-danger",
+                //         },
+                //     },});
                     
-                }
-                if(tot_overhead_sanction > response.finance_row[0].overhead_expens){
-                    $('input[name=overheadexpens]').val("")
-                    swal("Please Check,Overheadexpens is not allowed greater than Sanction Overheadexpens!!",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+                // }
+                // if(tot_overhead_sanction > response.finance_row[0].overhead_expens){
+                //     $('input[name=overheadexpens]').val("")
+                //     swal("Please Check,Overheadexpens is not allowed greater than Sanction Overheadexpens!!",{
+                //     buttons: {
+                //         confirm: {
+                //         className: "btn btn-danger",
+                //         },
+                //     },});
+
+                if(Number(releaseOverallSum) !== 0){
+                    if(all_totalSum > response.finance_row[0].total){
+                        $("#id_releasetotal").css("border-color","red")
+                        $("#releaseFormSave").hide()
+                        swal("Please Check,Don't exceed Sanction Amount!!",{
+                        buttons: {
+                            confirm: {
+                            className: "btn btn-danger",
+                            },
+                        },});
+                    }else{$("#id_releasetotal").css("border-color","")
+                        $("#releaseFormSave").show()}
+
                     
+                }else{
+                    var releasetotal = $("#id_releasetotal").val()
+                    if(releasetotal > response.finance_row[0].total){
+                        $("#id_releasetotal").css("border-color","red")
+                        $("#releaseFormSave").hide()
+                        swal("Please Check,Don't exceed Sanction Amount!!",{
+                        buttons: {
+                            confirm: {
+                            className: "btn btn-danger",
+                            },
+                        },});
+                        
+                    }else{
+                        $("#id_releasetotal").css("border-color","")
+                        $("#releaseFormSave").show()
+                    }
                 }
+
             }else{
                 $("#releaseFormSave").hide()
                 swal("You can submit only 4 releases.!!",{
@@ -1248,6 +1291,7 @@ function validateReleaseForm(){
     var recurring = $('#release_recurring').val()
     var travel = $('#release_travel').val()
     var overheadexpens = $('#release_overheadexpens').val()
+    var total = $('#id_releasetotal').val()
     var fileInput = $('#release_fileupload')[0];
     
 
@@ -1303,24 +1347,24 @@ function validateReleaseForm(){
                     isValid = false;
         }
     }
-    if(Number(salary)>Number(senssion_salary)){
-        isValid = false;
-    }
-    if(Number(contingencies)>Number(senssion_contingencies)){
-        isValid = false;
-    }
-    if(Number(noncontingencies)>Number(senssion_nonContingencies)){
-        isValid = false;
-    }
-    if(Number(recurring)>Number(senssion_recurring)){
-        isValid = false;
-    }
-    if(Number(travel)>Number(senssion_travel)){
-        isValid = false;
-    }
-    if(Number(overheadexpens)>Number(senssion_overheadexpens)){
-        isValid = false;
-    }    
+    // if(Number(salary)>Number(senssion_salary)){
+    //     isValid = false;
+    // }
+    // if(Number(contingencies)>Number(senssion_contingencies)){
+    //     isValid = false;
+    // }
+    // if(Number(noncontingencies)>Number(senssion_nonContingencies)){
+    //     isValid = false;
+    // }
+    // if(Number(recurring)>Number(senssion_recurring)){
+    //     isValid = false;
+    // }
+    // if(Number(travel)>Number(senssion_travel)){
+    //     isValid = false;
+    // }
+    // if(Number(overheadexpens)>Number(senssion_overheadexpens)){
+    //     isValid = false;
+    // }    
     return isValid
 }
 
@@ -1338,125 +1382,128 @@ function releaseFormSubmit(v){
     var selectedFinanceYear = $('input[name="financial_select"]:checked').val();
    
     var year_index = ["","1st","2nd","3rd","4th","5th"]
-   if (senssion_year !== '1st'){
-        var spl_year = Number(senssion_year.toString()[0])-1
-        var getyear = year_index[spl_year]
-        console.log('spl_year',spl_year)
-        console.log('getyear',getyear)
-        $.ajax({
-            url: '/get_unpend_balance/',  // Django URL
-            data: {
-                'year': getyear,
-                'projectpi_id': pi_id,
-                'project_id': projectid,
-                'finance_id':selectedFinanceYear,
-            },
-            success: function(data) {
-                debugger
-                    if (data.data.length !== 0){
-                        // console.log("get response",data)
-                        // console.log("get response salary",data.data[0].salary)
-                        let salary1 = $("#release_salary").val()
-                        let contingencies1 = $("#release_contingencies").val()
-                        let noncontingencies1 = $("#release_noncontingencies").val()
-                        let recurring1 = $("#release_recurring").val()
-                        let travel1 = $("#release_travel").val()
-                        let overheadexpens1 = $("#release_overheadexpens").val()
+//    if (senssion_year !== '1st'){
+//         var spl_year = Number(senssion_year.toString()[0])-1
+//         var getyear = year_index[spl_year]
+//         console.log('spl_year',spl_year)
+//         console.log('getyear',getyear)
+//         $.ajax({
+//             url: '/get_unpend_balance/',  // Django URL
+//             data: {
+//                 'year': getyear,
+//                 'projectpi_id': pi_id,
+//                 'project_id': projectid,
+//                 'finance_id':selectedFinanceYear,
+//             },
+//             success: function(data) {
+//                 debugger
+//                     if (data.data.length !== 0){
+//                         // console.log("get response",data)
+//                         // console.log("get response salary",data.data[0].salary)
+//                         let salary1 = $("#release_salary").val()
+//                         let contingencies1 = $("#release_contingencies").val()
+//                         let noncontingencies1 = $("#release_noncontingencies").val()
+//                         let recurring1 = $("#release_recurring").val()
+//                         let travel1 = $("#release_travel").val()
+//                         let overheadexpens1 = $("#release_overheadexpens").val()
 
-                        $("#release_salary").val(parseFloat(salary1)+data.data[0].salary)
-                        $("#release_contingencies").val(parseFloat(contingencies1)+data.data[0].contingencies)
-                        $("#release_noncontingencies").val(parseFloat(noncontingencies1)+data.data[0].non_contingencies)
-                        $("#release_recurring").val(parseFloat(recurring1)+data.data[0].recurring)
-                        $("#release_travel").val(parseFloat(travel1)+data.data[0].travel)
-                        $("#release_overheadexpens").val(parseFloat(overheadexpens1)+data.data[0].overhead_expens)
-                        releaseCalculate()
+//                         // $("#release_salary").val(parseFloat(salary1)+data.data[0].salary)
+//                         // $("#release_contingencies").val(parseFloat(contingencies1)+data.data[0].contingencies)
+//                         // $("#release_noncontingencies").val(parseFloat(noncontingencies1)+data.data[0].non_contingencies)
+//                         // $("#release_recurring").val(parseFloat(recurring1)+data.data[0].recurring)
+//                         // $("#release_travel").val(parseFloat(travel1)+data.data[0].travel)
+//                         // $("#release_overheadexpens").val(parseFloat(overheadexpens1)+data.data[0].overhead_expens)
+
+//                         var total_get = (parseFloat(salary1)+data.data[0].salary) + (parseFloat(contingencies1)+data.data[0].contingencies) + (parseFloat(noncontingencies1)+data.data[0].non_contingencies) + (parseFloat(recurring1)+data.data[0].recurring) + (parseFloat(travel1)+data.data[0].travel) + (parseFloat(overheadexpens1)+data.data[0].overhead_expens)
+//                         console.log('total_get',total_get)    
+//                         releaseCalculate()
                         
 
-                        var valid = validateReleaseForm()
-                        if(valid){
-                            debugger
-                            var year = senssion_year
-                            var salary = $("#release_salary").val()
-                            var contingencies = $("#release_contingencies").val()
-                            var noncontingencies = $("#release_noncontingencies").val()
-                            var recurring = $("#release_recurring").val()
-                            var travel = $("#release_travel").val()
-                            var overheadexpens = $("#release_overheadexpens").val()
-                            var uploadfile = $("#release_fileupload")[0]
-                            var total = $("#id_releasetotal").val()
-                            var comment = $("#release_comment").val()
-                            var selectedFinanceYear = $('input[name="financial_select"]:checked').val();
+//                         var valid = validateReleaseForm()
+//                         if(valid){
+//                             debugger
+//                             var year = senssion_year
+//                             var salary = $("#release_salary").val()
+//                             var contingencies = $("#release_contingencies").val()
+//                             var noncontingencies = $("#release_noncontingencies").val()
+//                             var recurring = $("#release_recurring").val()
+//                             var travel = $("#release_travel").val()
+//                             var overheadexpens = $("#release_overheadexpens").val()
+//                             var uploadfile = $("#release_fileupload")[0]
+//                             var total = $("#id_releasetotal").val()
+//                             var comment = $("#release_comment").val()
+//                             var selectedFinanceYear = $('input[name="financial_select"]:checked').val();
 
-                            formData.append('finance_id',selectedFinanceYear);
-                            formData.append('projectpi',projectpi);
-                            formData.append('projects',projects);
-                            formData.append('year',year);
-                            formData.append('salary',salary);
-                            formData.append('contingencies',contingencies);
-                            formData.append('noncontingencies',noncontingencies);
-                            formData.append('recurring',recurring);
-                            formData.append('travel',travel);
-                            formData.append('overheadexpens',overheadexpens);
-                            formData.append('uploadfile',uploadfile);
-                            formData.append('total',total);
-                            if (uploadfile.files.length > 0) {
-                                formData.append('uploadfile', uploadfile.files[0]);
-                            } else {
-                                formData.append('uploadfile', '');
-                            }
-                            formData.append('comment',comment);
-                            $.ajax({
-                                url: "{% url 'release_submit' %}",      // Your Django URL for upload
-                                type: 'POST',
-                                data: formData,
-                                contentType: false,
-                                processData: false,
-                                headers: { 'X-CSRFToken': getCookie('csrftoken') },  // CSRF token included
-                                success: function(response) {
-                                    if(response.status == '400 BAD_REQUEST'){
-                                        swal(response.message,{
-                                        buttons: {
-                                            confirm: {
-                                            className: "btn btn-danger",
-                                            },
-                                        },});
-                                    }
-                                    if(response.status == '200 OK'){
-                                        $("input[type=radio][name=financial_select]:checked").trigger("change");
-                                        releasRowLock = 0
-                                    swal(response.message,{
-                                        buttons: {
-                                            confirm: {
-                                            className: "btn btn-success",
-                                            },
-                                        },});
-                                        // location.reload();
-                                    }
+//                             formData.append('finance_id',selectedFinanceYear);
+//                             formData.append('projectpi',projectpi);
+//                             formData.append('projects',projects);
+//                             formData.append('year',year);
+//                             formData.append('salary',salary);
+//                             formData.append('contingencies',contingencies);
+//                             formData.append('noncontingencies',noncontingencies);
+//                             formData.append('recurring',recurring);
+//                             formData.append('travel',travel);
+//                             formData.append('overheadexpens',overheadexpens);
+//                             formData.append('uploadfile',uploadfile);
+//                             formData.append('total',total);
+//                             if (uploadfile.files.length > 0) {
+//                                 formData.append('uploadfile', uploadfile.files[0]);
+//                             } else {
+//                                 formData.append('uploadfile', '');
+//                             }
+//                             formData.append('comment',comment);
+//                             $.ajax({
+//                                 url: "{% url 'release_submit' %}",      // Your Django URL for upload
+//                                 type: 'POST',
+//                                 data: formData,
+//                                 contentType: false,
+//                                 processData: false,
+//                                 headers: { 'X-CSRFToken': getCookie('csrftoken') },  // CSRF token included
+//                                 success: function(response) {
+//                                     if(response.status == '400 BAD_REQUEST'){
+//                                         swal(response.message,{
+//                                         buttons: {
+//                                             confirm: {
+//                                             className: "btn btn-danger",
+//                                             },
+//                                         },});
+//                                     }
+//                                     if(response.status == '200 OK'){
+//                                         $("input[type=radio][name=financial_select]:checked").trigger("change");
+//                                         releasRowLock = 0
+//                                     swal(response.message,{
+//                                         buttons: {
+//                                             confirm: {
+//                                             className: "btn btn-success",
+//                                             },
+//                                         },});
+//                                         // location.reload();
+//                                     }
                                     
-                                },
-                                error: function(xhr, status, error) {
-                                    alert('Upload failed');
-                                    console.error(error);
-                                }
-                            });
+//                                 },
+//                                 error: function(xhr, status, error) {
+//                                     alert('Upload failed');
+//                                     console.error(error);
+//                                 }
+//                             });
                             
-                        }else{
-                            swal("Please fill complete form.",{
-                                    buttons: {
-                                        confirm: {
-                                        className: "btn btn-danger",
-                                        },
-                                    },});}
-                                        alert("Unspent balance added!!!") 
-                    }
-                } 
-        });                  
+//                         }else{
+//                             swal("Please fill complete form.",{
+//                                     buttons: {
+//                                         confirm: {
+//                                         className: "btn btn-danger",
+//                                         },
+//                                     },});}
+//                                         alert("Unspent balance added!!!") 
+//                     }
+//                 } 
+//         });                  
                                 
             
                             
 
                                 
-    }else{
+//     }else{
                                
     var year = senssion_year
     var salary = $("#release_salary").val()
@@ -1566,7 +1613,7 @@ function releaseFormSubmit(v){
 
    }             
     
-}
+// }
 
 
 // uc form submit
@@ -1576,80 +1623,95 @@ function ucCalcTotal(v)
 {
    debugger
 	var salary = $('#uc_salary').val()
-    if(Number(salary) > Number(senssion_salary)){
-        $('#uc_salary').css("border-color","red")
-        swal("Please Check, Senssion salary should be greater than release Salary",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+    // if(Number(salary) > Number(senssion_salary)){
+    //     $('#uc_salary').css("border-color","red")
+    //     swal("Please Check, Senssion salary should be greater than release Salary",{
+    //                 buttons: {
+    //                     confirm: {
+    //                     className: "btn btn-danger",
+    //                     },
+    //                 },});
                     
-    }else{$('#uc_salary').css("border-color","")}
+    // }else{$('#uc_salary').css("border-color","")}
 	var contingencies = $("#uc_contingencies").val()
-    if(Number(contingencies)>Number(senssion_contingencies)){
-        $('#uc_contingencies').css("border-color","red")
-        swal("Please Check, Senssion contingencies should be greater than release contingencies",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+    // if(Number(contingencies)>Number(senssion_contingencies)){
+    //     $('#uc_contingencies').css("border-color","red")
+    //     swal("Please Check, Senssion contingencies should be greater than release contingencies",{
+    //                 buttons: {
+    //                     confirm: {
+    //                     className: "btn btn-danger",
+    //                     },
+    //                 },});
                     
-    }else{$('#uc_contingencies').css("border-color","")}
+    // }else{$('#uc_contingencies').css("border-color","")}
 
 	var noncontingencies = $("#uc_noncontingencies").val()
-    if(Number(noncontingencies)>Number(senssion_nonContingencies)){
-        $('#uc_noncontingencies').css("border-color","red")
-        swal("Please Check, Senssion Non contingencies should be greater than release Non contingencies",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+    // if(Number(noncontingencies)>Number(senssion_nonContingencies)){
+    //     $('#uc_noncontingencies').css("border-color","red")
+    //     swal("Please Check, Senssion Non contingencies should be greater than release Non contingencies",{
+    //                 buttons: {
+    //                     confirm: {
+    //                     className: "btn btn-danger",
+    //                     },
+    //                 },});
                     
-    }else{$('#uc_noncontingencies').css("border-color","")}
+    // }else{$('#uc_noncontingencies').css("border-color","")}
 
 	var recurring = $("#uc_recurring").val()
-    if(Number(recurring)>Number(senssion_recurring)){
-        $('#uc_recurring').css("border-color","red")
-        swal("Please Check, Senssion Non contingencies should be greater than release Non contingencies",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+    // if(Number(recurring)>Number(senssion_recurring)){
+    //     $('#uc_recurring').css("border-color","red")
+    //     swal("Please Check, Senssion Non contingencies should be greater than release Non contingencies",{
+    //                 buttons: {
+    //                     confirm: {
+    //                     className: "btn btn-danger",
+    //                     },
+    //                 },});
                     
-    }else{$('#uc_recurring').css("border-color","")}
+    // }else{$('#uc_recurring').css("border-color","")}
 
 	var travel = $("#uc_travel").val()
-    if(Number(travel)>Number(senssion_travel)){
-        $('#uc_travel').css("border-color","red")
-        swal("Please Check, Senssion travel should be greater than release travel",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+    // if(Number(travel)>Number(senssion_travel)){
+    //     $('#uc_travel').css("border-color","red")
+    //     swal("Please Check, Senssion travel should be greater than release travel",{
+    //                 buttons: {
+    //                     confirm: {
+    //                     className: "btn btn-danger",
+    //                     },
+    //                 },});
                     
-    }else{$('#uc_travel').css("border-color","")}
+    // }else{$('#uc_travel').css("border-color","")}
 
 	var overhead = $("#uc_overheadexpens").val()
-    if(Number(overhead)>Number(senssion_overheadexpens)){
-        $('#uc_overheadexpens').css("border-color","red")
-        swal("Please Check, Senssion overhead should be greater than release overhead",{
-                    buttons: {
-                        confirm: {
-                        className: "btn btn-danger",
-                        },
-                    },});
+    // if(Number(overhead)>Number(senssion_overheadexpens)){
+    //     $('#uc_overheadexpens').css("border-color","red")
+    //     swal("Please Check, Senssion overhead should be greater than release overhead",{
+    //                 buttons: {
+    //                     confirm: {
+    //                     className: "btn btn-danger",
+    //                     },
+    //                 },});
                     
-    }else{$('#uc_overheadexpens').css("border-color","")}
+    // }else{$('#uc_overheadexpens').css("border-color","")}
     
      
-    var amt = +(salary)+  +(contingencies)+  +(noncontingencies)+  +(recurring)+  +(travel)+  +(overhead)
-	$("#uc_total").val(amt)
-    console.log('Total Amount:',amt)
+    // var amt = +(salary)+  +(contingencies)+  +(noncontingencies)+  +(recurring)+  +(travel)+  +(overhead)
+    var amount = parseFloat( +(salary)+ + (contingencies)+ + (noncontingencies)+ + (recurring)+ + (travel)+ + (overhead))
+	$("#uc_total").val(amount)
+    // console.log('Total Amount:',amt)
+    var get_ucTotal = $("#uc_total").val()
+    if(get_ucTotal > senssion_total){
+        $("#uc_total").css("border-color","red")
+        $("#ucFormSave").hide()
+        swal("Please Check,Don't exceed Sanction Amount!!",{
+        buttons: {
+            confirm: {
+            className: "btn btn-danger",
+            },
+        },});
+    }else{
+        $("#uc_total").css("border-color","")
+        $("#ucFormSave").show()
+    }
    
 }
 
@@ -1718,24 +1780,24 @@ function validateUcForm(){
                     isValid = false;
         }
     }
-    if(Number(salary)>Number(senssion_salary)){
-        isValid = false;
-    }
-    if(Number(contingencies)>Number(senssion_contingencies)){
-        isValid = false;
-    }
-    if(Number(noncontingencies)>Number(senssion_nonContingencies)){
-        isValid = false;
-    }
-    if(Number(recurring)>Number(senssion_recurring)){
-        isValid = false;
-    }
-    if(Number(travel)>Number(senssion_travel)){
-        isValid = false;
-    }
-    if(Number(overheadexpens)>Number(senssion_overheadexpens)){
-        isValid = false;
-    }    
+    // if(Number(salary)>Number(senssion_salary)){
+    //     isValid = false;
+    // }
+    // if(Number(contingencies)>Number(senssion_contingencies)){
+    //     isValid = false;
+    // }
+    // if(Number(noncontingencies)>Number(senssion_nonContingencies)){
+    //     isValid = false;
+    // }
+    // if(Number(recurring)>Number(senssion_recurring)){
+    //     isValid = false;
+    // }
+    // if(Number(travel)>Number(senssion_travel)){
+    //     isValid = false;
+    // }
+    // if(Number(overheadexpens)>Number(senssion_overheadexpens)){
+    //     isValid = false;
+    // }    
     return isValid
 }
 
