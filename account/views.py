@@ -16,81 +16,87 @@ from django.db.models import Count
 # Create your views here.
 @login_required(login_url="login")
 def home(request):
-    pi_name = request.GET.get('Dr ABC', '')
-    project_type = request.GET.get('adhoc', '')
-    pi_name = ''
-    project_type = ''
-    prcreccomend_type = ''
-    state = ''
-    district = ''
-    start = datetime(2025, 8, 20, tzinfo=timezone.utc)
-    end = datetime(2025, 11, 1, tzinfo=timezone.utc)
+    # pi_name = request.GET.get('Dr ABC', '')
+    # project_type = request.GET.get('adhoc', '')
+    # pi_name = ''
+    # project_type = ''
+    # prcreccomend_type = ''
+    # state = ''
+    # district = ''
+    # start = datetime(2025, 8, 20, tzinfo=timezone.utc)
+    # end = datetime(2025, 11, 1, tzinfo=timezone.utc)
 
-    project_count = []
-    project_type_count = []
-    project_type_count_dict = {}
-    project_pi_count = {}
-    pi_project_count = {}
-    pi_project_list = []
+    # project_count = []
+    # project_type_count = []
+    # project_type_count_dict = {}
+    # project_pi_count = {}
+    # pi_project_count = {}
+    # pi_project_list = []
     context = {}
-    filters = Q()
-    if pi_name:
-        filters &= Q(projectpi__name=pi_name)
-    if project_type:
-        filters &= Q(projectdetail__project_type=project_type)
-    if prcreccomend_type:
-        filters &= Q(projectdetail__prcrecommend=prcreccomend_type)
-    if state:
-        state_id = State.objects.filter(name=state).first()
-        filters &= Q(projectpi__state_pi_id=state_id)
-    if district:
-        district_id = District.objects.filter(name=district).first()
-        filters &= Q(projectpi__district_pi_id=district_id)
-    if start and end:
-        filters &= Q(projectdetail__created__gte=start, projectdetail__created__lt=end)
+    # filters = Q()
+    # if pi_name:
+    #     filters &= Q(projectpi__name=pi_name)
+    # if project_type:
+    #     filters &= Q(projectdetail__project_type=project_type)
+    # if prcreccomend_type:
+    #     filters &= Q(projectdetail__prcrecommend=prcreccomend_type)
+    # if state:
+    #     state_id = State.objects.filter(name=state).first()
+    #     filters &= Q(projectpi__state_pi_id=state_id)
+    # if district:
+    #     district_id = District.objects.filter(name=district).first()
+    #     filters &= Q(projectpi__district_pi_id=district_id)
+    # if start and end:
+    #     filters &= Q(projectdetail__created__gte=start, projectdetail__created__lt=end)
 
-    finance = FinancialDetail.objects.select_related('projectpi','projectdetail').filter(filters)
+    # finance = FinancialDetail.objects.select_related('projectpi','projectdetail').filter(filters)
     
     
-    for detail in finance:
-        if detail.projectdetail.id not in project_type_count:
-            project_type_count.append(detail.projectdetail.id)
-            project_count.append(detail.projectdetail.id)
-            print('project type',detail.projectdetail.project_type)
-            if detail.projectdetail.project_type not in project_type_count_dict:
-                project_type_count_dict[detail.projectdetail.project_type] = 1
-            else:
-                project_type_count_dict[detail.projectdetail.project_type] += 1
-            print(detail.projectpi.name)
-            print(detail.projectdetail.title)
+    # for detail in finance:
+    #     if detail.projectdetail.id not in project_type_count:
+    #         project_type_count.append(detail.projectdetail.id)
+    #         project_count.append(detail.projectdetail.id)
+    #         print('project type',detail.projectdetail.project_type)
+    #         if detail.projectdetail.project_type not in project_type_count_dict:
+    #             project_type_count_dict[detail.projectdetail.project_type] = 1
+    #         else:
+    #             project_type_count_dict[detail.projectdetail.project_type] += 1
+    #         print(detail.projectpi.name)
+    #         print(detail.projectdetail.title)
             
-            if detail.projectpi.name in project_pi_count:
-                project_pi_count[detail.projectpi.name] += 1
-                pi_project_count[detail.projectpi.name].append(detail.projectdetail.title)
-            else:
-                project_pi_count[detail.projectpi.name] = 1
-                pi_project_count[detail.projectpi.name]=[detail.projectdetail.title]
+    #         if detail.projectpi.name in project_pi_count:
+    #             project_pi_count[detail.projectpi.name] += 1
+    #             pi_project_count[detail.projectpi.name].append(detail.projectdetail.title)
+    #         else:
+    #             project_pi_count[detail.projectpi.name] = 1
+    #             pi_project_count[detail.projectpi.name]=[detail.projectdetail.title]
                 
-    print("project_count",len(project_count))
-    print('project_type_count',len(project_type_count))
-    print('project_type_count_dict',project_type_count_dict)
-    print('project_pi_count',project_pi_count)
-    print('pi_project_count',pi_project_count)
+    # print("project_count",len(project_count))
+    # print('project_type_count',len(project_type_count))
+    # print('project_type_count_dict',project_type_count_dict)
+    # print('project_pi_count',project_pi_count)
+    # print('pi_project_count',pi_project_count)
 
     institute_name_obj = InstituteDetail.objects.values('id','name')
-    print('institute_name_obj',institute_name_obj)
+    # print('institute_name_obj count',institute_name_obj.count())
     context['institute_name_obj']=institute_name_obj
+    context['institute_name_count']=institute_name_obj.count()
 
     pi_name_obj = ProjectPIDetail.objects.values('id','name')
-    print('pi name',pi_name)
+    # print('pi name count',pi_name_obj.count())
     context['pi_name_obj']=pi_name_obj
+    context['pi_name_count']=pi_name_obj.count()
 
+    project_name_obj = ProjectDetail.objects.values('id','title')
+    # print('project_name_obj count',project_name_obj.count())
+    context['project_name_count']=project_name_obj.count()
     state_name_obj = State.objects.values('id','name')
-    print('state_name_obj',state_name_obj)
+
+    # print('state_name_obj',state_name_obj)
     context['state_name_obj']=state_name_obj
 
     district_name_obj = District.objects.values('id','name')
-    print('district_name_obj',district_name_obj)
+    # print('district_name_obj',district_name_obj)
     context['district_name_obj']=district_name_obj
     
     return render(request,'account/home.html',context)
@@ -114,13 +120,23 @@ def dashboard_data(request):
     print('start_date',start_date)
     print('end_date',end_date)
 
-    pi_name = ''
-    project_type = ''
-    prcreccomend_type = ''
-    state = ''
-    district = ''
-    start = datetime(2025, 8, 20, tzinfo=timezone.utc)
-    end = datetime(2025, 11, 1, tzinfo=timezone.utc)
+    start_date_split = start_date.split('-')
+    end_date_split = end_date.split('-')
+    print('start_date_split',start_date_split)
+    print('end_date_split',end_date_split)
+
+    # pi_name = ''
+    # project_type = ''
+    # prcreccomend_type = ''
+    # state = ''
+    # district = ''
+    # start1 = datetime(int(start_date_split[0]), int(start_date_split[1]), int(start_date_split[2]), tzinfo=timezone.utc)
+    # end1 = datetime(int(end_date_split[0]), int(end_date_split[1]), int(end_date_split[2]), tzinfo=timezone.utc)
+
+    # print(start1,end1)
+    # start = datetime(start_date, tzinfo=timezone.utc)
+    # start = datetime.strptime(start1, "00:00:00+00:00")
+    # end = datetime.strptime(end1, "00:00:00+00:00")
 
     project_count = []
     project_type_count = []
@@ -134,16 +150,21 @@ def dashboard_data(request):
         filters &= Q(projectpi__name=pi_name)
     if project_type:
         filters &= Q(projectdetail__project_type=project_type)
-    if prcreccomend_type:
-        filters &= Q(projectdetail__prcrecommend=prcreccomend_type)
+    if prc_recommed:
+        filters &= Q(projectdetail__prcrecommend=prc_recommed)
+    if institute:
+        # pi_institute = ProjectPIDetail.objects.filter(projectpi__institute_id=institute)
+        filters &= Q(projectpi__institute_id__id=institute)
     if state:
         state_id = State.objects.filter(name=state).first()
         filters &= Q(projectpi__state_pi_id=state_id)
     if district:
         district_id = District.objects.filter(name=district).first()
         filters &= Q(projectpi__district_pi_id=district_id)
-    if start and end:
-        filters &= Q(projectdetail__created__gte=start, projectdetail__created__lt=end)
+    if start_date and end_date:
+        start1 = datetime(int(start_date_split[0]), int(start_date_split[1]), int(start_date_split[2]), tzinfo=timezone.utc)
+        end1 = datetime(int(end_date_split[0]), int(end_date_split[1]), int(end_date_split[2]), tzinfo=timezone.utc)
+        filters &= Q(projectdetail__created__gte=start1, projectdetail__created__lt=end1)
 
     finance = FinancialDetail.objects.select_related('projectpi','projectdetail').filter(filters)
     
@@ -166,14 +187,21 @@ def dashboard_data(request):
             else:
                 project_pi_count[detail.projectpi.name] = 1
                 pi_project_count[detail.projectpi.name]=[detail.projectdetail.title]
+                pi_project_list.append(detail.projectpi.name)
                 
-    # print("project_count",len(project_count))
-    # print('project_type_count',len(project_type_count))
-    # print('project_type_count_dict',project_type_count_dict)
-    # print('project_pi_count',project_pi_count)
-    # print('pi_project_count',pi_project_count)
-
-    return JsonResponse({'message':"Successfully fetch data..."})
+    print("project_count",len(project_count))
+    context['project_count']=len(project_count)
+    print('project_type_count',len(project_type_count))
+    context['project_count']=len(project_type_count)
+    print('project_type_count_dict',project_type_count_dict)
+    context['project_type_count_dict']=project_type_count_dict
+    print('project_pi_count',project_pi_count)
+    context['project_pi_count']=project_pi_count
+    print('pi_project_count',pi_project_count)
+    context['pi_project_count']=pi_project_count
+    print('pi_project_list',len(pi_project_list))
+    context['pi_project_list']=len(pi_project_list)
+    return JsonResponse({"data":context,'message':"Successfully fetch data..."})
     
 def loginpage(request):
     return render(request,'account/login.html')
@@ -388,7 +416,9 @@ def fetch_financial_record(request):
         dict_finance['file']='pdf'
         dict_finance['total']=i.total
         dict_finance['comment']=i.comment
-        dict_finance['subtotal']=i.subtotal
+        dict_finance['unspent']=i.unspent
+        dict_finance['remain_after_total']=i.remain_after_total
+        dict_finance['total_add_unspent']=i.total_add_unspent
         # print(dict_finance)
         qs_release = ReleaseBuget.objects.filter(projectpi_id=projectpi_id,projectdetail_id=id_projectdetail,finance_id=i.id)
         qs_uc = UsedBalance.objects.filter(projectpi_id=projectpi_id,projectdetail_id=id_projectdetail,finance_id=i.id)
@@ -791,7 +821,8 @@ def fund_details(request):
         dict_finance['file']='pdf'
         dict_finance['total']=i.total
         dict_finance['comment']=i.comment
-        dict_finance['subtotal']=i.subtotal
+        dict_finance['unspent']=i.unspent
+        
         # print(dict_finance)
         qs_release = ReleaseBuget.objects.filter(projectpi_id=projectpi_id,projectdetail_id=id_projectdetail,finance_id=i.id)
         qs_uc = UsedBalance.objects.filter(projectpi_id=projectpi_id,projectdetail_id=id_projectdetail,finance_id=i.id)
@@ -866,7 +897,9 @@ def sansion_year_fetch(request):
         dict_finance['file']='pdf'
         dict_finance['total']=i.total
         dict_finance['comment']=i.comment
-        dict_finance['subtotal']=i.subtotal
+        dict_finance['unspent']=i.unspent
+        dict_finance['remain_after_total']=i.remain_after_total
+        dict_finance['total_add_unspent']=i.total_add_unspent
         qs_list.append(dict_finance)
     print('qs_list',qs_list)            
     return JsonResponse({'data':list(qs),'newData':qs_list}, safe=False)
@@ -901,13 +934,13 @@ def get_unpend_balance(request):
     financial_year = request.GET.get('year')
     finance_id = request.GET.get('finance_id')
     qs_query = FinancialDetail.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id,year=financial_year).order_by('id')
-    print('finance id',qs_query[0].id)
+    # print('finance id',qs_query[0].id)
     qs_release = ReleaseBuget.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id,finance_id=finance_id).count()
-    print('qs_release count',qs_release)
+    # print('qs_release count',qs_release)
     qs_balance={}
     if qs_release < 1:
         qs_balance = BalanceSheet.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id,finance_id=qs_query[0].id).values()
-        print('qs_balance',qs_balance)            
+        # print('qs_balance',qs_balance)            
     return JsonResponse({'data':list(qs_balance),'status':'200 OK'}, safe=False)
 
 
@@ -923,10 +956,20 @@ def get_balance_sheet(request):
     dict_list.append(release_total)
     uc_total = UsedBalance.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id).aggregate(**{f: Sum(f) for f in fields})
     dict_list.append(uc_total)
+    
     unspend = {f: (release_total[f] or 0) - (uc_total[f] or 0) for f in fields}
     dict_list.append(unspend)
+    balance_total = BalanceSheet.objects.filter(projectpi_id=projectpi_id,projectdetail_id=project_id)
+    balance_list = [{'total': 7000.0},{'total': 5000.0},{'total': 1100.0}]
+    # for t in balance_total:
+    #     balance_dict = {'total':t.total}
+    #     balance_list.append(balance_dict)
+        # print(t.total)
+    # print('balance_list',balance_list)  
+    dict_list.append(balance_list)  
     # combined = {f: (sanction_totals[f] or 0) + (release_total[f] or 0) + (uc_total[f] or 0) for f in fields}
     # print('combined***************************************************************',combined)
+    print('dict_list',dict_list)  
     keys = list(dict_list[0].keys())            
     return JsonResponse({'data':list(dict_list),"keys": list(keys),'status':'200 OK'}, safe=False)
 

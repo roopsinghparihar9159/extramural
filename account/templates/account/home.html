@@ -1,6 +1,40 @@
 {% extends 'account/main.html' %}
 {% load static %}
 {% block content %}
+
+<style>
+    .accordion {
+      width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin: 10px;
+      font-family: Arial, sans-serif;
+    }
+    .item-list {
+      border-bottom: 1px solid #ddd;
+      padding: 10px;
+    }
+    .accordion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .accordion-header button {
+      border: none;
+      background: #007BFF;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .accordion-content {
+      /* margin-top: 8px; */
+      display: none;
+      padding-top: 20px;
+    }
+  </style>
+
 <div class="page-inner">
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
               <div class="" >
@@ -9,6 +43,85 @@
               <div class="ms-md-auto py-2 py-md-0">
                 <!-- <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
                 <a href="#" class="btn btn-primary btn-round">Add Customer</a> -->
+              </div>
+            </div>
+            
+            <div class="row shadow rounded">
+              <div class="col-sm-6 col-md-3 py-2">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div class="icon-big text-center icon-primary bubble-shadow-small">
+                          <i class="fas fa-users"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">Project Investigator</p>
+                          <h4 class="card-title">{{pi_name_count}}</h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-3 py-2">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div class="icon-big text-center icon-info bubble-shadow-small">
+                          <i class="fab fa-product-hunt"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">Projects</p>
+                          <h4 class="card-title">{{project_name_count}}</h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-3 py-2">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div class="icon-big text-center icon-success bubble-shadow-small">
+                          <i class="fas fa-school"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">Institute</p>
+                          <h4 class="card-title">{{institute_name_count}}</h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-3 py-2">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                          <i class="far fa-check-circle"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">State</p>
+                          <h4 class="card-title">576</h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="row shadow mb-5 py-2 rounded bg-white">
@@ -108,7 +221,7 @@
                 </div>
                 
             </div>
-            <div class="row shadow rounded">
+             <div class="row shadow rounded">
               <div class="col-sm-6 col-md-3 py-2">
                 <div class="card card-stats card-round">
                   <div class="card-body">
@@ -121,7 +234,7 @@
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
                           <p class="card-category">Project Investigator</p>
-                          <h4 class="card-title">1,294</h4>
+                          <h4 class="card-title" id="pi_name_count_id"></h4>
                         </div>
                       </div>
                     </div>
@@ -140,7 +253,7 @@
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
                           <p class="card-category">Projects</p>
-                          <h4 class="card-title">1303</h4>
+                          <h4 class="card-title" id="project_count_id"></h4>
                         </div>
                       </div>
                     </div>
@@ -159,7 +272,7 @@
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
                           <p class="card-category">Institute</p>
-                          <h4 class="card-title">$ 1,345</h4>
+                          <h4 class="card-title" id="institue_count">{{institute_name_count}}</h4>
                         </div>
                       </div>
                     </div>
@@ -187,6 +300,159 @@
               </div>
             </div>
           </div>
+    
+     <div class="row">
+        <div class="col-md-4">
+          <div class="card card-round">
+            <div class="card-body">
+              <div class="card-head-row card-tools-still-right">
+                <div class="card-title">PI NAME & PROJECT COUNT</div>
+                <div class="card-tools">
+                  <div class="dropdown">
+                    <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="card-list py-4">
+                <div id="accordion1" class=""></div> 
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+                <div class="card card-round">
+                  <div class="card-header">
+                    <div class="card-head-row card-tools-still-right">
+                      <div class="card-title">Transaction History</div>
+                      <div class="card-tools">
+                        <div class="dropdown">
+                          <button class="btn btn-icon btn-clean me-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-h"></i>
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="table-responsive">
+                      <!-- Projects table -->
+                      <table class="table align-items-center mb-0">
+                        <thead class="thead-light">
+                          <tr>
+                            <th scope="col">Payment Number</th>
+                            <th scope="col" class="text-end">Date &amp; Time</th>
+                            <th scope="col" class="text-end">Amount</th>
+                            <th scope="col" class="text-end">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">
+                              <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                <i class="fa fa-check"></i>
+                              </button>
+                              Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
+                            <td class="text-end">$250.00</td>
+                            <td class="text-end">
+                              <span class="badge badge-success">Completed</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">
+                              <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                <i class="fa fa-check"></i>
+                              </button>
+                              Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
+                            <td class="text-end">$250.00</td>
+                            <td class="text-end">
+                              <span class="badge badge-success">Completed</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">
+                              <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                <i class="fa fa-check"></i>
+                              </button>
+                              Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
+                            <td class="text-end">$250.00</td>
+                            <td class="text-end">
+                              <span class="badge badge-success">Completed</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">
+                              <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                <i class="fa fa-check"></i>
+                              </button>
+                              Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
+                            <td class="text-end">$250.00</td>
+                            <td class="text-end">
+                              <span class="badge badge-success">Completed</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">
+                              <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                <i class="fa fa-check"></i>
+                              </button>
+                              Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
+                            <td class="text-end">$250.00</td>
+                            <td class="text-end">
+                              <span class="badge badge-success">Completed</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">
+                              <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                <i class="fa fa-check"></i>
+                              </button>
+                              Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
+                            <td class="text-end">$250.00</td>
+                            <td class="text-end">
+                              <span class="badge badge-success">Completed</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">
+                              <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                <i class="fa fa-check"></i>
+                              </button>
+                              Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
+                            <td class="text-end">$250.00</td>
+                            <td class="text-end">
+                              <span class="badge badge-success">Completed</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+      </div>  
+           
+
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>          
 <script>
     function getCookie(name) {
@@ -205,6 +471,7 @@
     }
 
 $(document).ready(function(){
+response_data()
     $.ajax({
         url: '/ajax/states/', 
         
@@ -317,11 +584,81 @@ function response_data(){
         url: '/dashboard_data/',  
         data:{'pi_name':pi_name,'project_type':project_type,'prc_recommed':prc_recommed,'institute':institute,'state':state,'district':district,'start_date':start_date,'end_date':end_date},
         success: function(response) {
+          debugger;
             console.log(response)
-            // response.forEach((uc, index) => {
-            // const html = `<option value="${uc.id}">${uc.name}</option>`;
-            // $("#district_id").append(html);
-            // });
+            $("#project_count_id").text(response.data.project_count)
+            $("#pi_name_count_id").text(response.data.pi_project_list)
+
+            const accordion = document.getElementById("accordion1");
+
+          // Loop through PI data
+          $('#accordion1').empty()
+          var pi_project = response.data.pi_project_count
+          for (const key in pi_project) {
+            // Create item container
+              const item = document.createElement("div");
+              item.classList.add("item-list");
+
+              const avatar = document.createElement("div");
+              avatar.classList.add("avatar");
+              
+
+              const avtar_span = document.createElement("span");
+              avtar_span.classList.add("avatar-title","rounded-circle","border","border-white");
+              avtar_span.textContent = "MR"
+              // Create header
+              const header = document.createElement("div");
+              header.classList.add("info-user","ms-3");
+
+              // Left side (PI name)
+              const name = document.createElement("div");
+              name.classList.add('username');
+              name.textContent = key
+
+              // Right side (count + button)
+              const right = document.createElement("div");
+              const count = document.createElement("span");
+              right.textContent = `(${pi_project[key].length}) `;
+              const button = document.createElement("button");
+              button.classList.add("btn","btn-icon","btn-round","btn-success","btn-sm","me-2")
+              button.textContent = "+";
+
+              // right.appendChild(count);
+              right.appendChild(button);
+
+              header.appendChild(name);
+              
+
+              // Content (projects)
+              const content = document.createElement("div");
+              content.classList.add("accordion-content");
+
+              const value = pi_project[key];
+              // console.log(`${key}: ${value}`);
+              // console.log('*********************** project list *********************')
+              console.log( pi_project[key].length )
+              pi_project[key].forEach(pro=>{
+                console.log(pro)
+                const p = document.createElement("div");
+                  p.textContent = "> " + pro;
+                  content.appendChild(p);
+              })
+              button.addEventListener("click", () => {
+              const isVisible = content.style.display === "block";
+              content.style.display = isVisible ? "none" : "block";
+              button.textContent = isVisible ? "+" : "−";
+            });
+            
+            item.appendChild(avatar)
+            avatar.appendChild(avtar_span)
+            header.appendChild(content)
+            item.appendChild(header);
+            // item.appendChild(content);
+            item.appendChild(right);
+
+            accordion.appendChild(item);
+          }
+
         }
     });
 
@@ -329,4 +666,72 @@ function response_data(){
 
 });
 </script>
+<!-- <script>
+  const piData = [
+  { 
+    name: "Dr. Smith", 
+    projects: ["Cancer Research", "Gene Editing", "Cell Growth Study"]
+  },
+  { 
+    name: "Dr. Johnson", 
+    projects: ["AI in Medicine", "Drug Discovery"]
+  },
+  { 
+    name: "Dr. Brown", 
+    projects: ["Neural Network Models", "Robotics", "Vision Systems"]
+  }
+];
+
+const accordion = document.getElementById("accordion");
+
+// Loop through PI data
+piData.forEach(pi => {
+  // Create item container
+  const item = document.createElement("div");
+  item.classList.add("accordion-item");
+
+  // Create header
+  const header = document.createElement("div");
+  header.classList.add("accordion-header");
+
+  // Left side (PI name)
+  const name = document.createElement("span");
+  name.textContent = pi.name;
+
+  // Right side (count + button)
+  const right = document.createElement("div");
+  const count = document.createElement("span");
+  count.textContent = `(${pi.projects.length}) `;
+  const button = document.createElement("button");
+  button.textContent = "+";
+
+  right.appendChild(count);
+  right.appendChild(button);
+
+  header.appendChild(name);
+  header.appendChild(right);
+
+  // Content (projects)
+  const content = document.createElement("div");
+  content.classList.add("accordion-content");
+
+  pi.projects.forEach(project => {
+    const p = document.createElement("div");
+    p.textContent = "• " + project;
+    content.appendChild(p);
+  });
+
+  // Toggle on button click
+  button.addEventListener("click", () => {
+    const isVisible = content.style.display === "block";
+    content.style.display = isVisible ? "none" : "block";
+    button.textContent = isVisible ? "+" : "−";
+  });
+
+  item.appendChild(header);
+  item.appendChild(content);
+  accordion.appendChild(item);
+});
+
+  </script> -->
 {% endblock content %}

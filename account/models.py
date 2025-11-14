@@ -102,7 +102,9 @@ class FinancialDetail(models.Model):
     interest            = models.FloatField(default=0.00)
     remainamount        = models.FloatField(default=0.00)
     carry_forward_amount = models.FloatField(default=0.00)
-    subtotal             = models.FloatField(default=0.00)
+    unspent             = models.FloatField(default=0.00)
+    remain_after_total  = models.FloatField(default=0.00)
+    total_add_unspent   = models.FloatField(default=0.00)
     remain_tr_amount    = models.FloatField(default=0.00)
     interest_tr_amount  = models.FloatField(default=0.00)
     transfer_from_to    = models.CharField(max_length=200,null=True,blank=True)
@@ -110,11 +112,21 @@ class FinancialDetail(models.Model):
     created             = models.DateTimeField(auto_now_add=True)
     updated             = models.DateTimeField(auto_now=True)
 
-    def calculate_subtotal(self):
+    def calculate_unspent(self):
         return (
             # float(self.total) -
             # float(self.interest) +
             float(self.carry_forward_amount)
+        )
+
+    def calculate_remain_after_subtract_unspent(self):
+        return (
+            float(self.total) - float(self.unspent)
+        )
+
+    def calculate_remain_after_add_unspent(self):
+        return (
+            float(self.remain_after_total) + float(self.unspent)
         )
 
     def calculate_total(self):
@@ -129,7 +141,9 @@ class FinancialDetail(models.Model):
 
     def save(self, *args, **kwargs):
         self.total = self.calculate_total()
-        self.subtotal = self.calculate_subtotal()
+        self.unspent = self.calculate_unspent()
+        self.remain_after_total = self.calculate_remain_after_subtract_unspent()
+        self.total_add_unspent = self.calculate_remain_after_add_unspent()
         super().save(*args, **kwargs)
 
     def __str__(self):
